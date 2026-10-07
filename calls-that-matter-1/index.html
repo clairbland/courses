@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wattlebrook Life - Supporting Customers Experiencing Vulnerability</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap">
+<style>
+/* Layout: app-style course player. Sticky top bar (progress ring + care points), module rail left (chips on phones), one lesson stage at a time. Calls render as a phone/chat UI. */
+:root{
+  --bg:#eef4f2; --surface:#ffffff; --raise:#f7faf9; --ink:#14292a; --muted:#536866; --line:#d3e0dd;
+  --pine:#0f3d3a; --pine-ink:#eaf6f3; --accent:#13756c; --accent-soft:#dcefeb;
+  --amber:#c46a12; --amber-soft:#fbeedd;
+  --good:#24803a; --good-soft:#e2f3e5; --bad:#b03a2c; --bad-soft:#f9e3df; --ok:#8d6b0b; --ok-soft:#f8efd3;
+  --bubble-them:#ffffff; --bubble-me:#13756c; --bubble-me-ink:#ffffff;
+  --focus:#2557d6; --shadow:0 1px 2px rgba(15,61,58,.06),0 8px 24px rgba(15,61,58,.08);
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1615; --surface:#132120; --raise:#182a29; --ink:#e4efed; --muted:#9fb4b1; --line:#294240;
+  --pine:#0a2826; --pine-ink:#e4f3ef; --accent:#5fc7ba; --accent-soft:#1a3a37;
+  --amber:#f0a75a; --amber-soft:#3a2915;
+  --good:#7fd08f; --good-soft:#183522; --bad:#f08f82; --bad-soft:#3f201b; --ok:#e7c766; --ok-soft:#3a3115;
+  --bubble-them:#1d3130; --bubble-me:#2f8f84; --bubble-me-ink:#ffffff;
+  --focus:#93b4ff; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0c1615; --surface:#132120; --raise:#182a29; --ink:#e4efed; --muted:#9fb4b1; --line:#294240;
+  --pine:#0a2826; --pine-ink:#e4f3ef; --accent:#5fc7ba; --accent-soft:#1a3a37;
+  --amber:#f0a75a; --amber-soft:#3a2915;
+  --good:#7fd08f; --good-soft:#183522; --bad:#f08f82; --bad-soft:#3f201b; --ok:#e7c766; --ok-soft:#3a3115;
+  --bubble-them:#1d3130; --bubble-me:#2f8f84; --bubble-me-ink:#ffffff;
+  --focus:#93b4ff; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.6;margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:800}
+h2{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:700}
+h3{font-size:1.2rem;font-weight:700}
+p{margin:0;max-width:65ch}
+.eyebrow{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* top bar */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--pine);color:var(--pine-ink)}
+.topbar-in{max-width:1180px;margin:0 auto;padding-block:.7rem;padding-inline:16px;display:flex;align-items:center;gap:1rem;justify-content:space-between;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;line-height:1.2}
+.brand b{font-family:var(--display);font-size:1.05rem}
+.brand span{font-size:.8rem;opacity:.8}
+.brandwrap{display:flex;align-items:center;gap:.6rem}
+.logo{width:40px;height:40px;flex:none;background:#fdf8e6;border-radius:12px;padding:3px}
+.logo-lg{width:56px;height:56px;border-radius:16px;padding:4px}
+.lockup{display:flex;align-items:center;gap:.75rem}
+.series{display:inline-flex;align-items:center;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(255,255,255,.12);padding:.3rem .7rem;border-radius:99px;width:max-content}
+.stats{display:flex;align-items:center;gap:1rem}
+.ring{width:44px;height:44px;flex:none}
+.ring circle{fill:none;stroke-width:5}
+.ring .track{stroke:rgba(255,255,255,.2)} .ring .val{stroke:#7fe0d2;stroke-linecap:round;transition:stroke-dashoffset .5s}
+.ring text{fill:var(--pine-ink);font-size:11px;font-weight:700;font-family:var(--body)}
+.points{display:flex;align-items:center;gap:.45rem;background:rgba(255,255,255,.1);padding:.35rem .75rem;border-radius:99px;font-weight:700;font-variant-numeric:tabular-nums}
+.points .dot{width:.7rem;height:.7rem;border-radius:50%;background:#f0b35e}
+.points.bump{animation:bump .5s}
+@keyframes bump{40%{transform:scale(1.15)}}
+
+.shell{max-width:1180px;margin:0 auto;padding-block:1.75rem 3rem;padding-inline:16px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:2rem;align-items:start}
+@media (max-width:860px){.shell{grid-template-columns:minmax(0,1fr);gap:1rem}}
+/* rail */
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 5rem)}
+@media (max-width:860px){.rail{position:static}}
+.rail ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.3rem}
+@media (max-width:860px){.rail ol{flex-direction:row;overflow-x:auto;padding-bottom:.4rem}}
+.rail button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:.65rem;width:100%;min-height:46px;padding:.5rem .75rem;border-radius:12px;font-size:.95rem;white-space:nowrap}
+@media (max-width:860px){.rail button{width:auto;background:var(--surface);border:1px solid var(--line)}}
+.rail button:hover{background:var(--accent-soft)}
+.rail button[aria-current="step"]{background:var(--surface);box-shadow:var(--shadow);font-weight:700}
+.rail button:focus-visible{outline:3px solid var(--focus)}
+.num{width:1.7rem;height:1.7rem;border-radius:50%;display:grid;place-items:center;font-size:.8rem;font-weight:700;background:var(--accent-soft);color:var(--accent);flex:none}
+.done .num{background:var(--accent);color:var(--surface)}
+.badges{margin-top:1.25rem;display:flex;flex-direction:column;gap:.5rem}
+@media (max-width:860px){.badges{display:none}}
+.badge-row{display:flex;flex-wrap:wrap;gap:.4rem}
+.badge{font-size:.78rem;padding:.25rem .6rem;border-radius:99px;border:1px dashed var(--line);color:var(--muted)}
+.badge.on{border:1px solid var(--amber);background:var(--amber-soft);color:var(--ink);font-weight:700}
+
+/* stage */
+main{min-width:0}
+.stage{display:flex;flex-direction:column;gap:1.5rem;animation:enter .35s ease-out}
+@keyframes enter{from{opacity:.4;transform:translateY(6px)}}
+.block{background:var(--surface);border-radius:20px;padding:clamp(1.2rem,3vw,2rem);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:1rem}
+.lede{font-size:1.15rem}
+.hero{background:var(--pine);color:var(--pine-ink);border-radius:24px;padding:clamp(1.5rem,4vw,2.75rem);display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:2rem;align-items:center;overflow:hidden}
+@media (max-width:760px){.hero{grid-template-columns:minmax(0,1fr)}}
+.hero .eyebrow{color:#7fe0d2}
+.hero p{color:var(--pine-ink);opacity:.92}
+.wave{width:100%;max-width:100%;height:auto}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{font-size:.85rem;padding:.3rem .75rem;border-radius:99px;background:rgba(255,255,255,.12)}
+.block .chip{background:var(--accent-soft)}
+.map{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.75rem}
+.map-card{all:unset;box-sizing:border-box;cursor:pointer;background:var(--raise);border:1px solid var(--line);border-radius:16px;padding:1rem;display:flex;flex-direction:column;gap:.35rem;transition:transform .15s,border-color .15s}
+.map-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.map-card:focus-visible{outline:3px solid var(--focus)}
+.map-card b{font-family:var(--display);font-size:1.02rem}
+.map-card span{font-size:.88rem;color:var(--muted)}
+
+.btn{all:unset;box-sizing:border-box;cursor:pointer;min-height:46px;padding:.65rem 1.25rem;border-radius:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:.45rem;text-align:center;transition:transform .1s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--accent);color:var(--surface)}
+.btn-ghost{border:2px solid var(--accent);color:var(--accent)}
+.btn-amber{background:var(--amber);color:#fff}
+.btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center}
+.pager{display:flex;justify-content:space-between;gap:.75rem;flex-wrap:wrap}
+
+/* confidence slider */
+.slider{display:flex;flex-direction:column;gap:.5rem;max-width:520px}
+.slider input{width:100%;accent-color:var(--accent);height:2rem}
+.slider .scale{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted)}
+
+/* chat */
+.chat{display:flex;flex-direction:column;gap:.6rem;max-width:640px}
+.bubble{max-width:85%;padding:.7rem 1rem;border-radius:18px;font-size:1rem;line-height:1.5;animation:pop .25s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.98)}}
+.them{background:var(--bubble-them);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:6px}
+.me{background:var(--bubble-me);color:var(--bubble-me-ink);align-self:flex-end;border-bottom-right-radius:6px}
+.sys{align-self:center;font-size:.85rem;color:var(--muted)}
+.typing{display:inline-flex;gap:4px;align-self:flex-start;padding:.8rem 1rem;border-radius:18px;background:var(--bubble-them);border:1px solid var(--line)}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{50%{opacity:.25}}
+
+/* flip tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.8rem}
+.tile{all:unset;box-sizing:border-box;cursor:pointer;perspective:900px;min-height:160px;display:block}
+.tile:focus-visible{outline:3px solid var(--focus);border-radius:16px}
+.tile .inner{display:grid;width:100%;min-height:160px;transition:transform .5s;transform-style:preserve-3d;-webkit-transform-style:preserve-3d}
+.tile[aria-pressed="true"] .inner{transform:rotateY(180deg)}
+.face{grid-area:1/1;min-height:160px;border-radius:16px;padding:1rem;display:flex;flex-direction:column;justify-content:center;gap:.35rem;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow-wrap:anywhere}
+.face.front{background:var(--raise);border:1px solid var(--line)}
+.face.front b{font-family:var(--display);font-size:1.1rem}
+.face.front span{font-size:.82rem;color:var(--muted)}
+.face.back{background:var(--accent);color:var(--surface);transform:rotateY(180deg);font-size:.93rem}
+
+/* spot the signs */
+.clip{border:1px solid var(--line);border-radius:16px;padding:1rem;display:flex;flex-direction:column;gap:.75rem;background:var(--raise)}
+.clip-head{display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;align-items:center}
+.found{font-size:.85rem;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.found.all{color:var(--good)}
+.phrase{all:unset;cursor:pointer;border-bottom:2px dotted var(--muted);border-radius:4px;padding:0 .1rem}
+.phrase:hover{background:var(--amber-soft)}
+.phrase:focus-visible{outline:3px solid var(--focus)}
+.phrase.hit{background:var(--good-soft);border-bottom:2px solid var(--good);cursor:default}
+.phrase.miss{background:var(--bad-soft);border-bottom:2px solid var(--bad);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.tipline{font-size:.93rem;min-height:1.4em}
+
+/* card deck */
+.deck{display:flex;flex-direction:column;align-items:center;gap:1rem}
+.deck-card{width:min(100%,460px);min-height:170px;background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:1.5rem;display:flex;flex-direction:column;justify-content:center;gap:.5rem;text-align:center;font-family:var(--display);font-size:1.25rem;font-weight:500;transition:transform .35s,opacity .35s}
+.deck-card.out-l{transform:translateX(-40px) rotate(-6deg);opacity:0}
+.deck-card.out-r{transform:translateX(40px) rotate(6deg);opacity:0}
+.deck-count{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.deck-actions{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center}
+
+/* feedback */
+.fb{border-radius:14px;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.3rem;max-width:68ch;animation:pop .25s}
+.fb.good{background:var(--good-soft)} .fb.ok{background:var(--ok-soft)} .fb.bad{background:var(--bad-soft)}
+.fb .tag{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.good .tag{color:var(--good)} .ok .tag{color:var(--ok)} .bad .tag{color:var(--bad)}
+
+/* tree */
+.steps{display:flex;flex-wrap:wrap;gap:.4rem;font-size:.82rem;color:var(--muted)}
+.steps span{background:var(--accent-soft);padding:.15rem .55rem;border-radius:99px}
+.q-card{background:var(--raise);border:1px solid var(--line);border-radius:16px;padding:1.1rem;display:flex;flex-direction:column;gap:.8rem}
+.q-card p{font-weight:700;font-size:1.08rem}
+
+/* phone */
+.calls{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.8rem}
+.call-card{all:unset;box-sizing:border-box;cursor:pointer;background:var(--raise);border:1px solid var(--line);border-radius:18px;padding:1rem;display:flex;gap:.8rem;align-items:flex-start;transition:transform .15s,border-color .15s}
+.call-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.call-card:focus-visible{outline:3px solid var(--focus)}
+.avatar{width:2.8rem;height:2.8rem;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;flex:none;font-family:var(--display)}
+.call-card .info{display:flex;flex-direction:column;gap:.15rem;min-width:0}
+.call-card b{font-family:var(--display);font-size:1.05rem}
+.call-card small{color:var(--muted);font-size:.85rem}
+.call-card .st{font-size:.8rem;font-weight:700;color:var(--muted)}
+.call-card.complete .st{color:var(--good)}
+.phone{max-width:640px;width:100%;border-radius:28px;background:var(--raise);border:1px solid var(--line);overflow:hidden;box-shadow:var(--shadow)}
+.phone-top{background:var(--pine);color:var(--pine-ink);padding:1rem 1.2rem;display:flex;align-items:center;gap:.8rem}
+.phone-top .who{display:flex;flex-direction:column;line-height:1.25;flex:1;min-width:0}
+.phone-top .who b{font-family:var(--display);font-size:1.05rem}
+.phone-top .who span{font-size:.82rem;opacity:.85}
+.live{display:flex;align-items:center;gap:.35rem;font-size:.82rem;font-variant-numeric:tabular-nums}
+.live i{width:.55rem;height:.55rem;border-radius:50%;background:#ff6b5e;animation:blink 1.4s infinite}
+.trust{padding:.75rem 1.2rem;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:.75rem;font-size:.85rem}
+.trust .bar{flex:1;height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+.trust .bar span{display:block;height:100%;border-radius:99px;transition:width .5s,background .5s}
+.phone-body{padding:1.1rem;display:flex;flex-direction:column;gap:.6rem;max-height:420px;overflow-y:auto}
+.phone-choices{padding:1rem 1.1rem;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:.55rem;background:var(--surface)}
+.reply{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--line);border-radius:14px;padding:.75rem .95rem;background:var(--surface);font-size:.97rem;transition:border-color .15s,background .15s}
+.reply:hover{border-color:var(--accent);background:var(--accent-soft)}
+.reply:focus-visible{outline:3px solid var(--focus)}
+
+/* quiz */
+.dots{display:flex;gap:.4rem}
+.dots i{width:.8rem;height:.8rem;border-radius:50%;background:var(--line)}
+.dots i.cur{background:var(--accent)} .dots i.right{background:var(--good)} .dots i.wrong{background:var(--bad)}
+.ans{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;background:var(--surface);display:block;max-width:68ch}
+.ans:hover{border-color:var(--accent)}
+.ans:focus-visible{outline:3px solid var(--focus)}
+.ans.right{background:var(--good-soft);border-color:var(--good)} .ans.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.cert{border-radius:22px;background:var(--pine);color:var(--pine-ink);padding:1.5rem;display:flex;flex-direction:column;gap:.6rem}
+.cert .eyebrow{color:#7fe0d2}
+.compare-conf{display:flex;gap:1.25rem;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.compare-conf div{display:flex;flex-direction:column}
+.compare-conf b{font-family:var(--display);font-size:1.8rem}
+.jobaid{border:2px solid var(--accent);border-radius:20px;padding:1.25rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem}
+.jobaid h3{grid-column:1/-1}
+.jobaid h4{margin:0 0 .3rem;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.jobaid ul{margin:0;padding-left:1.1rem;font-size:.95rem;display:flex;flex-direction:column;gap:.2rem}
+textarea{font:inherit;color:var(--ink);background:var(--raise);border:1px solid var(--line);border-radius:14px;padding:.8rem;width:100%;max-width:68ch;min-height:5.5rem}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 1.25rem);transform:translateX(-50%) translateY(150%);background:var(--pine);color:var(--pine-ink);padding:.7rem 1.1rem;border-radius:99px;font-weight:700;box-shadow:var(--shadow);transition:transform .3s;z-index:10;max-width:calc(100% - 32px);text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+footer{max-width:1180px;margin:0 auto;padding-block:0 2rem;padding-inline:16px;font-size:.85rem;color:var(--muted);display:flex;flex-direction:column;gap:.3rem}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+[hidden]{display:none!important}
+img{max-width:100%}
+</style>
+</head>
+<body>
+
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brandwrap"><svg class="logo" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M8 44 C16 34 22 26 38 10" fill="none" stroke="#3f7d3a" stroke-width="2.4" stroke-linecap="round"/><path d="M14 36 C10 30 9 24 11 18 C15 24 16 30 14 36Z" fill="#4f9a47"/><path d="M24 26 C30 26 35 29 39 33 C33 34 28 31 24 26Z" fill="#4f9a47"/><path d="M18 31 C21 27 24 24 25 20" fill="none" stroke="#3f7d3a" stroke-width="1.6" stroke-linecap="round"/><path d="M29 18 C27 15 26 12 26 9" fill="none" stroke="#3f7d3a" stroke-width="1.6" stroke-linecap="round"/><circle cx="25" cy="18.5" r="4.6" fill="#f5b800"/><circle cx="20.5" cy="23" r="3.6" fill="#ffc928"/><circle cx="26" cy="8" r="4.2" fill="#ffc928"/><circle cx="32" cy="13" r="4.4" fill="#f5b800"/><circle cx="38.5" cy="8.5" r="3.8" fill="#ffd34d"/><circle cx="31" cy="22" r="3.2" fill="#ffd34d"/><circle cx="25" cy="18.5" r="1.6" fill="#e09a00" opacity=".6"/><circle cx="32" cy="13" r="1.5" fill="#e09a00" opacity=".6"/><circle cx="26" cy="8" r="1.4" fill="#e09a00" opacity=".6"/></svg><div class="brand"><b>Wattlebrook Life</b><span>Supporting Customers Experiencing Vulnerability</span></div></div>
+    <div class="stats">
+      <svg class="ring" viewBox="0 0 44 44" role="img" aria-label="Course progress" id="ring"><circle class="track" cx="22" cy="22" r="18"/><circle class="val" id="ringval" cx="22" cy="22" r="18" stroke-dasharray="113.1" stroke-dashoffset="113.1" transform="rotate(-90 22 22)"/><text x="22" y="26" text-anchor="middle" id="ringtxt">0%</text></svg>
+      <div class="points" id="points" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="pts">0</span>&nbsp;care points</div>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="rail" aria-label="Course modules">
+    <nav><ol id="nav"></ol></nav>
+    <div class="badges"><span class="eyebrow">Badges</span><div class="badge-row" id="badges"></div></div>
+  </aside>
+  <main><div id="stage"></div><div class="sr" aria-live="polite" id="announce"></div></main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<footer>
+  <span>Portfolio sample designed by Clair Bland with AI assistance (Claude). Wattlebrook Life is a fictional insurer and all callers are fictional.</span>
+  <span>Regulatory content is illustrative and must be checked against the current Life Insurance Code of Practice and validated by Risk and Compliance before use.</span>
+</footer>
+
+<script>
+(function(){
+const $=(s,el=document)=>el.querySelector(s), $$=(s,el=document)=>[...el.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const stage=$('#stage');
+const say=m=>{const a=$('#announce');a.textContent='';setTimeout(()=>a.textContent=m,40)};
+let toastT; const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200)};
+
+/* ---------- state ---------- */
+const S={points:0, done:new Set(), badges:new Set(), confBefore:null, confAfter:null, scen:{}, scored:new Set()};
+const award=(key,n,msg)=>{ if(S.scored.has(key))return; S.scored.add(key); S.points+=n; $('#pts').textContent=S.points; const p=$('#points'); p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); if(msg)toast(msg); };
+const BADGES={listener:'Active listener',words:'Words that care',navigator:'Pathfinder',calls:'Call ready',cert:'Course complete'};
+const earn=k=>{ if(S.badges.has(k))return; S.badges.add(k); renderBadges(); toast('Badge earned: '+BADGES[k]); say('Badge earned: '+BADGES[k]); };
+function renderBadges(){ $('#badges').innerHTML=Object.entries(BADGES).map(([k,v])=>`<span class="badge ${S.badges.has(k)?'on':''}">${esc(v)}${S.badges.has(k)?'':'<span class="sr"> (not yet earned)</span>'}</span>`).join(''); }
+
+const sections=[
+ {id:'welcome',title:'Welcome',short:'Start here'},
+ {id:'m1',title:'Why it matters',short:'A customer\'s story'},
+ {id:'m2',title:'Spot the signs',short:'Four real-sounding calls'},
+ {id:'m3',title:'Respond with care',short:'Words and support'},
+ {id:'m4',title:'Next steps',short:'Record, refer, escalate'},
+ {id:'m5',title:'On the line',short:'Three live calls'},
+ {id:'wrap',title:'Check and finish',short:'Quiz and call guide'}
+];
+let cur=0;
+function renderNav(){
+ $('#nav').innerHTML=sections.map((s,i)=>`<li class="${S.done.has(s.id)?'done':''}"><button type="button" data-go="${i}" ${i===cur?'aria-current="step"':''}><span class="num" aria-hidden="true">${S.done.has(s.id)?'✓':i}</span>${esc(s.title)}${S.done.has(s.id)?'<span class="sr"> (complete)</span>':''}</button></li>`).join('');
+ const pct=Math.round(S.done.size/sections.length*100);
+ $('#ringval').setAttribute('stroke-dashoffset',(113.1*(1-pct/100)).toFixed(1));
+ $('#ringtxt').textContent=pct+'%'; $('#ring').setAttribute('aria-label',`Course progress ${pct}%`);
+}
+document.addEventListener('click',e=>{
+ const g=e.target.closest('[data-go]'); if(g){show(+g.dataset.go);return}
+ const n=e.target.closest('[data-next]'); if(n){S.done.add(sections[cur].id); award('sec-'+sections[cur].id,10); show(cur+1);}
+});
+function pager(){
+ const back=cur>0?`<button type="button" class="btn btn-ghost" data-go="${cur-1}">Back</button>`:'<span></span>';
+ const next=cur<sections.length-1?`<button type="button" class="btn btn-primary" data-next>Next: ${esc(sections[cur+1].title)}</button>`:'';
+ return `<div class="pager">${back}${next}</div>`;
+}
+function show(i){
+ cur=i; stage.innerHTML=`<div class="stage">${V[sections[i].id]()}${pager()}</div>`;
+ renderNav(); const h=$('h1,h2',stage); if(h){h.tabIndex=-1;h.focus({preventScroll:true})} scrollTo({top:0,behavior:reduce?'auto':'smooth'});
+ (B[sections[i].id]||(()=>{}))();
+}
+
+/* ---------- content ---------- */
+const story=[
+ ['them','When Tom was diagnosed, I had to call about his policy. I was shaking.'],
+ ['them','The consultant didn\'t rush me. She said, "Take your time, I\'m here."'],
+ ['them','She explained one thing at a time and gave me her direct number.'],
+ ['them','I don\'t remember the details. I remember she made the worst week of my life a little easier.']
+];
+const drivers=[
+ ['Health','Illness, injury, disability','Serious illness, injury, disability or a mental health condition, for the customer or someone they care for.'],
+ ['Life events','Loss and big changes','Bereavement, separation, becoming a carer or a new diagnosis. Even confident people can struggle for a while.'],
+ ['Financial stress','Money pressure','Job loss, reduced income or rising costs. A customer may want to cancel cover just when they need it most.'],
+ ['Family violence','Safety first','Abuse, control or coercion, including financial abuse. Safety and privacy come first.'],
+ ['Language and culture','How people communicate','Limited English, hearing or speech difficulties, or cultural needs that affect how someone prefers to communicate.'],
+ ['Capability','Understanding information','Cognitive decline, low literacy or low confidence with digital channels.']
+];
+// segments: [text] or [text, signLabel] (sign) or [text, null, 'decoy']
+const clips=[
+ {name:'Helen',role:'Customer',color:'#7a5bb5',lines:[[['Sorry, '],['I\'m not very good at this','Low confidence'],['. '],['My husband always handled the insurance','Unfamiliar with the policy'],['.']],[['He '],['passed away three weeks ago','Recent bereavement'],[' and I '],['want to check my address is right',null,'decoy'],['.']]],tip:'Slow down, explain each step and offer a single point of contact.'},
+ {name:'Daniel',role:'Customer',color:'#c46a12',lines:[[['I just '],['need to cancel. I can\'t keep paying it','Wants to cancel under pressure'],['.']],[['I '],['lost my job last month','Financial hardship'],['. '],['It\'s fine, I\'ll sort it out','Minimising the problem'],['. '],['My policy number is on the letter',null,'decoy'],['.']]],tip:'Explore hardship options before processing any cancellation.'},
+ {name:'Mr Costa',role:'Customer',color:'#2f6f9f',lines:[[['Who did you say you were again','Possible confusion'],['? '],['My son usually rings you','Relies on a family member'],['.']],[['I got a letter but '],['I don\'t understand what it wants me to do','Difficulty with written information'],['. '],['I\'ve had the policy for years',null,'decoy'],['.']]],tip:'Use plain language, check understanding and offer to involve a support person.'},
+ {name:'James Park',role:'Adviser',color:'#13756c',lines:[[['I\'m calling about my client, Anna Liu. She\'s '],['just been diagnosed with a terminal illness','Terminal diagnosis'],['.']],[['The '],['family is overwhelmed','Family under strain'],['. '],['Can you tell me where her claim is up to','Request for personal information'],['? '],['I\'m based in Parramatta',null,'decoy'],['.']]],tip:'Confirm the adviser\'s authority before sharing anything, then offer support.'}
+];
+const phrases=[
+ ['"Take your time. There\'s no rush on this call."',true,'It gives control back to the caller and reduces pressure.'],
+ ['"You\'ll need to calm down before I can help."',false,'It dismisses their feelings and can escalate distress.'],
+ ['"Would it help if I explained the options one at a time?"',true,'It offers support without assuming they can\'t cope.'],
+ ['"That\'s our policy. I can\'t do anything about it."',false,'It shuts the conversation down and ignores options that may exist.'],
+ ['"I\'m sorry to hear that. Thank you for telling me."',true,'It acknowledges what they shared and builds trust.'],
+ ['"Are you vulnerable?"',false,'It labels the caller. Ask what support would help instead.']
+];
+const supports=[['Extra time','Longer calls, a slower pace and time to think before deciding.'],['Single point of contact','One person managing the case, so the customer doesn\'t repeat their story.'],['Support person','A family member, friend or advocate on the call, with permission.'],['Interpreter','A free interpreter for customers who prefer another language.'],['Other ways to talk','Email, text or a call-back at a safe time, or larger-print letters.'],['Hardship options','Reducing cover or pausing premiums where the policy allows, rather than cancelling.']];
+const complaints=[['"I\'ve called three times and no one has called me back. This is ridiculous."',true],['"Can you tell me when my premium is due?"',false],['"I\'m really unhappy with how my claim has been handled."',true],['"Could you send that form again? I can\'t find it."',false]];
+
+const calls=[
+ {id:'daniel',name:'Daniel',role:'Customer',color:'#c46a12',title:'Missed premiums',blurb:'Wants to cancel his income protection after losing his job.',
+  steps:[
+   {say:'Hi. I want to cancel my policy, today please. I can\'t afford it anymore.',choices:[
+    {t:'No problem, I can process that cancellation for you now.',q:'bad',r:'Right. Okay. Thanks.',fb:'Cancelling straight away could leave Daniel without cover when he needs it most. Find out what\'s behind the request first.'},
+    {t:'I can help with that. Before we do, can I ask what\'s changed for you?',q:'good',r:'I lost my job a few weeks ago. Things are pretty tight.',fb:'An open question uncovers the real need without judging his decision.'},
+    {t:'Cancelling is a big mistake. You should really keep your cover.',q:'ok',r:'I don\'t need a lecture. I just can\'t pay it.',fb:'Your concern is right, but telling him what to do puts him on the defensive.'}]},
+   {say:'Honestly, I\'m embarrassed to even be calling.',choices:[
+    {t:'There\'s nothing to be embarrassed about, and thanks for telling me. There may be options that help you keep some cover.',q:'good',r:'Really? I didn\'t know that.',fb:'You acknowledged his feelings and opened the door to hardship options.'},
+    {t:'Lots of people lose their jobs. Anyway, what\'s your policy number?',q:'bad',r:'It\'s on the letter somewhere.',fb:'Rushing past what he shared makes him less likely to engage with the options.'},
+    {t:'Okay. I\'ll need to transfer you to another team.',q:'ok',r:'Another team? Do I have to explain all this again?',fb:'A transfer may be needed, but explain why so he doesn\'t repeat his story.'}]},
+   {say:'So what can I actually do?',choices:[
+    {t:'We have hardship options, like reducing cover or pausing premiums where your policy allows. Would it help if I noted your situation so the team has the details?',q:'good',r:'Yes, please. That would be great.',fb:'You explained options plainly and asked for consent before recording.'},
+    {t:'I\'ll make a note that you\'re in financial hardship.',q:'ok',r:'Okay, I guess.',fb:'Recording is right, but ask permission first and explain why.'},
+    {t:'Your best bet is to cancel now and reapply later.',q:'bad',r:'Fine. Just cancel it then.',fb:'Reapplying may mean new underwriting or exclusions. Explore hardship options first.'}]}
+  ]},
+ {id:'priya',name:'Priya',role:'Customer',color:'#7a5bb5',title:'A difficult home situation',blurb:'Wants new contact details and mentions her partner.',
+  steps:[
+   {say:'I need to change my email and phone number. And please don\'t send anything to the house anymore.',choices:[
+    {t:'Of course. Can I check first: is now a safe time to talk?',q:'good',r:'Yes. He\'s not home right now.',fb:'Checking safety early is key when there are signs of possible family violence.'},
+    {t:'Sure. What\'s the new number?',q:'ok',r:'It\'s 0412 555 019.',fb:'You updated the details but missed the cue about not sending anything home.'},
+    {t:'Why don\'t you want mail at home?',q:'bad',r:'I\'d rather not say.',fb:'Asking "why" can feel intrusive. Focus on what she needs, not her reasons.'}]},
+   {say:'My partner checks everything. I don\'t want him to know I\'ve called.',choices:[
+    {t:'Thank you for telling me. Your privacy matters. What\'s the safest way and time for us to contact you?',q:'good',r:'Email only, please. Never the home number.',fb:'You protected her privacy and let her set safe contact preferences.'},
+    {t:'Is he abusing you? You should call the police.',q:'bad',r:'I didn\'t say that. Forget it.',fb:'Pushing for disclosure or telling her what to do can make her disengage. Let her lead.'},
+    {t:'Okay, I\'ll update the details.',q:'ok',r:'Thanks.',fb:'Done, but you missed the chance to set safe contact arrangements and offer support.'}]},
+   {say:'Is there anything else I need to do?',choices:[
+    {t:'I\'ll follow our family violence procedure to protect your details. I can share the 1800RESPECT number if that helps, and if you\'re ever in immediate danger, call 000.',q:'good',r:'Thank you. I\'ll write that down.',fb:'You followed the procedure, offered support without pressure and shared emergency information.'},
+    {t:'No, that\'s everything. Have a nice day.',q:'ok',r:'Okay. Bye.',fb:'Polite, but Priya may need extra protection on her account and support information.'},
+    {t:'I\'ll just call your home number to confirm the change.',q:'bad',r:'No! Please don\'t do that.',fb:'An unsafe contact method could put Priya at risk. Always use the method she chose.'}]}
+  ]},
+ {id:'james',name:'James Park',role:'Adviser',color:'#13756c',title:'Calling for a client',blurb:'An adviser asks about a claim after a terminal diagnosis.',
+  steps:[
+   {say:'Hi, it\'s James Park, financial adviser. My client Anna Liu has a terminal diagnosis. Where\'s her claim up to?',choices:[
+    {t:'I\'m sorry to hear about Anna. Before I discuss her claim, let me check we have your authority on file.',q:'good',r:'Of course, go ahead.',fb:'You showed empathy and protected Anna\'s privacy by checking authority first.'},
+    {t:'Sure, let me pull it up. It\'s with the assessor now.',q:'bad',end:true,r:'Great, thanks.',fb:'You shared Anna\'s personal information without confirming authority. That\'s a privacy breach, however well-meant.'},
+    {t:'I can\'t talk to you about that.',q:'ok',r:'Right. Can you tell me why?',fb:'Protecting privacy is right, but explain why and what James can do next.'}]},
+   {say:'The family is really struggling. Anna wants to spend her time with them, not on paperwork.',choices:[
+    {t:'That\'s completely understandable. We can arrange a single point of contact for Anna\'s claim so the family doesn\'t repeat themselves.',q:'good',r:'That would make a real difference.',fb:'You offered practical support that reduces the burden on Anna and her family.'},
+    {t:'The claims team works through claims in order.',q:'bad',r:'Even with a terminal diagnosis?',fb:'Process without acknowledgement can cause distress and complaints.'},
+    {t:'I\'ll let the claims team know.',q:'ok',r:'Okay. Thanks.',fb:'Helpful, but tell James what support is available and what happens next.'}]},
+   {say:'What happens next?',choices:[
+    {t:'With your consent, I\'ll record the situation and contact preferences, refer it to our claims team today, and they\'ll contact you directly.',q:'good',r:'Thank you. That\'s really helpful.',fb:'Clear next steps, recorded with consent and referred promptly.'},
+    {t:'Someone will be in touch at some point.',q:'bad',r:'That\'s not very reassuring.',fb:'Vague next steps add stress. Be specific about who, what and when.'},
+    {t:'I\'ll email you the claims team\'s details.',q:'ok',r:'Okay.',fb:'Useful, but a warm referral beats asking James to start again with another team.'}]}
+  ]}
+];
+const quiz=[
+ {q:'A customer says, "Sorry, I\'m hopeless with this since my wife died." What should you do first?',o:['Move quickly so the call stays short','Acknowledge their loss and offer to go step by step','Ask whether they\'d describe themselves as vulnerable','Transfer them to the complaints team'],a:1,why:'Acknowledging what they shared and slowing down builds trust.'},
+ {q:'An adviser asks about a client\'s claim. What must you do before sharing details?',o:['Confirm the adviser has authority on file','Ask for the client\'s date of birth only','Share the status if the adviser sounds genuine','Ask the client to call back instead'],a:0,why:'Advisers need authority on file before you discuss a customer\'s information.'},
+ {q:'A customer wants to cancel after losing their job. What\'s the best response?',o:['Process the cancellation straight away','Tell them cancelling is a mistake','Explore hardship options before any cancellation','Suggest they reapply when they find work'],a:2,why:'Hardship options may let them keep cover. Reapplying can mean new underwriting.'},
+ {q:'A caller doesn\'t want her partner to know she called. What\'s most appropriate?',o:['Call her home number to confirm','Agree a safe contact method and follow the family violence procedure','Tell her to report her partner to police','Make a note and take no further action'],a:1,why:'Safety and privacy come first. Let her choose how and when you contact her.'},
+ {q:'When should you record a customer\'s circumstances?',o:['Always, in as much detail as possible','Only if the customer asks you to','With consent, recording what\'s needed to support them','Never, because it\'s sensitive'],a:2,why:'Record what helps you support them, with consent and in the right place.'}
+];
+
+/* ---------- views ---------- */
+const avatar=(n,c)=>`<span class="avatar" style="background:${c}" aria-hidden="true">${esc(n.split(' ').map(w=>w[0]).join('').slice(0,2))}</span>`;
+const confSlider=(id,label)=>`<div class="slider"><label for="${id}"><b>${label}</b></label><input type="range" id="${id}" min="1" max="5" step="1" value="3" aria-valuetext="3 out of 5"><div class="scale" aria-hidden="true"><span>1 Not confident</span><span>5 Very confident</span></div></div>`;
+const V={
+ welcome:()=>`
+  <section class="hero">
+   <div style="display:flex;flex-direction:column;gap:1rem">
+    <span class="lockup"><svg class="logo logo-lg" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M8 44 C16 34 22 26 38 10" fill="none" stroke="#3f7d3a" stroke-width="2.4" stroke-linecap="round"/><path d="M14 36 C10 30 9 24 11 18 C15 24 16 30 14 36Z" fill="#4f9a47"/><path d="M24 26 C30 26 35 29 39 33 C33 34 28 31 24 26Z" fill="#4f9a47"/><path d="M18 31 C21 27 24 24 25 20" fill="none" stroke="#3f7d3a" stroke-width="1.6" stroke-linecap="round"/><path d="M29 18 C27 15 26 12 26 9" fill="none" stroke="#3f7d3a" stroke-width="1.6" stroke-linecap="round"/><circle cx="25" cy="18.5" r="4.6" fill="#f5b800"/><circle cx="20.5" cy="23" r="3.6" fill="#ffc928"/><circle cx="26" cy="8" r="4.2" fill="#ffc928"/><circle cx="32" cy="13" r="4.4" fill="#f5b800"/><circle cx="38.5" cy="8.5" r="3.8" fill="#ffd34d"/><circle cx="31" cy="22" r="3.2" fill="#ffd34d"/><circle cx="25" cy="18.5" r="1.6" fill="#e09a00" opacity=".6"/><circle cx="32" cy="13" r="1.5" fill="#e09a00" opacity=".6"/><circle cx="26" cy="8" r="1.4" fill="#e09a00" opacity=".6"/></svg><span class="series">Calls That Matter · Course 1</span></span>
+    <h1>Every call could be the one that matters most</h1>
+    <p class="lede">Learn to notice when a caller needs more support, respond with care and take the right next step.</p>
+    <div class="chips"><span class="chip">About 45 minutes</span><span class="chip">3 live call simulations</span><span class="chip">Earn 5 badges</span></div>
+   </div>
+   <svg class="wave" viewBox="0 0 320 200" role="img" aria-label="Illustration of a voice waveform between a caller and a consultant">
+    <circle cx="44" cy="100" r="30" fill="#2c6e68"/><circle cx="276" cy="100" r="30" fill="#c46a12"/>
+    <text x="44" y="106" text-anchor="middle" fill="#fff" font-size="16" font-weight="700" font-family="sans-serif">You</text>
+    <text x="276" y="106" text-anchor="middle" fill="#fff" font-size="13" font-weight="700" font-family="sans-serif">Caller</text>
+    ${[18,40,64,30,80,52,96,60,36,72,44,24].map((h,i)=>`<rect x="${90+i*12}" y="${100-h/2}" width="7" height="${h}" rx="3.5" fill="#7fe0d2" opacity="${.45+((i%4)*.15)}"/>`).join('')}
+   </svg>
+  </section>
+  <section class="block">
+   <h2>Your course map</h2>
+   <div class="map">${sections.slice(1).map((s,i)=>`<button type="button" class="map-card" data-go="${i+1}"><span class="eyebrow">Step ${i+1}</span><b>${esc(s.title)}</b><span>${esc(s.short)}</span></button>`).join('')}</div>
+  </section>
+  <section class="block">
+   <h3>Before you start</h3>
+   ${confSlider('confBefore','How confident are you supporting a caller who is going through a hard time?')}
+   <p style="color:var(--muted);font-size:.92rem">We'll ask again at the end so you can see how far you've come. Everything works with a keyboard and screen reader, and there are no time limits.</p>
+  </section>`,
+ m1:()=>`
+  <section class="block"><span class="eyebrow">Step 1</span><h2>Why it matters</h2>
+   <p class="lede">Maria called about her husband's policy. Here's what she remembers.</p>
+   <div class="chat" id="story" aria-live="polite"></div>
+   <div class="row"><button type="button" class="btn btn-primary" id="storyNext">Show next message</button></div>
+  </section>
+  <section class="block"><h3>Anyone, any time</h3><p>Vulnerability can be temporary or ongoing. Flip each card to learn more.</p>
+   <div class="tiles">${drivers.map((d,i)=>`<button type="button" class="tile" aria-pressed="false" data-flip="${i}"><span class="inner"><span class="face front"><b>${esc(d[0])}</b><span>${esc(d[1])}</span></span><span class="face back">${esc(d[2])}</span></span><span class="sr" id="flipsr${i}"></span></button>`).join('')}</div>
+   <p class="found" id="flipcount">0 of 6 cards explored</p>
+  </section>
+  <section class="block"><h3>Your turn</h3><label for="reflect">Think of a call where you sensed something was wrong. What did you notice? (Private, not saved.)</label><textarea id="reflect"></textarea></section>`,
+ m2:()=>`
+  <section class="block"><span class="eyebrow">Step 2</span><h2>Spot the signs</h2>
+   <p class="lede">Tap the words in each call that tell you this person may need more support. Some phrases are just everyday details.</p></section>
+  ${clips.map((c,ci)=>{const total=c.lines.flat().filter(s=>s[1]).length;return `<section class="block"><div class="clip"><div class="clip-head"><div class="row">${avatar(c.name,c.color)}<div><b style="font-family:var(--display)">${esc(c.name)}</b><br><small style="color:var(--muted)">${esc(c.role)} call</small></div></div><span class="found" id="found${ci}">0 of ${total} signs found</span></div>
+   <div class="chat">${c.lines.map((l,li)=>`<div class="bubble them">${l.map((s,si)=>s[1]||s[2]?`<button type="button" class="phrase" data-clip="${ci}" data-seg="${li}-${si}">${esc(s[0])}</button>`:esc(s[0])).join('')}</div>`).join('')}</div>
+   <p class="tipline" id="tip${ci}" aria-live="polite"></p></div></section>`}).join('')}`,
+ m3:()=>`
+  <section class="block"><span class="eyebrow">Step 3</span><h2>Respond with care</h2><p class="lede">Helpful or unhelpful? Decide for each phrase.</p>
+   <div class="deck"><span class="deck-count" id="deckCount"></span><div class="deck-card" id="deckCard" aria-live="polite"></div>
+   <div class="deck-actions" id="deckActions"><button type="button" class="btn btn-ghost" data-swipe="0">Unhelpful</button><button type="button" class="btn btn-primary" data-swipe="1">Helpful</button></div>
+   <div id="deckFb" style="width:100%;display:flex;justify-content:center"></div></div></section>
+  <section class="block"><h3>What you can offer</h3><p>Flip each card to see the support you can offer.</p>
+   <div class="tiles">${supports.map((s,i)=>`<button type="button" class="tile" aria-pressed="false" data-sflip="${i}"><span class="inner"><span class="face front"><b>${esc(s[0])}</b><span>Tap to flip</span></span><span class="face back">${esc(s[1])}</span></span></button>`).join('')}</div></section>
+  <section class="block"><h3>Ask, don't assume</h3><p>A caller sounds overwhelmed. Which question would you ask?</p>
+   <div class="stack" style="display:flex;flex-direction:column;gap:.55rem">${['"Are you okay to continue, or are you too upset?"','"Is there anything that would make this call easier for you?"','"Do you have a mental health condition I should know about?"'].map((o,i)=>`<button type="button" class="ans" data-ask="${i}">${esc(o)}</button>`).join('')}</div><div id="askFb"></div></section>`,
+ m4:()=>`
+  <section class="block"><span class="eyebrow">Step 4</span><h2>Next steps</h2><p class="lede">Which of these notes would you want on your own file?</p>
+   <div class="stack" style="display:flex;flex-direction:column;gap:.55rem">
+    <button type="button" class="ans" data-note="0">Customer very emotional and confused, probably can't handle complex info. Husband died.</button>
+    <button type="button" class="ans" data-note="1">Customer recently bereaved (spouse). Consented to this note. Prefers email and a single point of contact. Offered extra time on calls.</button>
+   </div><div id="noteFb"></div></section>
+  <section class="block"><h3>Find the right path</h3><p>Answer each question to see what to do.</p><div id="tree"></div></section>
+  <section class="block"><h3>Is it a complaint?</h3><p>Any expression of dissatisfaction can be a complaint, even if the caller doesn't use the word.</p>
+   <div class="deck"><span class="deck-count" id="cmpCount"></span><div class="deck-card" id="cmpCard" aria-live="polite"></div>
+   <div class="deck-actions" id="cmpActions"><button type="button" class="btn btn-ghost" data-cmp="0">Not a complaint</button><button type="button" class="btn btn-primary" data-cmp="1">Complaint</button></div>
+   <div id="cmpFb" style="width:100%;display:flex;justify-content:center"></div></div></section>`,
+ m5:()=>`
+  <section class="block"><span class="eyebrow">Step 5</span><h2>On the line</h2>
+   <p class="lede">Your phone is ringing. Choose your replies and watch the caller's trust rise or fall. Take all three calls to earn the Call ready badge.</p>
+   <div class="calls">${calls.map(c=>{const st=S.scen[c.id];return `<button type="button" class="call-card ${st&&st.finished?'complete':''}" data-call="${c.id}">${avatar(c.name,c.color)}<span class="info"><small>${esc(c.role)} call</small><b>${esc(c.title)}</b><span style="font-size:.9rem">${esc(c.blurb)}</span><span class="st">${st&&st.finished?'Completed · trust '+st.trust+'%':'Answer call'}</span></span></button>`}).join('')}</div></section>
+  <div id="phoneWrap"></div>`,
+ wrap:()=>`
+  <section class="block"><span class="eyebrow">Step 6</span><h2>Check and finish</h2>
+   <p class="lede">Five quick questions. You need 4 out of 5 to complete the course.</p>
+   <div id="quizBox"></div></section>
+  <section class="block"><h3>Look after yourself</h3><p>Difficult calls stay with us, and it's normal to feel affected. Take a short break if you can, talk to your team leader or a colleague, and use the Employee Assistance Program for free, confidential support.</p></section>
+  <section class="block" id="finish" hidden></section>
+  <section class="block"><div class="jobaid" id="jobaid">
+   <h3>Your call guide</h3>
+   <div><h4>Listen for</h4><ul><li>Illness, bereavement or a new diagnosis</li><li>Job loss or wanting to cancel under pressure</li><li>Confusion or relying on someone else</li><li>Fear, secrecy or a partner who controls things</li></ul></div>
+   <div><h4>Say</h4><ul><li>"Take your time."</li><li>"Thank you for telling me."</li><li>"Is there anything that would make this easier?"</li></ul></div>
+   <div><h4>Offer</h4><ul><li>Extra time and a slower pace</li><li>A single point of contact</li><li>A support person or interpreter</li><li>Hardship options before cancelling</li></ul></div>
+   <div><h4>Do</h4><ul><li>Confirm adviser authority before sharing</li><li>Record with consent</li><li>Follow the family violence procedure</li><li>Immediate danger: call 000 and tell your team leader</li></ul></div>
+  </div><div class="row"><button type="button" class="btn btn-ghost" id="copyAid">Copy call guide</button><span id="copyMsg" aria-live="polite"></span></div></section>`
+};
+
+/* ---------- behaviours ---------- */
+const B={
+ welcome(){ const r=$('#confBefore'); if(S.confBefore)r.value=S.confBefore; const set=()=>{S.confBefore=+r.value;r.setAttribute('aria-valuetext',r.value+' out of 5')}; r.addEventListener('input',set); set(); },
+ m1(){
+  let i=0; const box=$('#story'), btn=$('#storyNext');
+  const next=()=>{ if(i>=story.length)return; btn.disabled=true;
+   const t=document.createElement('div'); t.className='typing'; t.innerHTML='<i></i><i></i><i></i>'; t.setAttribute('aria-hidden','true'); box.appendChild(t);
+   setTimeout(()=>{t.remove(); const b=document.createElement('div'); b.className='bubble them'; b.textContent=story[i][1]; box.appendChild(b); i++;
+    if(i>=story.length){btn.textContent='Story complete';award('story',10,'+10 care points')} else btn.disabled=false;},reduce?0:700);
+  };
+  btn.addEventListener('click',next); next();
+  const seen=new Set();
+  $$('[data-flip]').forEach(t=>t.addEventListener('click',()=>{const on=t.getAttribute('aria-pressed')!=='true';t.setAttribute('aria-pressed',on);const d=drivers[+t.dataset.flip];$('#flipsr'+t.dataset.flip).textContent=on?d[2]:'';if(on)say(d[0]+': '+d[2]);seen.add(t.dataset.flip);$('#flipcount').textContent=`${seen.size} of 6 cards explored`;if(seen.size===6){$('#flipcount').classList.add('all');award('drivers',10,'+10 care points')}}));
+ },
+ m2(){
+  const found=clips.map(()=>new Set()); let finished=0;
+  $$('.phrase').forEach(p=>p.addEventListener('click',()=>{
+   const ci=+p.dataset.clip,[li,si]=p.dataset.seg.split('-').map(Number),seg=clips[ci].lines[li][si],tip=$('#tip'+ci);
+   if(seg[1]){ if(p.classList.contains('hit'))return; p.classList.add('hit'); p.setAttribute('aria-label',seg[0]+', sign found: '+seg[1]); found[ci].add(p.dataset.seg);
+    const total=clips[ci].lines.flat().filter(s=>s[1]).length, el=$('#found'+ci); el.textContent=`${found[ci].size} of ${total} signs found`;
+    tip.innerHTML=`<b style="color:var(--good)">${esc(seg[1])}.</b> ${found[ci].size===total?esc(clips[ci].tip):'Keep listening.'}`; say(seg[1]+'. '+(found[ci].size===total?'All signs found. '+clips[ci].tip:''));
+    award('sign'+ci+p.dataset.seg,5);
+    if(found[ci].size===total){el.classList.add('all');finished++; if(finished===clips.length)earn('listener');}
+   } else { p.classList.remove('miss'); void p.offsetWidth; p.classList.add('miss'); tip.innerHTML='<b style="color:var(--bad)">That\'s an everyday detail.</b> Look for words about feelings, circumstances or needs.'; say('That is an everyday detail, not a sign.'); }
+  }));
+ },
+ m3(){
+  let i=0, right=0; const card=$('#deckCard'), count=$('#deckCount');
+  const draw=()=>{ if(i>=phrases.length){ card.textContent=`You got ${right} of ${phrases.length} right.`; $('#deckActions').hidden=true; count.textContent='Deck complete'; if(right>=5)earn('words'); return; }
+   card.className='deck-card'; card.textContent=phrases[i][0]; count.textContent=`Phrase ${i+1} of ${phrases.length}`; };
+  $$('[data-swipe]').forEach(b=>b.addEventListener('click',()=>{ if(i>=phrases.length)return;
+   const p=phrases[i], ok=(b.dataset.swipe==='1')===p[1]; if(ok){right++;award('ph'+i,5)}
+   $('#deckFb').innerHTML=`<div class="fb ${ok?'good':'bad'}"><span class="tag">${ok?'Correct':'Not quite'}</span><span>${p[1]?'Helpful.':'Unhelpful.'} ${esc(p[2])}</span></div>`;
+   say((ok?'Correct. ':'Not quite. ')+p[2]);
+   card.classList.add(b.dataset.swipe==='1'?'out-r':'out-l'); i++; setTimeout(draw,reduce?0:320); }));
+  draw();
+  $$('[data-sflip]').forEach(t=>t.addEventListener('click',()=>{const on=t.getAttribute('aria-pressed')!=='true';t.setAttribute('aria-pressed',on);if(on)say(supports[+t.dataset.sflip].join(': '))}));
+  $$('[data-ask]').forEach(b=>b.addEventListener('click',()=>{const ok=b.dataset.ask==='1';$$('[data-ask]').forEach(x=>x.classList.remove('right','wrong'));b.classList.add(ok?'right':'wrong');
+   $('#askFb').innerHTML=`<div class="fb ${ok?'good':'bad'}"><span class="tag">${ok?'Correct':'Try again'}</span><span>${ok?'An open question lets the caller tell you what would help, without labelling them.':'This question assumes or labels the caller. Ask what would make the call easier instead.'}</span></div>`;if(ok)award('ask',10,'+10 care points');say(ok?'Correct.':'Try again.')}));
+ },
+ m4(){
+  $$('[data-note]').forEach(b=>b.addEventListener('click',()=>{const ok=b.dataset.note==='1';$$('[data-note]').forEach(x=>x.classList.remove('right','wrong'));b.classList.add(ok?'right':'wrong');
+   $('#noteFb').innerHTML=`<div class="fb ${ok?'good':'bad'}"><span class="tag">${ok?'Correct':'Try again'}</span><span>${ok?'It\'s factual, respectful, recorded with consent and focused on the support the customer asked for.':'This note judges the customer and wasn\'t recorded with consent. Record facts and support needs instead.'}</span></div>`;if(ok)award('note',10,'+10 care points');say(ok?'Correct.':'Try again.')}));
+  const T={a:{q:'Is anyone at immediate risk of harm?',y:'r1',n:'b',k:'Immediate risk'},b:{q:'Has the caller disclosed family violence, or does it seem likely?',y:'r2',n:'c',k:'Family violence'},c:{q:'Is the customer experiencing financial hardship?',y:'r3',n:'d',k:'Hardship'},d:{q:'Is the caller unhappy with Wattlebrook Life?',y:'r4',n:'r5',k:'Complaint'},
+   r1:{r:'Call 000 if there is immediate danger, and tell your team leader straight away.'},r2:{r:'Follow the family violence procedure: agree a safe contact method, protect the customer\'s details and refer to the specialist team.'},r3:{r:'Explain hardship options and refer to the hardship team before any cancellation.'},r4:{r:'Acknowledge the concern and start the complaints process, while still offering additional support.'},r5:{r:'Offer additional support, record what helps with consent, and check the customer\'s preferences.'}};
+  const path=[]; const ends=new Set();
+  const draw=k=>{const n=T[k],box=$('#tree'),crumbs=`<div class="steps">${path.map(p=>`<span>${esc(p)}</span>`).join('')}</div>`;
+   if(n.r){ends.add(k);box.innerHTML=`${crumbs}<div class="fb good"><span class="tag">What to do</span><span>${esc(n.r)}</span></div><div class="row"><button type="button" class="btn btn-ghost" id="treeAgain">Try a different path</button><span class="found">${ends.size} of 5 outcomes explored</span></div>`;$('#treeAgain').addEventListener('click',()=>{path.length=0;draw('a')});say(n.r);award('end'+k,5);if(ends.size>=3)earn('navigator');return}
+   box.innerHTML=`${crumbs}<div class="q-card"><p>${esc(n.q)}</p><div class="row"><button type="button" class="btn btn-primary" data-t="${n.y}">Yes</button><button type="button" class="btn btn-ghost" data-t="${n.n}">No</button></div></div>`;
+   $$('[data-t]',box).forEach(b=>b.addEventListener('click',()=>{path.push(n.k+': '+b.textContent);draw(b.dataset.t)}));};
+  draw('a');
+  let i=0; const card=$('#cmpCard');
+  const drawC=()=>{if(i>=complaints.length){card.textContent='Nicely done. Remember: listen for dissatisfaction, not the word "complaint".';$('#cmpActions').hidden=true;$('#cmpCount').textContent='Deck complete';return}card.className='deck-card';card.textContent=complaints[i][0];$('#cmpCount').textContent=`Statement ${i+1} of ${complaints.length}`};
+  $$('[data-cmp]').forEach(b=>b.addEventListener('click',()=>{if(i>=complaints.length)return;const c=complaints[i],ok=(b.dataset.cmp==='1')===c[1];if(ok)award('cmp'+i,5);
+   $('#cmpFb').innerHTML=`<div class="fb ${ok?'good':'bad'}"><span class="tag">${ok?'Correct':'Not quite'}</span><span>${c[1]?'The caller is expressing dissatisfaction, so treat it as a complaint.':'This is a straightforward request.'}</span></div>`;say(ok?'Correct.':'Not quite.');
+   card.classList.add(b.dataset.cmp==='1'?'out-r':'out-l');i++;setTimeout(drawC,reduce?0:320)}));
+  drawC();
+ },
+ m5(){ $$('[data-call]').forEach(b=>b.addEventListener('click',()=>startCall(b.dataset.call))); },
+ wrap(){
+  let qi=0, score=0, res=[];
+  const box=$('#quizBox');
+  const draw=()=>{
+   const dots=`<div class="dots" aria-hidden="true">${quiz.map((_,i)=>`<i class="${res[i]===true?'right':res[i]===false?'wrong':i===qi?'cur':''}"></i>`).join('')}</div>`;
+   if(qi>=quiz.length){const pass=score>=4;
+    box.innerHTML=`${dots}<div class="fb ${pass?'good':'bad'}"><span class="tag">${pass?'Passed':'Not yet'}</span><strong>You scored ${score} out of 5.</strong><span>${pass?'Well done.':'Review the feedback and try again.'}</span></div>${pass?'':'<button type="button" class="btn btn-primary" id="quizAgain">Try again</button>'}`;
+    say(`You scored ${score} out of 5.`);
+    if(!pass){$('#quizAgain').addEventListener('click',()=>{qi=0;score=0;res=[];draw()});return}
+    S.done.add('wrap');award('quizpass',30);earn('cert');renderNav();finish();return}
+   const q=quiz[qi];
+   box.innerHTML=`${dots}<p class="found">Question ${qi+1} of ${quiz.length}</p><h3 tabindex="-1" id="qh">${esc(q.q)}</h3><div style="display:flex;flex-direction:column;gap:.55rem">${q.o.map((o,oi)=>`<button type="button" class="ans" data-qa="${oi}">${esc(o)}</button>`).join('')}</div><div id="qfb"></div>`;
+   $$('[data-qa]',box).forEach(b=>b.addEventListener('click',()=>{const ok=+b.dataset.qa===q.a;res[qi]=ok;if(ok)score++;
+    $$('[data-qa]',box).forEach(x=>{x.disabled=true;x.style.cursor='default';if(+x.dataset.qa===q.a)x.classList.add('right')});if(!ok)b.classList.add('wrong');
+    $('#qfb').innerHTML=`<div class="fb ${ok?'good':'bad'}"><span class="tag">${ok?'Correct':'Not quite'}</span><span>${esc(q.why)}</span></div><div class="row" style="margin-top:.6rem"><button type="button" class="btn btn-primary" id="qnext">${qi===quiz.length-1?'See my result':'Next question'}</button></div>`;
+    say((ok?'Correct. ':'Not quite. ')+q.why);$('#qnext').addEventListener('click',()=>{qi++;draw();const h=$('#qh');if(h)h.focus()});$('#qnext').focus()}));
+  };
+  draw();
+  $('#copyAid').addEventListener('click',async()=>{const text=$('#jobaid').innerText;try{await navigator.clipboard.writeText(text);$('#copyMsg').textContent='Copied.'}catch(e){const r=document.createRange();r.selectNodeContents($('#jobaid'));const s=getSelection();s.removeAllRanges();s.addRange(r);$('#copyMsg').textContent='Selected. Press Ctrl+C or Cmd+C to copy.'}});
+  function finish(){const f=$('#finish');f.hidden=false;
+   f.innerHTML=`<div class="cert"><span class="eyebrow">Course complete</span><h3 style="font-size:1.6rem">Supporting Customers Experiencing Vulnerability</h3><p>${S.points} care points · ${S.badges.size} of 5 badges earned</p></div>
+    ${confSlider('confAfter','Now, how confident are you supporting a caller who is going through a hard time?')}
+    <div class="compare-conf" id="confCompare"></div>`;
+   const r=$('#confAfter'),show=()=>{S.confAfter=+r.value;r.setAttribute('aria-valuetext',r.value+' out of 5');$('#confCompare').innerHTML=`<div><span class="found">Before</span><b>${S.confBefore??3}/5</b></div><div><span class="found">Now</span><b>${S.confAfter}/5</b></div>`};
+   r.addEventListener('input',show);show();}
+ }
+};
+
+/* ---------- phone simulation ---------- */
+let timer=null;
+function startCall(id){
+ const c=calls.find(x=>x.id===id); S.scen[id]={step:0,trust:50,marks:[],finished:false,breach:false,log:[]};
+ const wrap=$('#phoneWrap');
+ wrap.innerHTML=`<section class="block"><div class="phone" role="region" aria-label="Call with ${esc(c.name)}">
+  <div class="phone-top">${avatar(c.name,c.color)}<div class="who"><b>${esc(c.name)}</b><span>${esc(c.role)} · ${esc(c.title)}</span></div><span class="live"><i aria-hidden="true"></i><span id="clock">00:00</span></span></div>
+  <div class="trust"><span>Caller trust</span><span class="bar"><span id="trustBar"></span></span><b id="trustVal" style="font-variant-numeric:tabular-nums">50%</b></div>
+  <div class="phone-body" id="pbody" aria-live="polite"></div>
+  <div class="phone-choices" id="pchoices"></div></div></section>`;
+ clearInterval(timer); let sec=0; timer=setInterval(()=>{sec++;const el=$('#clock');if(!el){clearInterval(timer);return}el.textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0')},1000);
+ setTrust(c); addBubble('sys','Call connected'); turn(c);
+ $('.phone',wrap).scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+}
+function setTrust(c){const st=S.scen[c.id],bar=$('#trustBar');bar.style.width=st.trust+'%';bar.style.background=st.trust>=70?'var(--good)':st.trust>=40?'var(--ok)':'var(--bad)';$('#trustVal').textContent=st.trust+'%'}
+function addBubble(kind,text){const b=document.createElement('div');b.className='bubble '+kind;if(kind==='sys'){b.className='sys'}b.textContent=text;const body=$('#pbody');body.appendChild(b);body.scrollTop=body.scrollHeight}
+function typingThen(fn){const body=$('#pbody'),t=document.createElement('div');t.className='typing';t.setAttribute('aria-hidden','true');t.innerHTML='<i></i><i></i><i></i>';body.appendChild(t);body.scrollTop=body.scrollHeight;setTimeout(()=>{t.remove();fn()},reduce?0:650)}
+function turn(c){
+ const st=S.scen[c.id],step=c.steps[st.step],ch=$('#pchoices');ch.innerHTML='';
+ typingThen(()=>{addBubble('them',step.say);
+  ch.innerHTML=`<span class="found">Your reply</span>${step.choices.map((o,i)=>`<button type="button" class="reply" data-r="${i}">${esc(o.t)}</button>`).join('')}`;
+  $$('[data-r]',ch).forEach(b=>b.addEventListener('click',()=>{
+   const o=step.choices[+b.dataset.r]; ch.innerHTML=''; addBubble('me',o.t); st.marks.push(o.q);
+   st.trust=Math.max(0,Math.min(100,st.trust+(o.q==='good'?17:o.q==='ok'?3:-20))); setTrust(c);
+   typingThen(()=>{addBubble('them',o.r);
+    const lbl={good:'Strong response',ok:'Partly there',bad:'Not the best choice'}[o.q];
+    ch.innerHTML=`<div class="fb ${o.q}"><span class="tag">${lbl}</span><span>${esc(o.fb)}</span></div><button type="button" class="btn btn-primary" id="cont">${o.end||st.step===c.steps.length-1?'End call and see outcome':'Continue call'}</button>`;
+    say(lbl+'. '+o.fb);
+    $('#cont').addEventListener('click',()=>{ if(o.end){st.breach=true;end(c)} else if(st.step===c.steps.length-1){end(c)} else {st.step++;turn(c)} }); $('#cont').focus();
+   });
+  }));
+  const first=$('[data-r]',ch); if(first)first.focus({preventScroll:true});
+ });
+}
+function end(c){
+ clearInterval(timer); const st=S.scen[c.id]; st.finished=true; const g=st.marks.filter(m=>m==='good').length;
+ let cls,title,body;
+ if(st.breach){cls='bad';title='Call ended: privacy breach';body='Anna\'s information was shared without confirmed authority. Always check authority before discussing a customer\'s policy or claim, even when a request is urgent and well-meant.'}
+ else if(g===c.steps.length){cls='good';title='Excellent call';body='You noticed the signs, responded with care and set clear next steps.'}
+ else if(g>=2){cls='ok';title='Good call, with room to grow';body='You handled most moments well. Look back at the feedback on the moments that could have gone better.'}
+ else {cls='bad';title='This caller needed more support';body='Review the feedback and take the call again.'}
+ addBubble('sys','Call ended');
+ if(!st.breach&&g===c.steps.length)award('call'+c.id,25,'+25 care points'); else award('callplay'+c.id,10);
+ $('#pchoices').innerHTML=`<div class="fb ${cls}"><span class="tag">${esc(title)}</span><span>Final caller trust: ${st.trust}%.</span><span>${esc(body)}</span></div><div class="row"><button type="button" class="btn btn-ghost" id="again">Take this call again</button><button type="button" class="btn btn-primary" id="list">Back to calls</button></div>`;
+ say(title+'. Final caller trust '+st.trust+' percent.');
+ $('#again').addEventListener('click',()=>startCall(c.id)); $('#list').addEventListener('click',()=>show(cur)); $('#again').focus();
+ if(calls.every(x=>S.scen[x.id]&&S.scen[x.id].finished)){S.done.add('m5');earn('calls');renderNav()}
+}
+
+renderBadges(); show(0);
+})();
+</script>
+
+</body>
+</html>
