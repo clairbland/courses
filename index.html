@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clair Bland Courses</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap">
+<style>
+:root{--bg:#eef4f2;--surface:#fff;--ink:#14292a;--muted:#536866;--line:#d3e0dd;--pine:#0f3d3a;--accent:#13756c;--amber:#c46a12}
+@media (prefers-color-scheme:dark){:root{--bg:#0c1615;--surface:#132120;--ink:#e4efed;--muted:#9fb4b1;--line:#294240;--pine:#0a2826;--accent:#5fc7ba;--amber:#f0a75a;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,sans-serif;line-height:1.6}
+.wrap{max-width:960px;margin:0 auto;padding:2.5rem 16px 3rem;display:flex;flex-direction:column;gap:1.75rem}
+h1,h2{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,5vw,2.8rem)}
+.head{background:var(--pine);color:#eaf6f3;border-radius:24px;padding:2rem;display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap}
+.head p{margin:.4rem 0 0;max-width:60ch;opacity:.9}
+.logo{background:#fdf8e6;border-radius:16px;padding:4px;flex:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem}
+a.card{display:flex;flex-direction:column;gap:.5rem;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:1.5rem;color:inherit;text-decoration:none;transition:transform .15s,border-color .15s}
+a.card:hover{transform:translateY(-2px);border-color:var(--accent)}
+a.card:focus-visible{outline:3px solid #2557d6;outline-offset:2px}
+.eyebrow{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+.go{margin-top:auto;font-weight:700;color:var(--amber)}
+footer{font-size:.85rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header class="head"><svg class="logo" style="width:64px;height:64px" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M8 44 C16 34 22 26 38 10" fill="none" stroke="#3f7d3a" stroke-width="2.4" stroke-linecap="round"/><path d="M14 36 C10 30 9 24 11 18 C15 24 16 30 14 36Z" fill="#4f9a47"/><path d="M24 26 C30 26 35 29 39 33 C33 34 28 31 24 26Z" fill="#4f9a47"/><path d="M18 31 C21 27 24 24 25 20" fill="none" stroke="#3f7d3a" stroke-width="1.6" stroke-linecap="round"/><path d="M29 18 C27 15 26 12 26 9" fill="none" stroke="#3f7d3a" stroke-width="1.6" stroke-linecap="round"/><circle cx="25" cy="18.5" r="4.6" fill="#f5b800"/><circle cx="20.5" cy="23" r="3.6" fill="#ffc928"/><circle cx="26" cy="8" r="4.2" fill="#ffc928"/><circle cx="32" cy="13" r="4.4" fill="#f5b800"/><circle cx="38.5" cy="8.5" r="3.8" fill="#ffd34d"/><circle cx="31" cy="22" r="3.2" fill="#ffd34d"/><circle cx="25" cy="18.5" r="1.6" fill="#e09a00" opacity=".6"/><circle cx="32" cy="13" r="1.5" fill="#e09a00" opacity=".6"/><circle cx="26" cy="8" r="1.4" fill="#e09a00" opacity=".6"/></svg><div><h1>Calls That Matter</h1><p>A Wattlebrook Life contact centre programme. Interactive, branching courses designed by Clair Bland.</p></div></header>
+ <div class="grid">
+  <a class="card" href="calls-that-matter-1/"><span class="eyebrow">Course 1</span><h2>Supporting Customers Experiencing Vulnerability</h2><span>Spot the signs, choose the right words and take three live calls.</span><span class="go">Start course →</span></a>
+  <a class="card" href="calls-that-matter-2/"><span class="eyebrow">Course 2</span><h2>Handling Vulnerable Customer Calls Well</h2><span>Learn the CALM call model and take three fully branching calls.</span><span class="go">Start course →</span></a>
+ </div>
+ <footer>Portfolio samples by Clair Bland · <a href="https://www.clairbland.com/portfolio" style="color:var(--accent)">Back to portfolio</a> · Wattlebrook Life is a fictional insurer.</footer>
+</div>
+</body>
+</html>
