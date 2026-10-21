@@ -1,1 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Course 1: Judgement on the Line | Wattlebrook Life Contact Centre Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6FB; --surface:#FFFFFF; --navy:#0E1F3D; --ink:#16233F; --muted:#5B6782; --line:#DCE2EE;
+  --blue:#2F6BFF; --blue-soft:#E4ECFF; --buoy:#FFC93C; --buoy-soft:#FFF4D6;
+  --glass:#7FD6C2; --glass-soft:#E1F6F0; --red:#E2574C; --red-soft:#FDE6E3;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Onest","Segoe UI",system-ui,sans-serif;
+  --r-lg:22px; --r-md:14px; --r-sm:10px;
+  --lift:0 14px 34px -16px rgba(14,31,61,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.shell{max-width:820px;margin:0 auto;padding:18px 20px 28px}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.12;margin:0 0 14px;letter-spacing:-.02em;color:var(--navy)}
+h1{font-size:clamp(1.9rem,5.4vw,2.7rem)}
+h2{font-size:clamp(1.25rem,3.4vw,1.6rem)}
+h3{font-size:1rem}
+p{margin:0 0 14px;max-width:60ch}
+.lede{font-size:1.08rem}
+.muted{color:var(--muted)}
+.hidden{display:none!important}
+button{font:inherit}
 
+/* top bar */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;margin-bottom:26px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;color:var(--navy)}
+.brand svg{width:34px;height:34px;flex:none}
+.brand b{font-family:var(--display);font-weight:600;font-size:1rem;letter-spacing:-.01em;display:block;line-height:1.1}
+.brand small{color:var(--muted);font-size:.8rem}
+.prog{font-size:.82rem;font-weight:600;color:var(--navy);background:var(--buoy);padding:5px 12px;border-radius:999px;white-space:nowrap}
+
+/* tags */
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.tag{font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:999px;background:var(--surface);color:var(--muted);border:1px solid var(--line)}
+.tag.lead{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+.hero-visual{position:relative}
+@media (max-width:680px){.hero{grid-template-columns:1fr}.hero-visual{order:-1}}
+
+/* buttons */
+.btn{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:#fff;font-weight:700;padding:14px 24px;border-radius:999px;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--lift)}
+.btn:focus-visible{outline:3px solid var(--buoy);outline-offset:3px}
+.btn.alt{background:var(--buoy);color:var(--navy)}
+.btn.ghost{background:transparent;color:var(--navy);box-shadow:inset 0 0 0 2px var(--navy)}
+.btn[disabled]{opacity:.4;cursor:default;transform:none;box-shadow:none}
+.kbd{font-size:.75rem;opacity:.75;font-weight:600}
+
+/* step heading */
+.step-label{font-size:.85rem;font-weight:700;color:var(--blue);margin-bottom:6px}
+
+/* options */
+.options{display:grid;gap:12px;margin-top:18px}
+.opt{all:unset;box-sizing:border-box;display:grid;grid-template-columns:36px 1fr;gap:14px;align-items:start;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-md);padding:14px 16px;cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s}
+.opt:hover:not([disabled]){transform:translateY(-2px);border-color:var(--blue);box-shadow:var(--lift)}
+.opt:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+.opt .key{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);font-family:var(--display);font-weight:600;font-size:.9rem}
+.opt[disabled]{cursor:default;opacity:.4}
+.opt.picked{opacity:1;background:var(--blue);border-color:var(--blue);color:#fff}
+.opt.picked .key{background:rgba(255,255,255,.18);color:#fff}
+
+/* feedback panel */
+.feedback{margin-top:18px;background:var(--navy);color:#E9EEF8;border-radius:var(--r-lg);padding:20px 22px;animation:rise .35s ease}
+.feedback p{color:#E9EEF8}
+.feedback h3{color:#fff;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{font-size:.82rem;font-weight:700;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.1)}
+.chip.up{background:var(--glass);color:var(--navy)}
+.chip.down{background:var(--red);color:#fff}
+
+/* live HUD */
+.hud{display:grid;grid-template-columns:repeat(var(--n,3),1fr);gap:14px;background:var(--surface);border-radius:var(--r-md);padding:14px 16px;margin-bottom:22px;border:1px solid var(--line)}
+.mini label{display:flex;justify-content:space-between;font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:6px}
+.mini .val{color:var(--navy);font-variant-numeric:tabular-nums}
+.track{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.track i{display:block;height:100%;width:50%;border-radius:99px;background:var(--blue);transition:width .7s cubic-bezier(.2,.8,.2,1),background .3s}
+.mini.pulse .track i{background:var(--buoy)}
+@media (max-width:520px){.hud{gap:10px;padding:12px}.mini label{font-size:.72rem}}
+
+/* steps rail */
+.rail{display:flex;gap:6px;margin-bottom:18px}
+.rail span{flex:1;height:6px;border-radius:3px;background:var(--line);transition:background .3s}
+.rail span.on{background:var(--blue)}
+
+/* results */
+.result-head{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;margin-bottom:18px}
+.badge{width:96px;height:96px;border-radius:28px;background:var(--navy);display:grid;place-items:center;animation:pop .6s cubic-bezier(.2,1.4,.4,1) both}
+.badge svg{width:56px;height:56px}
+.badge-big{font-family:var(--display);font-weight:600;color:var(--buoy);font-size:1.6rem}
+.result-kicker{font-weight:700;color:var(--blue);font-size:.9rem;margin-bottom:4px}
+.meters{display:grid;gap:16px;margin:8px 0 22px;background:var(--surface);border-radius:var(--r-lg);padding:20px 22px}
+.meter label{display:flex;justify-content:space-between;gap:12px;font-weight:600;font-size:.95rem;margin-bottom:6px}
+.meter .track{height:12px}
+.meter .track i{width:0}
+.panel{background:var(--surface);border-radius:var(--r-lg);padding:20px 22px;margin:0 0 20px}
+.panel ol{margin:6px 0 0;padding-left:22px}
+.panel li{margin-bottom:8px}
+.panel li::marker{font-family:var(--display);color:var(--blue);font-weight:600}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+
+/* footer */
+.foot{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);font-size:.8rem;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.6) rotate(-8deg)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ===== course intro + briefing ===== */
+.topright{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.subtitle{font-size:1.08rem;color:var(--muted);font-weight:600;margin:-4px 0 16px}
+.briefing{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:30px}
+.briefing .panel{margin:0}
+.howto ol{list-style:none;padding:0;margin:10px 0 12px}
+.howto li{display:grid;grid-template-columns:30px 1fr;gap:10px;margin-bottom:10px;counter-increment:s}
+.howto ol{counter-reset:s}
+.howto li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--blue-soft);color:var(--blue);font-family:var(--display);font-weight:600;font-size:.78rem;display:grid;place-items:center}
+.tip{background:var(--buoy-soft);border-radius:var(--r-sm);padding:10px 14px;font-size:.92rem;margin:0}
+.ranks{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.ranks span{font-size:.76rem;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--blue-soft);color:var(--blue)}
+.startrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px}
+@media (max-width:680px){.briefing{grid-template-columns:1fr}}
+
+/* ===== gamification ===== */
+.xp-pill{display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:#fff;font-weight:700;font-size:.82rem;padding:5px 12px;border-radius:999px;font-variant-numeric:tabular-nums;transition:transform .2s}
+.xp-pill.bump{transform:scale(1.15)}
+.xpfloat{position:absolute;z-index:50;font-weight:800;font-size:.9rem;color:var(--blue);background:#fff;border-radius:999px;padding:3px 12px;box-shadow:var(--lift);pointer-events:none;animation:floatup 1.2s ease forwards;white-space:nowrap}
+@keyframes floatup{0%{opacity:0;transform:translateY(0)}15%{opacity:1}100%{opacity:0;transform:translateY(-54px)}}
+.chip.xp{background:var(--buoy);color:var(--navy)}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin:12px 0 4px}
+.bdg{display:flex;gap:10px;align-items:center;background:var(--bg);border-radius:var(--r-md);padding:10px}
+.bdg .ic{width:42px;height:42px;border-radius:12px;background:var(--buoy);display:grid;place-items:center;font-size:1.3rem;flex:none}
+.bdg b{display:block;font-size:.88rem;color:var(--navy);line-height:1.2}
+.bdg small{display:block;font-size:.76rem;color:var(--muted);line-height:1.3}
+.bdg.locked .ic{background:var(--line);filter:grayscale(1);opacity:.55}
+.bdg.locked b{color:var(--muted)}
+.bdg.new{background:var(--buoy-soft);box-shadow:inset 0 0 0 2px var(--buoy)}
+.unlock{display:flex;gap:12px;align-items:center;background:var(--buoy);color:var(--navy);border-radius:16px;padding:8px 16px 8px 8px;margin:0 0 12px;width:fit-content;max-width:100%;animation:pop .55s cubic-bezier(.2,1.4,.4,1) both}
+.unlock .ic{width:40px;height:40px;border-radius:12px;background:#fff;display:grid;place-items:center;font-size:1.25rem;flex:none}
+.unlock small{display:block;font-size:.75rem;font-weight:700;opacity:.75}
+.unlock b{font-size:.95rem}
+.game{background:var(--surface);border-radius:var(--r-lg);padding:20px 22px;margin:0 0 20px}
+.game h3{margin-top:18px}
+.game-top{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.xpbig{font-family:var(--display);font-weight:600;font-size:2.6rem;color:var(--blue);line-height:1}
+.rankname{font-family:var(--display);font-weight:600;color:var(--navy);font-size:1.25rem;margin-bottom:8px}
+.game-top .track{height:10px}
+.game-top .track i{width:0;background:var(--buoy)}
+.game-top small{display:block;margin-top:6px;color:var(--muted);font-size:.85rem}
+.passport{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 8px}
+.stamp{border:2px dashed var(--line);border-radius:var(--r-md);padding:10px;font-size:.8rem;color:var(--muted);line-height:1.3}
+.stamp b{display:block;font-family:var(--display);font-weight:600;font-size:.8rem;margin-bottom:3px}
+.stamp.done{border-style:solid;border-color:var(--glass);background:var(--glass-soft);color:var(--navy)}
+.stamp.here{border-style:solid;border-color:var(--blue);background:var(--blue-soft);color:var(--navy)}
+.note{font-size:.8rem;color:var(--muted)}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:70}
+@media (max-width:520px){.passport{grid-template-columns:repeat(2,1fr)}.game-top{grid-template-columns:1fr;gap:12px}}
+
+/* ===== v3: modern, immersive layer ===== */
+.hero-band{position:relative;overflow:hidden;background:var(--navy);color:#D5DDEC;border-radius:28px;padding:34px 32px 84px;isolation:isolate}
+.hero-band h1{color:#fff;font-size:clamp(2.1rem,6.2vw,3.4rem);letter-spacing:-.03em}
+.hero-band .subtitle{color:var(--glass)}
+.hero-band .lede{color:#D5DDEC}
+.hero-band .lede strong{color:var(--buoy)}
+.hero-band .tag{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);color:#D5DDEC}
+.hero-band .tag.lead{background:var(--buoy);border-color:var(--buoy);color:var(--navy)}
+.glow{position:absolute;z-index:-1;border-radius:50%;filter:blur(70px);pointer-events:none}
+.glow.a{width:260px;height:260px;background:var(--buoy);opacity:.16;top:-90px;right:-60px}
+.glow.b{width:300px;height:300px;background:var(--blue);opacity:.28;bottom:-160px;left:-80px}
+.waves{position:absolute;left:0;bottom:-2px;width:115%;height:78px;z-index:-1;pointer-events:none}
+.waves path{animation:drift 10s ease-in-out infinite alternate}
+.waves path:nth-child(2){animation-duration:13s;animation-direction:alternate-reverse}
+@keyframes drift{to{transform:translateX(-7%)}}
+@media (max-width:680px){.hero-band{padding:24px 20px 76px;border-radius:22px}}
+.startrow .btn{padding:16px 30px;font-size:1.05rem;position:relative}
+.startrow .btn::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 0 rgba(47,107,255,.5);animation:ping 2.2s ease-out 1s 3}
+@keyframes ping{to{box-shadow:0 0 0 16px rgba(47,107,255,0)}}
+.briefing .panel{box-shadow:0 1px 0 var(--line)}
+.briefing h3{display:flex;align-items:center;gap:10px}
+.briefing h3 .hi{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-size:1rem;background:var(--blue-soft)}
+
+/* screen transitions */
+#stage:not(.hidden),#play:not(.hidden),#end:not(.hidden){animation:screenIn .55s cubic-bezier(.2,.8,.2,1)}
+@keyframes screenIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+
+/* sticky glass scoreboard */
+.hud{position:sticky;top:8px;z-index:20;background:rgba(14,31,61,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:0;box-shadow:var(--lift);border-radius:18px}
+.hud .mini label{color:#AFC0DA}
+.hud .mini .val{color:#fff}
+.hud .track{background:rgba(255,255,255,.14)}
+
+/* voyage route */
+.voyage{position:relative;display:flex;justify-content:space-between;align-items:center;height:40px;margin:4px 4px 20px}
+.voyage::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:2px dashed #C3CCDD}
+.voyage .fill{position:absolute;left:0;top:50%;height:4px;margin-top:-2px;background:var(--blue);border-radius:2px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.voyage .wp{position:relative;z-index:1;width:14px;height:14px;border-radius:50%;background:var(--bg);border:3px solid #C3CCDD;transition:all .3s}
+.voyage .wp.done{background:var(--blue);border-color:var(--blue)}
+.voyage .wp.now{width:38px;height:38px;border:0;background:var(--buoy);display:grid;place-items:center;box-shadow:0 0 0 7px rgba(255,201,60,.25);animation:bob 2.4s ease-in-out infinite}
+.voyage .wp.now svg{width:20px;height:20px}
+.voyage .wp.port{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:.85rem;background:var(--surface)}
+@keyframes bob{50%{transform:translateY(-4px) rotate(-4deg)}}
+
+/* livelier options */
+.opt{border-radius:18px;padding:16px 18px;box-shadow:0 2px 0 var(--line)}
+.options .opt{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+.options .opt:nth-child(2){animation-delay:.07s}.options .opt:nth-child(3){animation-delay:.14s}
+.opt.picked{box-shadow:0 12px 28px -12px rgba(47,107,255,.7)}
+.feedback{border-radius:24px;box-shadow:var(--lift)}
+
+/* results: score ring on a dark band */
+.result-head{background:var(--navy);border-radius:var(--r-lg);padding:24px;position:relative;overflow:hidden;isolation:isolate}
+.result-head h2{color:#fff}
+.result-head p{color:#D5DDEC}
+.result-head .result-kicker{color:var(--buoy)}
+.result-head::after{content:"";position:absolute;z-index:-1;width:260px;height:260px;border-radius:50%;background:var(--blue);opacity:.3;filter:blur(70px);right:-80px;top:-120px}
+.badge{width:118px;height:118px;border-radius:50%;position:relative;background:conic-gradient(var(--buoy) calc(var(--p,0) * 1%),rgba(255,255,255,.13) 0)}
+.badge::before{content:"";position:absolute;inset:11px;border-radius:50%;background:var(--navy)}
+.badge-big{position:relative;z-index:1;color:#fff;font-size:1.9rem}
+@media (max-width:520px){.result-head{grid-template-columns:1fr;text-align:left}.badge{width:96px;height:96px}}
+.rankname .emb{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--buoy);margin-right:10px;font-size:1.2rem;vertical-align:middle}
+.xp-pill{background:linear-gradient(135deg,var(--navy),#23407A)}
+.xp-pill.bump{box-shadow:0 0 0 5px rgba(255,201,60,.45)}
+
+.prog .short{display:none}
+.brand small{white-space:nowrap}
+@media (max-width:560px){.prog .long{display:none}.prog .short{display:inline}.topright{flex-wrap:nowrap}.brand small{display:none}}
+.badge-big{font-size:1.55rem;letter-spacing:-.03em}
+
+
+:root{--bg:#F3F6F2;--surface:#FFFFFF;--navy:#12352E;--ink:#1A2B27;--muted:#56665F;--line:#D5DFD8;
+ --blue:#0F7B6C;--blue-soft:#DCEFEA;--buoy:#F2B705;--buoy-soft:#FFF3C9;--glass:#8FD3E8;--glass-soft:#E2F3F8;--red:#D4523F;--red-soft:#FBE3DE;
+ --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;--body:"Figtree","Segoe UI",system-ui,sans-serif;--lift:0 14px 34px -16px rgba(18,53,46,.4)}
+h1,h2,h3{font-weight:700;letter-spacing:-.025em}
+.hero-band h1{font-weight:800}
+.xp-pill{background:linear-gradient(135deg,var(--navy),#1E5A4D)}
+.opt.picked{box-shadow:0 12px 28px -12px rgba(15,123,108,.6)}
+.startrow .btn::after{animation-name:pingW}
+@keyframes pingW{from{box-shadow:0 0 0 0 rgba(15,123,108,.5)}to{box-shadow:0 0 0 16px rgba(15,123,108,0)}}
+.voyage::before{border-top-color:#BFCDC4}.voyage .wp{border-color:#BFCDC4}
+.voyage .wp.now{box-shadow:0 0 0 7px rgba(242,183,5,.28)}
+.badge-big{font-weight:800}
+.rankname,.xpbig{font-weight:800}
+.hud{background:rgba(18,53,46,.93)}
+.hud .mini label{color:#B5CCC3}
+
+
+.sp-mini{background:#fff;border-radius:24px;box-shadow:var(--lift);overflow:hidden;max-width:350px;margin:0 auto;transform:rotate(1.5deg);animation:rise .6s ease .1s both}
+.sp-mini .t{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--blue-soft);font-weight:700;color:var(--navy);font-size:.9rem}
+.sp-mini .t .live{margin-left:auto;background:var(--red);color:#fff;border-radius:999px;font-size:.7rem;padding:2px 8px}
+.sp-mini .c{padding:12px 14px;font-size:.9rem;color:var(--ink)}
+.sp-mini .w{margin:0 12px 12px;background:var(--navy);color:#E8F1EC;border-radius:16px;padding:12px 14px;font-size:.88rem}
+.sp-mini .w b{color:var(--buoy);display:block;font-size:.78rem;margin-bottom:3px}
+.phone{background:var(--surface);border-radius:26px;box-shadow:var(--lift);overflow:hidden}
+.sp-top{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--navy);color:#fff}
+.sp-top .av{width:42px;height:42px;border-radius:50%;background:var(--buoy);color:var(--navy);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:.85rem;flex:none}
+.sp-top b{display:block;line-height:1.2}.sp-top small{color:#B9CEC5}
+.sp-top .clock{margin-left:auto;display:flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;font-weight:700}
+.sp-top .clock i{width:9px;height:9px;border-radius:50%;background:var(--red);animation:blink 1.2s infinite}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.sp-grid{display:grid;grid-template-columns:1.15fr .85fr;min-height:260px}
+@media (max-width:700px){.sp-grid{grid-template-columns:1fr}}
+.tx{padding:16px;display:flex;flex-direction:column;gap:10px;max-height:340px;overflow-y:auto;background:var(--bg)}
+.bub{max-width:92%;padding:10px 14px;border-radius:16px 16px 16px 4px;background:var(--surface);animation:rise .3s ease;box-shadow:0 1px 0 var(--line)}
+.bub small{display:block;font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:2px}
+.sys{align-self:center;font-size:.8rem;color:var(--muted);border:1px dashed var(--line);border-radius:999px;padding:3px 12px}
+.wren{padding:16px;background:linear-gradient(180deg,#123A32,var(--navy));color:#E8F1EC;display:flex;flex-direction:column;gap:10px}
+.wren .hd{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:800;color:var(--buoy)}
+.wren .hd svg{width:18px;height:18px}
+.wren .sugg{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:12px 14px;font-size:.98rem;line-height:1.5;animation:rise .35s ease}
+.wren .meta{display:flex;flex-wrap:wrap;gap:6px}
+.wren .meta span{font-size:.74rem;font-weight:700;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.1)}
+.wren .meta .hi{background:var(--glass);color:var(--navy)}.wren .meta .md{background:var(--buoy);color:var(--navy)}
+.shimmer{height:64px;border-radius:16px;background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.16),rgba(255,255,255,.05));background-size:200% 100%;animation:sh 1s linear infinite}
+@keyframes sh{to{background-position:-200% 0}}
+.decide{padding:14px 16px 16px;border-top:1px solid var(--line)}
+.wait{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+.wbar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:12px}
+.wbar i{display:block;height:100%;width:100%;background:var(--blue)}
+.wbar.low i{background:var(--red)}
+.dbtns{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.db{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;border-radius:16px;padding:12px 8px;font-weight:800;transition:transform .15s,box-shadow .15s,opacity .2s}
+.db span{display:block;font-size:1.3rem}
+.db small{display:block;font-weight:600;font-size:.74rem;opacity:.85}
+.db.use{background:var(--blue);color:#fff}.db.adapt{background:var(--buoy);color:var(--navy)}.db.override{background:var(--navy);color:#fff}
+.db:hover:not([disabled]){transform:translateY(-3px);box-shadow:var(--lift)}
+.db:focus-visible{outline:3px solid var(--glass);outline-offset:3px}
+.db[disabled]{opacity:.3;cursor:default}
+.db.chosen,.db.expert{opacity:1}.db.chosen{box-shadow:0 0 0 3px var(--surface),0 0 0 6px var(--ink)}
+.db .flag{display:none;font-size:.68rem;margin-top:4px;background:rgba(255,255,255,.3);border-radius:999px;padding:1px 6px}
+.db.expert .flag{display:inline-block}
+.model{background:var(--buoy-soft);color:var(--ink);border-radius:14px;padding:12px 14px;margin:0 0 14px}
+.model small{display:block;font-weight:800;color:var(--navy);margin-bottom:2px}
+.recap{width:100%;border-collapse:collapse;font-size:.92rem}
+.recap th,.recap td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.recap th{font-size:.78rem;color:var(--muted)}
+.tagc{font-weight:800;font-size:.78rem;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.tagc.use{background:var(--blue-soft);color:var(--blue)}.tagc.adapt{background:var(--buoy-soft);color:#7A5A00}.tagc.override{background:#E3E9E6;color:var(--navy)}
+.tw{overflow-x:auto}
+
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+  <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#12352E"/><path d="M9 21c2-5 5-9 11-12" stroke="#8FD3E8" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".7"/><circle cx="11" cy="11" r="3.1" fill="#F2B705"/><circle cx="18" cy="8" r="2.5" fill="#F2B705"/><circle cx="16.5" cy="14.2" r="2.7" fill="#F2B705"/><circle cx="22.5" cy="12.5" r="2" fill="#F2B705"/><path d="M5 25c3.7 0 3.7-2.6 7.3-2.6s3.7 2.6 7.4 2.6 3.6-2.6 7.3-2.6" stroke="#8FD3E8" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><div><b>Wattlebrook Life</b><small>Contact Centre Academy</small></div></div>
+  <div class="topright"><span class="prog"><span class="long">AI on the Line: course 1 of 4</span><span class="short">Course 1/4</span></span><span class="xp-pill hidden" id="xpPill" aria-live="polite">🌼 <span>0</span> XP</span></div>
+</header>
+<section id="intro">
+  <div class="hero-band"><span class="glow a"></span><span class="glow b"></span><svg class="waves" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 C150 10 300 70 450 40 S750 10 900 40 S1100 70 1200 40 V80 H0Z" fill="#0F7B6C" opacity=".55"/><path d="M0 55 C200 30 350 80 550 55 S850 30 1000 55 S1150 75 1200 55 V80 H0Z" fill="#8FD3E8" opacity=".3"/></svg>
+  <div class="hero">
+    <div>
+      <div class="tags"><span class="tag lead">AI on the Line</span><span class="tag">Course 1</span><span class="tag">Live call simulator</span><span class="tag">8 minutes</span></div>
+      <h1>Judgement on the Line</h1>
+      <p class="subtitle">Using Wren, our AI assistant, with good judgement on live calls</p>
+      <p class="lede"><strong>Your shift starts now.</strong> Wren listens to your calls and suggests what to say, in real time. It's fast and usually right. But it can guess, miss how a customer is feeling, or push the wrong thing. You decide what the customer hears.</p>
+    </div>
+    <div class="hero-visual"><div class="sp-mini" aria-hidden="true"><div class="t">📞 Graham Hughes<span class="live">LIVE</span></div>
+<div class="c">"My wife passed away three weeks ago. I don't really know what I'm meant to do."</div>
+<div class="w"><b>✦ Wren suggests</b>"To lodge a claim I'll need the death certificate, policy number and…"</div></div></div>
+  </div>
+  </div>
+  <div class="briefing">
+    <div class="panel howto"><h3><span class="hi">🗺️</span>How this works</h3><ol><li><span>Take three short calls with Wattlebrook customers. Wren suggests what to say as each call unfolds.</span></li><li><span>At six key moments, decide: use Wren's suggestion, adapt it, or override it.</span></li><li><span>You have 20 seconds before the customer is left waiting. A correct call within 10 seconds earns a speed bonus.</span></li><li><span>After each decision, see the expert call and a line a great consultant might use.</span></li></ol><p class="tip"><strong>Tip.</strong> Check where Wren's suggestion came from and how confident it is. Press U, A or O (or 1, 2, 3) to decide quickly.</p></div>
+    <div class="panel"><h3><span class="hi">🏆</span>What you can earn</h3><p class="muted" style="font-size:.92rem;margin-bottom:0">Expert calls earn 30 XP, with speed bonuses for quick, correct decisions. Climb four levels and unlock 5 badges.</p>
+      <div class="ranks"><span>🎧 Trainee</span><span>💬 Consultant</span><span>⭐ Senior consultant</span><span>🏅 Service star</span></div><div class="badges"><div class="bdg locked"><span class="ic">🔍</span><div><b>Trust but check</b><small>Overrode Wren's guess about cover</small></div></div><div class="bdg locked"><span class="ic">🤍</span><div><b>Human first</b><small>Adapted Wren for a bereaved customer</small></div></div><div class="bdg locked"><span class="ic">🚫</span><div><b>No hard sell</b><small>Overrode an inappropriate sales prompt</small></div></div><div class="bdg locked"><span class="ic">⚡</span><div><b>Fast and right</b><small>Four correct calls in under 10 seconds</small></div></div><div class="bdg locked"><span class="ic">🏅</span><div><b>Sharp judgement</b><small>Scored 85% or more</small></div></div></div></div>
+  </div>
+  <div class="startrow"><button class="btn" id="start">Start course 1</button><span class="muted">About 8 minutes. Works on phone or laptop.</span></div>
+</section>
+
+<section id="stage" class="hidden">
+  <div class="hud" style="--n:2">
+    <div class="mini" id="trMini"><label><span>Customer trust</span><span class="val" id="trVal">60</span></label><div class="track"><i id="trBar" style="width:60%;background:var(--glass)"></i></div></div>
+    <div class="mini"><label><span>Shift progress</span><span class="val" id="callVal"></span></label><div class="track"><i id="callBar" style="width:0;background:var(--buoy)"></i></div></div>
+  </div>
+  <div id="rail"></div>
+  <div class="phone">
+    <div class="sp-top"><span class="av" id="cAv"></span><div><b id="cName"></b><small id="cWhy"></small></div><span class="clock"><i></i><span id="clock">00:00</span></span></div>
+    <div class="sp-grid">
+      <div class="tx" id="tx" aria-live="polite"></div>
+      <aside class="wren"><div class="hd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg>Wren suggests</div><div id="wbox"></div></aside>
+    </div>
+    <div class="decide">
+      <div class="wait"><span>Customer waiting</span><span id="secs">20s</span></div>
+      <div class="wbar" id="wbar"><i id="wfill"></i></div>
+      <div class="dbtns">
+        <button class="db use" data-a="use" disabled><span>✅</span>Use it<small>Say it as suggested</small><span class="flag">Expert call</span></button>
+        <button class="db adapt" data-a="adapt" disabled><span>✏️</span>Adapt it<small>Keep the facts, change the approach</small><span class="flag">Expert call</span></button>
+        <button class="db override" data-a="override" disabled><span>✋</span>Override it<small>Don't use it</small><span class="flag">Expert call</span></button>
+      </div>
+    </div>
+  </div>
+  <div id="fb"></div>
+</section>
+<section id="end" class="hidden">
+  <div class="result-head">
+    <div class="badge"><span class="badge-big" id="total"></span></div>
+    <div><div class="result-kicker">Course 1 complete. Your judgement with Wren:</div><h2 id="rt" style="margin-bottom:6px"></h2><p id="rx" style="margin:0"></p></div>
+  </div>
+  <div class="panel"><h3>Your calls versus the expert calls</h3><div class="tw"><table class="recap"><thead><tr><th>Moment</th><th>You</th><th>Expert</th></tr></thead><tbody id="recap"></tbody></table></div></div>
+  <div class="game">
+  <div class="game-top">
+    <div><div class="result-kicker">XP earned</div><div class="xpbig" id="gXP">0</div></div>
+    <div><div class="result-kicker">Your level</div><div class="rankname" id="gRank"></div><div class="track"><i id="gRankBar"></i></div><small id="gNext"></small></div>
+  </div>
+  <h3>Badges <span class="note" id="gCount" style="font-family:var(--body);font-weight:600"></span></h3>
+  <div class="badges" id="gBadges"></div>
+  <h3>Your AI on the Line passport</h3>
+  <div class="passport" id="gPass"></div>
+  <div class="note">Progress is saved in this browser on this device.</div>
+</div>
+  <div class="panel" style="background:var(--navy);color:#E8F1EC"><h3 style="color:var(--buoy)">Before you say what Wren suggests, ask</h3><ol style="color:#E8F1EC"><li>Is it true, and can I see where it came from?</li><li>Does it fit how this customer is feeling right now?</li><li>Is it right for this customer, or just right for the process?</li></ol></div>
+  <div class="actions"><button class="btn ghost" id="again">Take the shift again</button></div>
+</section>
+
+<footer class="foot"><span>Wattlebrook Life Contact Centre Academy, AI on the Line programme</span><span>Practice scenario. Wattlebrook Life, its people and customers are fictional.</span></footer>
+</div>
+<script>
+const CFG={"module": 1, "maxXP": 210, "badges": [{"id": "check", "icon": "🔍", "name": "Trust but check", "desc": "Overrode Wren's guess about cover"}, {"id": "human", "icon": "🤍", "name": "Human first", "desc": "Adapted Wren for a bereaved customer"}, {"id": "nosell", "icon": "🚫", "name": "No hard sell", "desc": "Overrode an inappropriate sales prompt"}, {"id": "fast", "icon": "⚡", "name": "Fast and right", "desc": "Four correct calls in under 10 seconds"}, {"id": "sharp", "icon": "🏅", "name": "Sharp judgement", "desc": "Scored 85% or more"}], "modules": [{"n": 1, "name": "Judgement on the Line"}, {"n": 2, "name": "Hear the Whole Customer"}, {"n": 3, "name": "Notes You Can Stand Behind"}, {"n": 4, "name": "Safe with Data"}], "store": "wattlebrook-aiol-v1", "unit": "Course", "rankNames": ["Trainee", "Consultant", "Senior consultant", "Service star"], "rankIcons": ["🎧", "💬", "⭐", "🏅"], "marker": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#12352E\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 14v-2a8 8 0 0 1 16 0v2\"/><rect x=\"3\" y=\"14\" width=\"4\" height=\"6\" rx=\"1.5\"/><rect x=\"17\" y=\"14\" width=\"4\" height=\"6\" rx=\"1.5\"/><path d=\"M19 20c0 1.5-2 2-5 2\"/></svg>", "port": "🌼", "confetti": ["#0F7B6C", "#F2B705", "#8FD3E8", "#12352E", "#D4523F"]};
+const $=id=>document.getElementById(id);
+const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function countUp(el,to,suffix="",max){const ring=max?el.parentElement:null;
+  if(RM){el.textContent=to+suffix;if(ring)ring.style.setProperty("--p",to/max*100);return;}
+  const t0=performance.now(),d=1100;(function f(t){const p=Math.min(1,(t-t0)/d),e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(to*e)+suffix;if(ring)ring.style.setProperty("--p",to/max*100*e);if(p<1)requestAnimationFrame(f);})(t0);}
+const BOAT=(typeof CFG!=="undefined"&&CFG.marker)||'<svg viewBox="0 0 24 24" fill="none" stroke="#0E1F3D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16h18l-2.5 4.5h-13z"/><path d="M12 3v12"/><path d="M12 4l6.5 9.5H12"/></svg>';
+function setVoyage(el,i,total){el.className="voyage";el.setAttribute("aria-label",`Step ${i+1} of ${total}`);
+  let h=`<span class="fill" style="width:${i/total*100}%"></span>`;
+  for(let n=0;n<total;n++)h+=`<span class="wp ${n<i?"done":n===i?"now":""}">${n===i?BOAT:""}</span>`;
+  el.innerHTML=h+`<span class="wp port" aria-hidden="true">${(typeof CFG!=="undefined"&&CFG.port)||"⚓"}</span>`;}
+function focusEl(el){el.setAttribute("tabindex","-1");el.focus({preventScroll:true});el.scrollIntoView({behavior:RM?"auto":"smooth",block:"start"});}
+/* ===== gamification ===== */
+const G={xp:0,earned:new Set(),pending:[]};
+const STORE=(typeof CFG!=="undefined"&&CFG.store)||"harbourline-ai-ready-v1";
+const RANK_ICONS=(typeof CFG!=="undefined"&&CFG.rankIcons)||["🪢","🧭","🔭","⚓"];
+const RANKS=((typeof CFG!=="undefined"&&CFG.rankNames)||["Deckhand","Navigator","First mate","Captain"]).map((n,i)=>[n,[0,.4,.7,.9][i]]);
+function loadP(){try{return JSON.parse(localStorage.getItem(STORE))||{}}catch(e){return{}}}
+function saveP(d){try{localStorage.setItem(STORE,JSON.stringify(d))}catch(e){}}
+function xpPill(){const p=$("xpPill");p.classList.remove("hidden");p.querySelector("span").textContent=G.xp;p.classList.add("bump");setTimeout(()=>p.classList.remove("bump"),220);}
+function addXP(n,anchor){
+  G.xp=Math.max(0,G.xp+n);xpPill();
+  if(anchor&&!RM){const r=anchor.getBoundingClientRect(),f=document.createElement("span");
+    f.className="xpfloat";f.textContent=(n>=0?"+":"")+n+" XP";if(n<0)f.style.color="var(--red)";
+    f.style.left=(r.left+scrollX+r.width/2-34)+"px";f.style.top=(r.top+scrollY-8)+"px";
+    document.body.appendChild(f);setTimeout(()=>f.remove(),1300);}
+}
+function unlock(id){if(G.earned.has(id))return;G.earned.add(id);G.pending.push(id);}
+function flushUnlocks(){const h=G.pending.map(id=>{const b=CFG.badges.find(x=>x.id===id);
+  return `<div class="unlock" role="status"><span class="ic">${b.icon}</span><div><small>Badge unlocked</small><b>${b.name}</b></div></div>`;}).join("");G.pending=[];return h;}
+function rankOf(xp){const p=xp/CFG.maxXP;let r=0;RANKS.forEach((x,k)=>{if(p>=x[1]-1e-9)r=k;});return r;}
+function finishGame(){
+  G.pending=[];
+  const d=loadP(),prev=d[CFG.module]||{xp:0,badges:[]};
+  const before=new Set(prev.badges);
+  d[CFG.module]={xp:Math.max(prev.xp,G.xp),badges:[...new Set([...prev.badges,...G.earned])]};saveP(d);
+  countUp($("gXP"),G.xp);
+  const r=rankOf(G.xp);$("gRank").innerHTML=`<span class="emb">${RANK_ICONS[r]}</span>${RANKS[r][0]}`;
+  setTimeout(()=>$("gRankBar").style.width=Math.min(100,Math.round(G.xp/CFG.maxXP*100))+"%",250);
+  $("gNext").textContent=r<3?`${Math.ceil(RANKS[r+1][1]*CFG.maxXP)-G.xp} XP to ${RANKS[r+1][0]}. Replay to climb the ranks.`:`Top rank. Best possible score is ${CFG.maxXP} XP.`;
+  $("gBadges").innerHTML=CFG.badges.map(b=>{const st=G.earned.has(b.id)?"new":before.has(b.id)?"":"locked";
+    return `<div class="bdg ${st}"><span class="ic">${b.icon}</span><div><b>${b.name}</b><small>${b.desc}</small></div></div>`;}).join("");
+  $("gCount").textContent=`${d[CFG.module].badges.length} of ${CFG.badges.length} collected`;
+  $("gPass").innerHTML=CFG.modules.map(m=>{const done=!!d[m.n];
+    return `<div class="stamp ${done?"done":""} ${m.n===CFG.module?"here":""}"><b>${done?"✓ ":""}${CFG.unit||"Module"} ${m.n}</b>${m.name}</div>`;}).join("");
+  confetti();
+}
+function resetGame(){G.xp=0;G.earned=new Set();G.pending=[];xpPill();}
+function confetti(){
+  if(RM)return;const c=document.createElement("canvas");c.id="confetti";document.body.appendChild(c);
+  const x=c.getContext("2d"),W=c.width=innerWidth,H=c.height=innerHeight,cols=CFG.confetti||["#2F6BFF","#FFC93C","#7FD6C2","#0E1F3D","#E2574C"];
+  const ps=Array.from({length:150},()=>({x:W/2+(Math.random()-.5)*W*.3,y:H*.25,vx:(Math.random()-.5)*12,vy:-Math.random()*11-3,s:Math.random()*7+4,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[Math.random()*cols.length|0]}));
+  const t0=performance.now();
+  (function f(t){x.clearRect(0,0,W,H);ps.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.r+=p.vr;
+    x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore();});
+    if(t-t0<2800)requestAnimationFrame(f);else c.remove();})(t0);
+}
+
+
+const LBL={use:"Use it",adapt:"Adapt it",override:"Override it"};
+const CALLS=[
+ {name:"Priya Mehta",init:"PM",why:"Policy update",ms:[
+  {c:["Hi, I got married last month!","I'd like to add my husband as a beneficiary on my life policy."],w:"Congratulations! I can help with that today. First, can I confirm your date of birth and policy number?",conf:"High",src:"Beneficiary changes, KB-112",a:"use",ok:[],why:"Accurate, warm, and it starts with identity checks. When Wren gets it right, using it frees your attention for the customer.",model:null,label:"Beneficiary request"},
+  {c:["Great, thanks. Oh, one more thing.","We're starting IVF soon. Does my policy cover complications from that?"],w:"Yes, your policy covers pregnancy-related complications.",conf:"Medium",src:"General product summary",a:"override",ok:[],why:"Wren is guessing. Cover depends on Priya's policy wording, exclusions and what she disclosed. Never confirm cover you haven't checked.",model:"That's an important question, and I want to give you the right answer. Let me check your policy wording, and I'll confirm in writing today.",label:"IVF cover question",badge:"check"}]},
+ {name:"Graham Hughes",init:"GH",why:"Bereavement",ms:[
+  {c:["Hello. My wife, Ann, passed away three weeks ago.","She had a policy with you. I don't really know what I'm meant to do."],w:"I'm sorry to hear that. To lodge a claim I'll need the death certificate, policy number and claimant ID. Shall I email you the claim form?",conf:"High",src:"Death claims, KB-301",a:"adapt",ok:["use"],why:"The steps are right, but the pace isn't. Lead with genuine condolence, slow down, and check what Graham needs right now before listing documents.",model:"I'm so sorry about Ann. Thank you for calling us. There's no rush today. Can I talk you through the steps gently, and send everything in writing so you can go through it when you're ready?",label:"Bereavement opening",badge:"human"},
+  {c:["Thank you. Yes, please send it all.","I'm on my own now, so I'll have to sort everything out myself."],w:"💡 Opportunity: Graham has no income protection. Suggest: \u201CWhile I have you, have you thought about income protection now you're the sole earner?\u201D",conf:"Medium",src:"Sales prompt, cross-sell model",a:"override",ok:[],why:"Graham is grieving and may be vulnerable. Selling now falls well short of treating customers fairly. Override it, and note his support needs instead.",model:"That's a lot to take on. Would it help if I noted that you're managing this on your own, so the claims team keeps things simple and checks in with you?",label:"Sales prompt",badge:"nosell"}]},
+ {name:"Dana Walsh",init:"DW",why:"Premium complaint",ms:[
+  {c:["Why has my premium gone up 18 percent?","Nobody told me! This is ridiculous."],w:"Your premium increased due to stepped (age-based) repricing and 3% indexation, as outlined in your renewal notice sent on 12 March.",conf:"High",src:"Policy record, renewal notice 12 March",a:"adapt",ok:["use"],why:"The facts are right and sourced. But Dana is frustrated, and jargon like \u2018stepped repricing\u2019 won't land. Acknowledge first, then explain in plain English.",model:"I can hear how frustrating that is, especially if it came as a surprise. Let me explain in plain terms why it went up, and then we'll look at your options.",label:"Premium increase"},
+  {c:["Fine. Then just cancel it.","Today. I'm done."],w:"I can process that now. Can you confirm you'd like to cancel effective today?",conf:"High",src:"Cancellations, KB-208",a:"adapt",ok:[],why:"Respect Dana's right to cancel, but make sure it's an informed choice. Life cover can be hard to replace later, especially if health changes. Explain the options, then let Dana decide.",model:"I can do that for you today. Before I do, can I take a minute to explain what you'd lose, and a couple of options that could bring the cost down? Then it's completely your call.",label:"Cancellation request"}]}
+];
+const FLAT=CALLS.flatMap((c,ci)=>c.ms.map((m,mi)=>({...m,ci,mi})));
+const T=20;let k=0,trust=60,pts=0,fast=0,log=[],tmr=null,clk=null,callStart=0,t0=0,live=false;
+function setTrust(v){trust=Math.max(0,Math.min(100,v));$("trVal").textContent=trust;$("trBar").style.width=trust+"%";$("trMini").classList.add("pulse");setTimeout(()=>$("trMini").classList.remove("pulse"),800);}
+function btns(on){document.querySelectorAll(".db").forEach(b=>{b.disabled=!on;if(on)b.classList.remove("chosen","expert");});}
+function bub(t,who){const d=document.createElement("div");d.className=who==="sys"?"sys":"bub";d.innerHTML=who==="sys"?t:`<small>${who}</small>${t}`;$("tx").appendChild(d);$("tx").scrollTop=$("tx").scrollHeight;}
+const wait=ms=>new Promise(r=>setTimeout(r,RM?0:ms));
+async function moment(){
+  const m=FLAT[k],call=CALLS[m.ci];live=false;btns(false);$("fb").innerHTML="";
+  setVoyage($("rail"),k,FLAT.length);
+  $("callVal").textContent=`Call ${m.ci+1} of 3`;$("callBar").style.width=(k/FLAT.length*100)+"%";
+  if(m.mi===0){$("tx").innerHTML="";$("cAv").textContent=call.init;$("cName").textContent=call.name;$("cWhy").textContent=call.why;bub("Call connected. Identity checks happen as normal.","sys");
+    callStart=performance.now();clearInterval(clk);clk=setInterval(()=>{const s=Math.floor((performance.now()-callStart)/1000);$("clock").textContent=`${String(s/60|0).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;},500);}
+  $("wfill").style.width="100%";$("secs").textContent=T+"s";$("wbar").classList.remove("low");
+  $("wbox").innerHTML='<div class="shimmer"></div>';
+  for(const line of m.c){await wait(650);bub(line,call.name.split(" ")[0]);}
+  await wait(700);
+  $("wbox").innerHTML=`<div class="sugg">${m.w}</div><div class="meta"><span class="${m.conf==="High"?"hi":"md"}">Confidence: ${m.conf}</span><span>Source: ${m.src}</span></div>`;
+  btns(true);live=true;t0=performance.now();clearInterval(tmr);
+  tmr=setInterval(()=>{const left=Math.max(0,T-(performance.now()-t0)/1000);$("wfill").style.width=(left/T*100)+"%";$("secs").textContent=Math.ceil(left)+"s";$("wbar").classList.toggle("low",left<6);if(left<=0)decide(null);},100);
+  document.querySelector(".db.use").focus({preventScroll:true});
+}
+function decide(a){
+  if(!live)return;live=false;clearInterval(tmr);const m=FLAT[k],el=(performance.now()-t0)/1000;
+  btns(false);document.querySelectorAll(".db").forEach(b=>b.disabled=true);
+  const chosen=a?document.querySelector(`.db.${a}`):null;if(chosen)chosen.classList.add("chosen");document.querySelector(`.db.${m.a}`).classList.add("expert");
+  let xp=0,bonus=0,head;
+  if(a===m.a){xp=30;if(el<10){bonus=5;fast++;}setTrust(trust+10);head=`Expert call: ${LBL[m.a].toLowerCase()}.`;if(m.badge)unlock(m.badge);}
+  else if(a&&m.ok.includes(a)){xp=10;setTrust(trust+2);head=`Reasonable, but most experts would ${LBL[m.a].toLowerCase()}.`;}
+  else{setTrust(trust-(a?10:6));head=a?`Risky. The expert call is ${LBL[m.a].toLowerCase()}.`:`Too slow. The customer was left waiting. The expert call is ${LBL[m.a].toLowerCase()}.`;}
+  if(fast>=4)unlock("fast");
+  pts+=xp+bonus;if(xp+bonus)addXP(xp+bonus,chosen);
+  log.push({label:m.label,a,exp:m.a});
+  bub(a===null?"<em>…long silence…</em>":a==="use"?m.w.replace(/^💡.*Suggest: /,""):a==="adapt"?"<em>You adapt Wren's suggestion.</em>":"<em>You set Wren's suggestion aside.</em>","You");
+  const last=k===FLAT.length-1,endCall=FLAT[k+1]&&FLAT[k+1].ci!==m.ci;
+  $("fb").innerHTML=`<div class="feedback">${flushUnlocks()}<div class="chips">${xp?`<span class="chip xp">+${xp} XP</span>`:""}${bonus?`<span class="chip xp">⚡ Speed bonus +5</span>`:""}<span class="chip">${a?`Decided in ${el.toFixed(1)}s`:"Timed out"}</span></div><h3>${head}</h3><p>${m.why}</p>${m.model?`<div class="model"><small>What a great consultant might say</small>\u201C${m.model}\u201D</div>`:""}<button class="btn alt" id="next">${last?"End shift and see results":endCall?"Next call":"Continue the call"}</button></div>`;
+  $("next").onclick=()=>{if(endCall||last){bub("Call ended.","sys");clearInterval(clk);}k++;last?finish():moment();};
+  $("next").focus({preventScroll:true});$("fb").scrollIntoView({behavior:RM?"auto":"smooth",block:"nearest"});
+}
+document.querySelectorAll(".db").forEach(b=>b.onclick=()=>decide(b.dataset.a));
+document.addEventListener("keydown",e=>{if(!live)return;const m={u:"use",a:"adapt",o:"override","1":"use","2":"adapt","3":"override"}[e.key.toLowerCase()];if(m)decide(m);});
+function finish(){
+  clearInterval(clk);$("stage").classList.add("hidden");$("end").classList.remove("hidden");
+  const pct=Math.round(pts/210*100);if(pct>=85)unlock("sharp");
+  countUp($("total"),pct,"%",100);
+  const v={use:2,adapt:1,override:0};const lean=log.filter(l=>l.a).reduce((s,l)=>s+(v[l.a]-v[l.exp]),0)/Math.max(1,log.filter(l=>l.a).length);
+  let t,x;
+  if(pct>=85){t="Sharp judgement";x="You used Wren when it was right, adapted it when the customer needed more, and overrode it when it guessed or pushed the wrong thing."}
+  else if(lean>.25){t="Leaning on Wren";x="You tended to go with Wren's suggestions as they were. Wren is fast, but it can guess, miss emotion or push the wrong thing. Your judgement is the safeguard."}
+  else if(lean<-.25){t="Second-guessing Wren";x="You often set aside suggestions that were usable. Trusting good suggestions saves time and frees you to focus on the customer."}
+  else{t="Building judgement";x="A mix of strong and shaky calls. Replay the shift and notice when the facts were right but the approach needed to change."}
+  $("rt").textContent=t;$("rx").textContent=x;
+  $("recap").innerHTML=log.map(l=>`<tr><td>${l.label}</td><td>${l.a?`<span class="tagc ${l.a}">${LBL[l.a]}</span>`:"Timed out"}</td><td><span class="tagc ${l.exp}">${LBL[l.exp]}</span></td></tr>`).join("");
+  G.pending=[];finishGame();focusEl($("end"));
+}
+function begin(){k=0;pts=0;fast=0;log=[];setTrust(60);resetGame();["intro","end"].forEach(x=>$(x).classList.add("hidden"));$("stage").classList.remove("hidden");focusEl($("stage"));moment();}
+$("start").onclick=begin;$("again").onclick=()=>{$("gRankBar").style.width=0;begin();};
+
+</script>
+</body>
+</html>
