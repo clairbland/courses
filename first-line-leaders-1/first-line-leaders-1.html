@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Course 1: The First 90 Days | Harbourline Leadership Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Onest:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6FB; --surface:#FFFFFF; --navy:#0E1F3D; --ink:#16233F; --muted:#5B6782; --line:#DCE2EE;
+  --blue:#2F6BFF; --blue-soft:#E4ECFF; --buoy:#FFC93C; --buoy-soft:#FFF4D6;
+  --glass:#7FD6C2; --glass-soft:#E1F6F0; --red:#E2574C; --red-soft:#FDE6E3;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Onest","Segoe UI",system-ui,sans-serif;
+  --r-lg:22px; --r-md:14px; --r-sm:10px;
+  --lift:0 14px 34px -16px rgba(14,31,61,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.shell{max-width:820px;margin:0 auto;padding:18px 20px 28px}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.12;margin:0 0 14px;letter-spacing:-.02em;color:var(--navy)}
+h1{font-size:clamp(1.9rem,5.4vw,2.7rem)}
+h2{font-size:clamp(1.25rem,3.4vw,1.6rem)}
+h3{font-size:1rem}
+p{margin:0 0 14px;max-width:60ch}
+.lede{font-size:1.08rem}
+.muted{color:var(--muted)}
+.hidden{display:none!important}
+button{font:inherit}
+
+/* top bar */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;margin-bottom:26px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;color:var(--navy)}
+.brand svg{width:34px;height:34px;flex:none}
+.brand b{font-family:var(--display);font-weight:600;font-size:1rem;letter-spacing:-.01em;display:block;line-height:1.1}
+.brand small{color:var(--muted);font-size:.8rem}
+.prog{font-size:.82rem;font-weight:600;color:var(--navy);background:var(--buoy);padding:5px 12px;border-radius:999px;white-space:nowrap}
+
+/* tags */
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.tag{font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:999px;background:var(--surface);color:var(--muted);border:1px solid var(--line)}
+.tag.lead{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+.hero-visual{position:relative}
+@media (max-width:680px){.hero{grid-template-columns:1fr}.hero-visual{order:-1}}
+
+/* buttons */
+.btn{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:#fff;font-weight:700;padding:14px 24px;border-radius:999px;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--lift)}
+.btn:focus-visible{outline:3px solid var(--buoy);outline-offset:3px}
+.btn.alt{background:var(--buoy);color:var(--navy)}
+.btn.ghost{background:transparent;color:var(--navy);box-shadow:inset 0 0 0 2px var(--navy)}
+.btn[disabled]{opacity:.4;cursor:default;transform:none;box-shadow:none}
+.kbd{font-size:.75rem;opacity:.75;font-weight:600}
+
+/* step heading */
+.step-label{font-size:.85rem;font-weight:700;color:var(--blue);margin-bottom:6px}
+
+/* options */
+.options{display:grid;gap:12px;margin-top:18px}
+.opt{all:unset;box-sizing:border-box;display:grid;grid-template-columns:36px 1fr;gap:14px;align-items:start;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-md);padding:14px 16px;cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s}
+.opt:hover:not([disabled]){transform:translateY(-2px);border-color:var(--blue);box-shadow:var(--lift)}
+.opt:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+.opt .key{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);font-family:var(--display);font-weight:600;font-size:.9rem}
+.opt[disabled]{cursor:default;opacity:.4}
+.opt.picked{opacity:1;background:var(--blue);border-color:var(--blue);color:#fff}
+.opt.picked .key{background:rgba(255,255,255,.18);color:#fff}
+
+/* feedback panel */
+.feedback{margin-top:18px;background:var(--navy);color:#E9EEF8;border-radius:var(--r-lg);padding:20px 22px;animation:rise .35s ease}
+.feedback p{color:#E9EEF8}
+.feedback h3{color:#fff;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{font-size:.82rem;font-weight:700;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.1)}
+.chip.up{background:var(--glass);color:var(--navy)}
+.chip.down{background:var(--red);color:#fff}
+
+/* live HUD */
+.hud{display:grid;grid-template-columns:repeat(var(--n,3),1fr);gap:14px;background:var(--surface);border-radius:var(--r-md);padding:14px 16px;margin-bottom:22px;border:1px solid var(--line)}
+.mini label{display:flex;justify-content:space-between;font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:6px}
+.mini .val{color:var(--navy);font-variant-numeric:tabular-nums}
+.track{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.track i{display:block;height:100%;width:50%;border-radius:99px;background:var(--blue);transition:width .7s cubic-bezier(.2,.8,.2,1),background .3s}
+.mini.pulse .track i{background:var(--buoy)}
+@media (max-width:520px){.hud{gap:10px;padding:12px}.mini label{font-size:.72rem}}
+
+/* steps rail */
+.rail{display:flex;gap:6px;margin-bottom:18px}
+.rail span{flex:1;height:6px;border-radius:3px;background:var(--line);transition:background .3s}
+.rail span.on{background:var(--blue)}
+
+/* results */
+.result-head{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;margin-bottom:18px}
+.badge{width:96px;height:96px;border-radius:28px;background:var(--navy);display:grid;place-items:center;animation:pop .6s cubic-bezier(.2,1.4,.4,1) both}
+.badge svg{width:56px;height:56px}
+.badge-big{font-family:var(--display);font-weight:600;color:var(--buoy);font-size:1.6rem}
+.result-kicker{font-weight:700;color:var(--blue);font-size:.9rem;margin-bottom:4px}
+.meters{display:grid;gap:16px;margin:8px 0 22px;background:var(--surface);border-radius:var(--r-lg);padding:20px 22px}
+.meter label{display:flex;justify-content:space-between;gap:12px;font-weight:600;font-size:.95rem;margin-bottom:6px}
+.meter .track{height:12px}
+.meter .track i{width:0}
+.panel{background:var(--surface);border-radius:var(--r-lg);padding:20px 22px;margin:0 0 20px}
+.panel ol{margin:6px 0 0;padding-left:22px}
+.panel li{margin-bottom:8px}
+.panel li::marker{font-family:var(--display);color:var(--blue);font-weight:600}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+
+/* footer */
+.foot{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);font-size:.8rem;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.6) rotate(-8deg)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ===== course intro + briefing ===== */
+.topright{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.subtitle{font-size:1.08rem;color:var(--muted);font-weight:600;margin:-4px 0 16px}
+.briefing{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:30px}
+.briefing .panel{margin:0}
+.howto ol{list-style:none;padding:0;margin:10px 0 12px}
+.howto li{display:grid;grid-template-columns:30px 1fr;gap:10px;margin-bottom:10px;counter-increment:s}
+.howto ol{counter-reset:s}
+.howto li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--blue-soft);color:var(--blue);font-family:var(--display);font-weight:600;font-size:.78rem;display:grid;place-items:center}
+.tip{background:var(--buoy-soft);border-radius:var(--r-sm);padding:10px 14px;font-size:.92rem;margin:0}
+.ranks{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.ranks span{font-size:.76rem;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--blue-soft);color:var(--blue)}
+.startrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px}
+@media (max-width:680px){.briefing{grid-template-columns:1fr}}
+
+/* ===== gamification ===== */
+.xp-pill{display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:#fff;font-weight:700;font-size:.82rem;padding:5px 12px;border-radius:999px;font-variant-numeric:tabular-nums;transition:transform .2s}
+.xp-pill.bump{transform:scale(1.15)}
+.xpfloat{position:absolute;z-index:50;font-weight:800;font-size:.9rem;color:var(--blue);background:#fff;border-radius:999px;padding:3px 12px;box-shadow:var(--lift);pointer-events:none;animation:floatup 1.2s ease forwards;white-space:nowrap}
+@keyframes floatup{0%{opacity:0;transform:translateY(0)}15%{opacity:1}100%{opacity:0;transform:translateY(-54px)}}
+.chip.xp{background:var(--buoy);color:var(--navy)}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin:12px 0 4px}
+.bdg{display:flex;gap:10px;align-items:center;background:var(--bg);border-radius:var(--r-md);padding:10px}
+.bdg .ic{width:42px;height:42px;border-radius:12px;background:var(--buoy);display:grid;place-items:center;font-size:1.3rem;flex:none}
+.bdg b{display:block;font-size:.88rem;color:var(--navy);line-height:1.2}
+.bdg small{display:block;font-size:.76rem;color:var(--muted);line-height:1.3}
+.bdg.locked .ic{background:var(--line);filter:grayscale(1);opacity:.55}
+.bdg.locked b{color:var(--muted)}
+.bdg.new{background:var(--buoy-soft);box-shadow:inset 0 0 0 2px var(--buoy)}
+.unlock{display:flex;gap:12px;align-items:center;background:var(--buoy);color:var(--navy);border-radius:16px;padding:8px 16px 8px 8px;margin:0 0 12px;width:fit-content;max-width:100%;animation:pop .55s cubic-bezier(.2,1.4,.4,1) both}
+.unlock .ic{width:40px;height:40px;border-radius:12px;background:#fff;display:grid;place-items:center;font-size:1.25rem;flex:none}
+.unlock small{display:block;font-size:.75rem;font-weight:700;opacity:.75}
+.unlock b{font-size:.95rem}
+.game{background:var(--surface);border-radius:var(--r-lg);padding:20px 22px;margin:0 0 20px}
+.game h3{margin-top:18px}
+.game-top{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.xpbig{font-family:var(--display);font-weight:600;font-size:2.6rem;color:var(--blue);line-height:1}
+.rankname{font-family:var(--display);font-weight:600;color:var(--navy);font-size:1.25rem;margin-bottom:8px}
+.game-top .track{height:10px}
+.game-top .track i{width:0;background:var(--buoy)}
+.game-top small{display:block;margin-top:6px;color:var(--muted);font-size:.85rem}
+.passport{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 8px}
+.stamp{border:2px dashed var(--line);border-radius:var(--r-md);padding:10px;font-size:.8rem;color:var(--muted);line-height:1.3}
+.stamp b{display:block;font-family:var(--display);font-weight:600;font-size:.8rem;margin-bottom:3px}
+.stamp.done{border-style:solid;border-color:var(--glass);background:var(--glass-soft);color:var(--navy)}
+.stamp.here{border-style:solid;border-color:var(--blue);background:var(--blue-soft);color:var(--navy)}
+.note{font-size:.8rem;color:var(--muted)}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:70}
+@media (max-width:520px){.passport{grid-template-columns:repeat(2,1fr)}.game-top{grid-template-columns:1fr;gap:12px}}
+
+/* ===== v3: modern, immersive layer ===== */
+.hero-band{position:relative;overflow:hidden;background:var(--navy);color:#D5DDEC;border-radius:28px;padding:34px 32px 84px;isolation:isolate}
+.hero-band h1{color:#fff;font-size:clamp(2.1rem,6.2vw,3.4rem);letter-spacing:-.03em}
+.hero-band .subtitle{color:var(--glass)}
+.hero-band .lede{color:#D5DDEC}
+.hero-band .lede strong{color:var(--buoy)}
+.hero-band .tag{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);color:#D5DDEC}
+.hero-band .tag.lead{background:var(--buoy);border-color:var(--buoy);color:var(--navy)}
+.glow{position:absolute;z-index:-1;border-radius:50%;filter:blur(70px);pointer-events:none}
+.glow.a{width:260px;height:260px;background:var(--buoy);opacity:.16;top:-90px;right:-60px}
+.glow.b{width:300px;height:300px;background:var(--blue);opacity:.28;bottom:-160px;left:-80px}
+.waves{position:absolute;left:0;bottom:-2px;width:115%;height:78px;z-index:-1;pointer-events:none}
+.waves path{animation:drift 10s ease-in-out infinite alternate}
+.waves path:nth-child(2){animation-duration:13s;animation-direction:alternate-reverse}
+@keyframes drift{to{transform:translateX(-7%)}}
+@media (max-width:680px){.hero-band{padding:24px 20px 76px;border-radius:22px}}
+.startrow .btn{padding:16px 30px;font-size:1.05rem;position:relative}
+.startrow .btn::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 0 rgba(47,107,255,.5);animation:ping 2.2s ease-out 1s 3}
+@keyframes ping{to{box-shadow:0 0 0 16px rgba(47,107,255,0)}}
+.briefing .panel{box-shadow:0 1px 0 var(--line)}
+.briefing h3{display:flex;align-items:center;gap:10px}
+.briefing h3 .hi{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-size:1rem;background:var(--blue-soft)}
+
+/* screen transitions */
+#stage:not(.hidden),#play:not(.hidden),#end:not(.hidden){animation:screenIn .55s cubic-bezier(.2,.8,.2,1)}
+@keyframes screenIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+
+/* sticky glass scoreboard */
+.hud{position:sticky;top:8px;z-index:20;background:rgba(14,31,61,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:0;box-shadow:var(--lift);border-radius:18px}
+.hud .mini label{color:#AFC0DA}
+.hud .mini .val{color:#fff}
+.hud .track{background:rgba(255,255,255,.14)}
+
+/* voyage route */
+.voyage{position:relative;display:flex;justify-content:space-between;align-items:center;height:40px;margin:4px 4px 20px}
+.voyage::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:2px dashed #C3CCDD}
+.voyage .fill{position:absolute;left:0;top:50%;height:4px;margin-top:-2px;background:var(--blue);border-radius:2px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.voyage .wp{position:relative;z-index:1;width:14px;height:14px;border-radius:50%;background:var(--bg);border:3px solid #C3CCDD;transition:all .3s}
+.voyage .wp.done{background:var(--blue);border-color:var(--blue)}
+.voyage .wp.now{width:38px;height:38px;border:0;background:var(--buoy);display:grid;place-items:center;box-shadow:0 0 0 7px rgba(255,201,60,.25);animation:bob 2.4s ease-in-out infinite}
+.voyage .wp.now svg{width:20px;height:20px}
+.voyage .wp.port{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:.85rem;background:var(--surface)}
+@keyframes bob{50%{transform:translateY(-4px) rotate(-4deg)}}
+
+/* livelier options */
+.opt{border-radius:18px;padding:16px 18px;box-shadow:0 2px 0 var(--line)}
+.options .opt{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+.options .opt:nth-child(2){animation-delay:.07s}.options .opt:nth-child(3){animation-delay:.14s}
+.opt.picked{box-shadow:0 12px 28px -12px rgba(47,107,255,.7)}
+.feedback{border-radius:24px;box-shadow:var(--lift)}
+
+/* results: score ring on a dark band */
+.result-head{background:var(--navy);border-radius:var(--r-lg);padding:24px;position:relative;overflow:hidden;isolation:isolate}
+.result-head h2{color:#fff}
+.result-head p{color:#D5DDEC}
+.result-head .result-kicker{color:var(--buoy)}
+.result-head::after{content:"";position:absolute;z-index:-1;width:260px;height:260px;border-radius:50%;background:var(--blue);opacity:.3;filter:blur(70px);right:-80px;top:-120px}
+.badge{width:118px;height:118px;border-radius:50%;position:relative;background:conic-gradient(var(--buoy) calc(var(--p,0) * 1%),rgba(255,255,255,.13) 0)}
+.badge::before{content:"";position:absolute;inset:11px;border-radius:50%;background:var(--navy)}
+.badge-big{position:relative;z-index:1;color:#fff;font-size:1.9rem}
+@media (max-width:520px){.result-head{grid-template-columns:1fr;text-align:left}.badge{width:96px;height:96px}}
+.rankname .emb{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--buoy);margin-right:10px;font-size:1.2rem;vertical-align:middle}
+.xp-pill{background:linear-gradient(135deg,var(--navy),#23407A)}
+.xp-pill.bump{box-shadow:0 0 0 5px rgba(255,201,60,.45)}
+
+.prog .short{display:none}
+.brand small{white-space:nowrap}
+@media (max-width:560px){.prog .long{display:none}.prog .short{display:inline}.topright{flex-wrap:nowrap}.brand small{display:none}}
+.badge-big{font-size:1.55rem;letter-spacing:-.03em}
+
+
+.ninety{display:grid;gap:10px;transform:rotate(1.5deg)}
+.ph{background:var(--surface);border-radius:18px;padding:14px 16px;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;box-shadow:var(--lift);animation:rise .6s ease both}
+.ph:nth-child(2){margin-left:22px;animation-delay:.1s}.ph:nth-child(3){margin-left:44px;animation-delay:.2s}
+.ph .d{font-family:var(--display);font-weight:600;font-size:.8rem;background:var(--buoy);color:var(--navy);border-radius:10px;padding:8px 10px;text-align:center;line-height:1.1}
+.ph b{display:block;color:var(--navy)}.ph small{color:var(--muted)}
+.hubhead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.hubhead h2{margin:0}
+.ring-sm{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--navy)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:700px){.mgrid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:440px){.mgrid{grid-template-columns:1fr}}
+.mtile{all:unset;box-sizing:border-box;cursor:pointer;background:var(--surface);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:6px;min-height:150px;border:2px solid transparent;box-shadow:0 2px 0 var(--line);transition:transform .15s,box-shadow .15s,border-color .15s;animation:rise .45s ease both}
+.mtile:hover{transform:translateY(-3px);box-shadow:var(--lift);border-color:var(--blue)}
+.mtile:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+.mtile .mn{width:36px;height:36px;border-radius:12px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;font-family:var(--display);font-weight:600}
+.mtile b{color:var(--navy);line-height:1.25}
+.mtile small{color:var(--muted);font-size:.82rem}
+.mtile .st{margin-top:auto;font-size:.82rem;font-weight:700;color:var(--blue)}
+.mtile.done{background:var(--glass-soft)}
+.mtile.done .mn{background:var(--glass);color:var(--navy)}
+.mtile.done .st{color:var(--pine,#1F6B5A)}
+.plantile{margin-top:14px;display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;background:var(--navy);color:#D5DDEC;border-radius:22px;padding:18px 20px;position:relative;overflow:hidden;isolation:isolate}
+.plantile::after{content:"";position:absolute;z-index:-1;width:200px;height:200px;border-radius:50%;background:var(--buoy);opacity:.18;filter:blur(60px);right:-40px;top:-80px}
+.plantile .ic{width:52px;height:52px;border-radius:16px;background:var(--buoy);display:grid;place-items:center;font-size:1.6rem}
+.plantile b{color:#fff;font-family:var(--display);font-weight:600;display:block}
+.plantile.locked .ic{background:rgba(255,255,255,.12)}
+@media (max-width:560px){.plantile{grid-template-columns:auto 1fr}.plantile .btn{grid-column:1/-1}}
+.reset{all:unset;cursor:pointer;font-size:.8rem;color:var(--muted);text-decoration:underline;margin-top:14px;display:inline-block}
+.scene{display:grid;grid-template-columns:auto 1fr;gap:14px;background:var(--surface);border-radius:20px;padding:16px 18px;margin:6px 0 14px;box-shadow:0 2px 0 var(--line)}
+.scene .av{width:44px;height:44px;border-radius:14px;background:var(--buoy);color:var(--navy);display:grid;place-items:center;font-family:var(--display);font-weight:600;font-size:.78rem}
+.scene p{margin:0}
+.prompt{font-family:var(--display);font-weight:600;font-size:1.1rem;color:var(--navy)}
+.timer{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin:10px 0 16px}
+.timer i{display:block;height:100%;background:var(--blue);width:100%}
+.timer.low i{background:var(--red)}
+.lq{background:var(--surface);border-radius:20px;padding:20px;box-shadow:var(--lift)}
+.lq h3{font-size:1.1rem;margin-bottom:12px}
+.lopts{display:grid;gap:10px}
+.lopt{all:unset;box-sizing:border-box;cursor:pointer;padding:13px 16px;border-radius:14px;border:2px solid var(--line);font-weight:600;transition:all .15s}
+.lopt:hover:not([disabled]){border-color:var(--blue);background:var(--blue-soft)}
+.lopt:focus-visible{outline:3px solid var(--buoy)}
+.lopt.right{background:var(--glass);border-color:var(--glass);color:var(--navy)}
+.lopt.wrong{background:var(--red-soft);border-color:var(--red)}
+.lopt[disabled]{cursor:default}
+.lmeta{display:flex;justify-content:space-between;font-weight:700;font-size:.88rem;color:var(--muted)}
+.slots{display:grid;gap:8px;margin:12px 0}
+.slot{all:unset;box-sizing:border-box;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:center;min-height:52px;padding:8px 12px;border-radius:14px;border:2px dashed #C3CCDD;background:var(--surface);cursor:pointer}
+.slot .n{width:30px;height:30px;border-radius:10px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;font-family:var(--display);font-weight:600;font-size:.8rem}
+.slot.filled{border-style:solid;border-color:var(--blue)}
+.slot.ok{border-color:var(--glass);background:var(--glass-soft)}
+.slot.bad{border-color:var(--red);background:var(--red-soft)}
+.pool{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px}
+.pitem{all:unset;cursor:pointer;background:var(--navy);color:#fff;padding:10px 14px;border-radius:999px;font-weight:600;font-size:.92rem;transition:transform .15s}
+.pitem:hover{transform:translateY(-2px)}
+.pitem:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+.takeaway{background:var(--navy);color:#D5DDEC;border-radius:24px;padding:24px;text-align:left;position:relative;overflow:hidden;isolation:isolate}
+.takeaway::after{content:"";position:absolute;z-index:-1;width:240px;height:240px;border-radius:50%;background:var(--blue);opacity:.3;filter:blur(70px);right:-60px;top:-100px}
+.takeaway h2{color:#fff}
+.takeaway .big{font-family:var(--display);font-size:1.25rem;color:var(--buoy);line-height:1.3;margin:6px 0 16px}
+.pin{all:unset;cursor:pointer;display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 16px;font-weight:700;margin-bottom:16px}
+.pin[aria-pressed="true"]{background:var(--glass);color:var(--navy)}
+.pin:focus-visible{outline:3px solid var(--buoy)}
+.planphase{background:var(--surface);border-radius:20px;padding:18px 20px;margin-bottom:12px}
+.planphase h3{display:flex;gap:10px;align-items:center}
+.planphase h3 .d{font-size:.75rem;background:var(--buoy);border-radius:8px;padding:4px 8px}
+.pchips{display:flex;flex-wrap:wrap;gap:8px}
+.pchip{all:unset;cursor:pointer;padding:9px 14px;border-radius:999px;border:2px solid var(--line);font-size:.9rem;font-weight:600;transition:all .15s}
+.pchip:hover{border-color:var(--blue)}
+.pchip[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.pchip:focus-visible{outline:3px solid var(--buoy)}
+.addrow{display:flex;gap:8px;margin-top:10px}
+.addrow input,.field textarea,.field input{flex:1;font:inherit;padding:10px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.addrow input:focus,.field textarea:focus,.field input:focus{outline:none;border-color:var(--blue)}
+.addrow button{all:unset;cursor:pointer;padding:10px 16px;border-radius:12px;background:var(--navy);color:#fff;font-weight:700}
+.field{margin-bottom:12px}
+.field label{display:block;font-weight:700;color:var(--navy);margin-bottom:6px}
+.strength{position:sticky;bottom:12px;z-index:5;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--navy);color:#fff;border-radius:999px;padding:10px 10px 10px 22px;box-shadow:var(--lift)}
+.strength .track{flex:1;min-width:120px;background:rgba(255,255,255,.15)}
+.strength .track i{background:var(--buoy);width:0}
+.strength span{font-weight:700;font-size:.9rem}
+#planOut{background:var(--surface);border-radius:24px;padding:24px;margin:0 0 18px;border-top:8px solid var(--buoy)}
+.po-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.po-head svg{width:36px;height:36px}
+.po-intent{font-family:var(--display);font-size:1.1rem;color:var(--navy);line-height:1.35;margin:4px 0 18px}
+.po-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.po-col{background:var(--bg);border-radius:16px;padding:14px}
+.po-col h4{margin:0 0 8px;font-family:var(--display);font-size:.85rem;color:var(--blue)}
+.po-col ul{list-style:none;padding:0;margin:0}
+.po-col li{display:grid;grid-template-columns:18px 1fr;gap:8px;font-size:.9rem;margin-bottom:8px}
+.po-col li::before{content:"";width:14px;height:14px;border:2px solid var(--navy);border-radius:4px;margin-top:3px}
+@media (max-width:640px){.po-cols{grid-template-columns:1fr}}
+@media print{body{background:#fff}body *{visibility:hidden}#planOut,#planOut *{visibility:visible}#planOut{position:absolute;left:0;top:0;width:100%;border:0}}
+
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+  <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#0E1F3D"/><circle cx="16" cy="11" r="4" fill="#FFC93C"/><path d="M5 20c3.7 0 3.7-3 7.3-3s3.7 3 7.4 3 3.6-3 7.3-3" stroke="#7FD6C2" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M5 25.5c3.7 0 3.7-3 7.3-3s3.7 3 7.4 3 3.6-3 7.3-3" stroke="#2F6BFF" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><div><b>Harbourline</b><small>Leadership Academy</small></div></div>
+  <div class="topright"><span class="prog"><span class="long">First Line Leaders: course 1 of 4</span><span class="short">Course 1/4</span></span><span class="xp-pill hidden" id="xpPill" aria-live="polite">⚓ <span>0</span> XP</span></div>
+</header>
+<section id="intro">
+  <div class="hero-band"><span class="glow a"></span><span class="glow b"></span><svg class="waves" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 C150 10 300 70 450 40 S750 10 900 40 S1100 70 1200 40 V80 H0Z" fill="#2F6BFF" opacity=".35"/><path d="M0 55 C200 30 350 80 550 55 S850 30 1000 55 S1150 75 1200 55 V80 H0Z" fill="#7FD6C2" opacity=".35"/></svg>
+  <div class="hero">
+    <div>
+      <div class="tags"><span class="tag lead">First Line Leaders</span><span class="tag">Course 1</span><span class="tag">Six bite-sized modules</span><span class="tag">15 minutes</span></div>
+      <h1>The First 90 Days</h1>
+      <p class="subtitle">Real scenarios, quick challenges and your 90-day plan</p>
+      <p class="lede"><strong>Your first three months as a team leader.</strong> Six two-minute modules built on real moments new Harbourline leaders face, from your first huddle to leading a change you didn't choose. Then turn it into a plan.</p>
+    </div>
+    <div class="hero-visual"><div class="ninety" aria-hidden="true">
+<div class="ph"><span class="d">1–30</span><div><b>Listen and learn</b><small>One-to-ones, questions, quick wins</small></div></div>
+<div class="ph"><span class="d">31–60</span><div><b>Set direction</b><small>Expectations, feedback, delegation</small></div></div>
+<div class="ph"><span class="d">61–90</span><div><b>Lead and grow</b><small>Development, change, your next quarter</small></div></div></div></div>
+  </div>
+  </div>
+  <div class="briefing">
+    <div class="panel howto"><h3><span class="hi">🗺️</span>How this works</h3><ol><li><span>Pick any of the six modules. Each takes about two minutes, and your progress saves as you go.</span></li><li><span>In each module, make a call on a real scenario, then take a quick challenge: a timed lightning round or an order puzzle.</span></li><li><span>At the end of each module, pin its key commitment to your 90-day plan.</span></li><li><span>Complete all six to unlock the plan builder, then print or copy your plan to share with your manager.</span></li></ol><p class="tip"><strong>Tip.</strong> You don't have to do it all at once. Come back any time on the same device and pick up where you left off.</p></div>
+    <div class="panel"><h3><span class="hi">🏆</span>What you can earn</h3><p class="muted" style="font-size:.92rem;margin-bottom:0">Earn XP in every scenario and challenge, with speed bonuses in lightning rounds. Climb four ranks and unlock 6 badges.</p>
+      <div class="ranks"><span>🪢 Deckhand</span><span>🧭 Navigator</span><span>🔭 First mate</span><span>⚓ Captain</span></div>
+      <div class="badges"><div class="bdg locked"><span class="ic">⚡</span><div><b>Quick thinker</b><small>All right in a lightning round</small></div></div><div class="bdg locked"><span class="ic">🧩</span><div><b>In order</b><small>Solved an order puzzle perfectly</small></div></div><div class="bdg locked"><span class="ic">🧭</span><div><b>Halfway there</b><small>Completed three modules</small></div></div><div class="bdg locked"><span class="ic">🏁</span><div><b>All six</b><small>Completed every module</small></div></div><div class="bdg locked"><span class="ic">🎯</span><div><b>Sound judgement</b><small>Best call in four scenarios</small></div></div><div class="bdg locked"><span class="ic">🗺️</span><div><b>Planner</b><small>Built your 90-day plan</small></div></div></div></div>
+  </div>
+  <div class="startrow"><button class="btn" id="start">Start the course</button><span class="muted">About 15 minutes. Works on phone or laptop.</span></div>
+</section>
+
+<section id="hub" class="hidden">
+  <div class="hubhead"><h2>Your six modules</h2><div class="ring-sm" id="hubProg"></div></div>
+  <div id="hubUnlocks"></div>
+  <div class="mgrid" id="mgrid"></div>
+  <div class="plantile" id="plantile"></div>
+  <button class="reset" id="resetAll">Reset my progress</button>
+</section>
+
+<section id="mod" class="hidden">
+  <div id="mrail"></div>
+  <div id="mbody"></div>
+</section>
+
+<section id="plan" class="hidden">
+  <div class="step-label">Your 90-day plan</div>
+  <h2>Build your first 90 days</h2>
+  <p class="muted">Choose at least two commitments for each phase. Anything you pinned in the modules is already here. Add your own too.</p>
+  <div class="field"><label for="intent">My leadership intent, in one sentence</label><textarea id="intent" rows="2" placeholder="For example: I want my team to feel heard, clear on what matters and proud of their work."></textarea></div>
+  <div id="phases"></div>
+  <div class="field"><label for="support">Who will support me</label><input id="support" placeholder="For example: my manager Sarah, my buddy Raj, the First Line Leaders peer group"></div>
+  <div class="strength"><span>Plan strength</span><div class="track"><i id="strBar"></i></div><span id="strVal">0%</span><button class="btn alt" id="makePlan" disabled>Create my plan</button></div>
+</section>
+
+<section id="end" class="hidden">
+  <div class="result-head">
+    <div class="badge"><span class="badge-big" id="total"></span></div>
+    <div><div class="result-kicker">Course 1 complete. Your plan is ready.</div><h2 style="margin-bottom:6px">The First 90 Days</h2><p style="margin:0">Print it, pin it up, and review it with your manager at day 30, 60 and 90.</p></div>
+  </div>
+  <div id="endUnlocks"></div>
+  <div id="planOut"></div>
+  <div class="actions" style="margin-bottom:22px"><button class="btn" id="print">Print or save as PDF</button><button class="btn ghost" id="copy">Copy as text</button><button class="btn ghost" id="edit">Edit my plan</button></div>
+  <div class="game">
+  <div class="game-top">
+    <div><div class="result-kicker">XP earned</div><div class="xpbig" id="gXP">0</div></div>
+    <div><div class="result-kicker">Your rank</div><div class="rankname" id="gRank"></div><div class="track"><i id="gRankBar"></i></div><small id="gNext"></small></div>
+  </div>
+  <h3>Badges <span class="note" id="gCount" style="font-family:var(--body);font-weight:600"></span></h3>
+  <div class="badges" id="gBadges"></div>
+  <h3>Your First Line Leaders passport</h3>
+  <div class="passport" id="gPass"></div>
+  <div class="note">Progress is saved in this browser on this device.</div>
+</div>
+  <div class="actions"><button class="btn ghost" id="backHub">Back to the modules</button></div>
+</section>
+
+<footer class="foot"><span>Harbourline Leadership Academy, First Line Leaders programme</span><span>Practice scenario. People and events are fictional.</span></footer>
+</div>
+<script>
+const CFG={"module": 1, "maxXP": 545, "badges": [{"id": "quick", "icon": "⚡", "name": "Quick thinker", "desc": "All right in a lightning round"}, {"id": "order", "icon": "🧩", "name": "In order", "desc": "Solved an order puzzle perfectly"}, {"id": "half", "icon": "🧭", "name": "Halfway there", "desc": "Completed three modules"}, {"id": "six", "icon": "🏁", "name": "All six", "desc": "Completed every module"}, {"id": "best", "icon": "🎯", "name": "Sound judgement", "desc": "Best call in four scenarios"}, {"id": "planner", "icon": "🗺️", "name": "Planner", "desc": "Built your 90-day plan"}], "modules": [{"n": 1, "name": "The First 90 Days"}, {"n": 2, "name": "The Job You Got"}, {"n": 3, "name": "Feedback That Lands"}, {"n": 4, "name": "From Doing to Leading"}], "store": "harbourline-fll-v1", "unit": "Course"};
+const $=id=>document.getElementById(id);
+const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function countUp(el,to,suffix="",max){const ring=max?el.parentElement:null;
+  if(RM){el.textContent=to+suffix;if(ring)ring.style.setProperty("--p",to/max*100);return;}
+  const t0=performance.now(),d=1100;(function f(t){const p=Math.min(1,(t-t0)/d),e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(to*e)+suffix;if(ring)ring.style.setProperty("--p",to/max*100*e);if(p<1)requestAnimationFrame(f);})(t0);}
+const BOAT='<svg viewBox="0 0 24 24" fill="none" stroke="#0E1F3D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16h18l-2.5 4.5h-13z"/><path d="M12 3v12"/><path d="M12 4l6.5 9.5H12"/></svg>';
+function setVoyage(el,i,total){el.className="voyage";el.setAttribute("aria-label",`Step ${i+1} of ${total}`);
+  let h=`<span class="fill" style="width:${i/total*100}%"></span>`;
+  for(let n=0;n<total;n++)h+=`<span class="wp ${n<i?"done":n===i?"now":""}">${n===i?BOAT:""}</span>`;
+  el.innerHTML=h+'<span class="wp port" aria-hidden="true">⚓</span>';}
+function focusEl(el){el.setAttribute("tabindex","-1");el.focus({preventScroll:true});el.scrollIntoView({behavior:RM?"auto":"smooth",block:"start"});}
+/* ===== gamification ===== */
+const G={xp:0,earned:new Set(),pending:[]};
+const STORE=(typeof CFG!=="undefined"&&CFG.store)||"harbourline-ai-ready-v1";
+const RANK_ICONS=["🪢","🧭","🔭","⚓"];
+const RANKS=[["Deckhand",0],["Navigator",.4],["First mate",.7],["Captain",.9]];
+function loadP(){try{return JSON.parse(localStorage.getItem(STORE))||{}}catch(e){return{}}}
+function saveP(d){try{localStorage.setItem(STORE,JSON.stringify(d))}catch(e){}}
+function xpPill(){const p=$("xpPill");p.classList.remove("hidden");p.querySelector("span").textContent=G.xp;p.classList.add("bump");setTimeout(()=>p.classList.remove("bump"),220);}
+function addXP(n,anchor){
+  G.xp=Math.max(0,G.xp+n);xpPill();
+  if(anchor&&!RM){const r=anchor.getBoundingClientRect(),f=document.createElement("span");
+    f.className="xpfloat";f.textContent=(n>=0?"+":"")+n+" XP";if(n<0)f.style.color="var(--red)";
+    f.style.left=(r.left+scrollX+r.width/2-34)+"px";f.style.top=(r.top+scrollY-8)+"px";
+    document.body.appendChild(f);setTimeout(()=>f.remove(),1300);}
+}
+function unlock(id){if(G.earned.has(id))return;G.earned.add(id);G.pending.push(id);}
+function flushUnlocks(){const h=G.pending.map(id=>{const b=CFG.badges.find(x=>x.id===id);
+  return `<div class="unlock" role="status"><span class="ic">${b.icon}</span><div><small>Badge unlocked</small><b>${b.name}</b></div></div>`;}).join("");G.pending=[];return h;}
+function rankOf(xp){const p=xp/CFG.maxXP;let r=0;RANKS.forEach((x,k)=>{if(p>=x[1]-1e-9)r=k;});return r;}
+function finishGame(){
+  G.pending=[];
+  const d=loadP(),prev=d[CFG.module]||{xp:0,badges:[]};
+  const before=new Set(prev.badges);
+  d[CFG.module]={xp:Math.max(prev.xp,G.xp),badges:[...new Set([...prev.badges,...G.earned])]};saveP(d);
+  countUp($("gXP"),G.xp);
+  const r=rankOf(G.xp);$("gRank").innerHTML=`<span class="emb">${RANK_ICONS[r]}</span>${RANKS[r][0]}`;
+  setTimeout(()=>$("gRankBar").style.width=Math.min(100,Math.round(G.xp/CFG.maxXP*100))+"%",250);
+  $("gNext").textContent=r<3?`${Math.ceil(RANKS[r+1][1]*CFG.maxXP)-G.xp} XP to ${RANKS[r+1][0]}. Replay to climb the ranks.`:`Top rank. Best possible score is ${CFG.maxXP} XP.`;
+  $("gBadges").innerHTML=CFG.badges.map(b=>{const st=G.earned.has(b.id)?"new":before.has(b.id)?"":"locked";
+    return `<div class="bdg ${st}"><span class="ic">${b.icon}</span><div><b>${b.name}</b><small>${b.desc}</small></div></div>`;}).join("");
+  $("gCount").textContent=`${d[CFG.module].badges.length} of ${CFG.badges.length} collected`;
+  $("gPass").innerHTML=CFG.modules.map(m=>{const done=!!d[m.n];
+    return `<div class="stamp ${done?"done":""} ${m.n===CFG.module?"here":""}"><b>${done?"✓ ":""}${CFG.unit||"Module"} ${m.n}</b>${m.name}</div>`;}).join("");
+  confetti();
+}
+function resetGame(){G.xp=0;G.earned=new Set();G.pending=[];xpPill();}
+function confetti(){
+  if(RM)return;const c=document.createElement("canvas");c.id="confetti";document.body.appendChild(c);
+  const x=c.getContext("2d"),W=c.width=innerWidth,H=c.height=innerHeight,cols=["#2F6BFF","#FFC93C","#7FD6C2","#0E1F3D","#E2574C"];
+  const ps=Array.from({length:150},()=>({x:W/2+(Math.random()-.5)*W*.3,y:H*.25,vx:(Math.random()-.5)*12,vy:-Math.random()*11-3,s:Math.random()*7+4,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[Math.random()*cols.length|0]}));
+  const t0=performance.now();
+  (function f(t){x.clearRect(0,0,W,H);ps.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.r+=p.vr;
+    x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore();});
+    if(t-t0<2800)requestAnimationFrame(f);else c.remove();})(t0);
+}
+
+
+const LOGO=`<svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#0E1F3D"/><circle cx="16" cy="11" r="4" fill="#FFC93C"/><path d="M5 20c3.7 0 3.7-3 7.3-3s3.7 3 7.4 3 3.6-3 7.3-3" stroke="#7FD6C2" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M5 25.5c3.7 0 3.7-3 7.3-3s3.7 3 7.4 3 3.6-3 7.3-3" stroke="#2F6BFF" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const MODS=[
+ {title:"Your first team huddle",av:"Team",ctx:"It's Monday of your first week leading Harbourline's eight-person claims team. Two of them were your peers until Friday. Everyone has gathered for your first huddle.",q:"How do you open?",
+  opts:[{t:"Outline the three changes you're planning, so everyone knows where they stand.",s:0,f:"Clear, but changing things before you understand them signals you're not listening, and lands badly with former peers."},
+        {t:"Share a little about how you like to work, then ask: what's working, what's getting in the way, and what should never change?",s:2,f:"You set the tone as a leader who listens first, and you'll learn more in ten minutes than in a week of reports."},
+        {t:"Keep it short: \u201CNothing's changing. Business as usual.\u201D",s:1,f:"Reassuring, but a missed moment. People want to know who you'll be as their leader, and it's a promise you may not keep."}],
+  ch:{type:"lightning",qs:[
+   {q:"In your first 30 days, what matters most?",o:["Quick wins to show impact","A one-to-one with every team member","Rewriting team processes"],a:1},
+   {q:"A former peer jokes: \u201CDon't forget where you came from.\u201D Best reply?",o:["Laugh and change the subject","\u201CI won't. And I'd value your help making this work.\u201D","\u201CThings are different now.\u201D"],a:1},
+   {q:"True or false: once you're the leader, you should have all the answers.",o:["True","False"],a:1}]},
+  take:"Listen before you change. Your first job is to learn what the team already knows.",commit:[0,"Ask every team member what's working, what's in the way and what should never change"]},
+ {title:"The \u2018all good\u2019 one-to-one",av:"EL",ctx:"Ellis is quiet and reliable. In every one-to-one, the answer to \u201CHow's it going?\u201D is \u201CAll good.\u201D The meeting is over in five minutes.",q:"What do you try next?",
+  opts:[{t:"Send Ellis a list of questions to answer in writing before each one-to-one.",s:1,f:"Structure helps, but a written form can feel like an audit. Offer it as an option, not a requirement."},
+        {t:"Ask more specific questions, like \u201CWhat was the best part of your week? What slowed you down?\u201D, and let Ellis set half the agenda.",s:2,f:"Specific questions are easier to answer than \u201CHow's it going?\u201D, and sharing the agenda shows the meeting is for Ellis too."},
+        {t:"Take Ellis at their word. If everything's fine, shorter meetings save time.",s:0,f:"Tempting, but \u201Call good\u201D often means \u201CI don't feel safe telling you yet.\u201D Quiet people are the easiest to lose."}],
+  ch:{type:"order",title:"Put a strong one-to-one in order",items:["Check in on them as a person","Their topics and questions","Your updates and feedback","Agree actions and the next date"]},
+  take:"A one-to-one is their meeting, not your status update.",commit:[0,"Hold a regular one-to-one with every team member"]},
+ {title:"Missed deadlines, mixed messages",av:"!",ctx:"Three claims missed their service deadline this week. When you ask, two people thought the deadline was five days and one thought ten. Nobody is sure which work comes first.",q:"What's your move?",
+  opts:[{t:"Remind everyone firmly that deadlines matter and ask them to try harder.",s:0,f:"This treats a clarity problem as an effort problem. People can't hit a target they can't see."},
+        {t:"Run a short team session to agree priorities, deadlines and what good looks like, then write it down where everyone can see it.",s:2,f:"Clear, shared expectations fix the system, and the team owns what they helped agree."},
+        {t:"Email everyone the correct deadline.",s:1,f:"Accurate and quick, but one email rarely changes habits. Talk it through so questions come out."}],
+  ch:{type:"lightning",qs:[
+   {q:"Which is the clearest expectation?",o:["\u201CRespond to customers quickly.\u201D","\u201CReply to every new claim within one working day.\u201D","\u201CTry to stay on top of claims.\u201D"],a:1},
+   {q:"Expectations work best when they are…",o:["Set by you alone","Agreed with the team and written down","Kept flexible and unwritten"],a:1},
+   {q:"Someone keeps missing an agreed deadline. First step?",o:["Start a formal process","Check they understood it and ask what's getting in the way","Quietly reassign their work"],a:1}]},
+  take:"Most performance problems start as clarity problems.",commit:[1,"Agree clear priorities and what good looks like with the team"]},
+ {title:"What you overheard",av:"SA",ctx:"Walking past, you hear Sam tell an upset customer on the phone, \u201CWell, that's not my problem.\u201D The customer hangs up.",q:"When and how do you raise it?",
+  opts:[{t:"Mention it at the next team meeting as a general reminder about tone.",s:1,f:"It avoids singling Sam out, but everyone wonders who it's about, and Sam may not realise it's them."},
+        {t:"Wait for Sam's quarterly review so you can cover it properly.",s:0,f:"By then the moment has gone and the habit has set. Feedback works best close to the event."},
+        {t:"Find a private moment today. Describe what you heard and its impact, then ask what happened.",s:2,f:"Soon, private and specific, with a question that lets Sam explain. Something may have been going on."}],
+  ch:{type:"order",title:"Put the feedback steps in order",items:["Situation: when and where","Behaviour: what you saw or heard","Impact: the effect it had","Next step: ask and agree"]},
+  take:"Feedback helps most when it's soon, private and specific.",commit:[1,"Give specific feedback, positive and developmental, every week"]},
+ {title:"When a strong performer slips",av:"MO",ctx:"Mo has been one of your most reliable people for years. This month Mo has been late four times and missed targets, and looks exhausted.",q:"What do you do first?",
+  opts:[{t:"Start the formal performance process. Standards should be the same for everyone.",s:0,f:"Consistency matters, but jumping to process with a long-standing performer, without understanding why, damages trust fast."},
+        {t:"Have a private, caring check-in: say what you've noticed, ask how Mo is, and listen before talking about targets.",s:2,f:"A sudden change usually has a cause. Starting with care often surfaces health, caring or money worries you can help with."},
+        {t:"Quietly lighten Mo's workload without saying anything.",s:1,f:"Kind, but it hides the issue from Mo and the team, and you still don't know what's really happening."}],
+  ch:{type:"lightning",qs:[
+   {q:"A team member says they're struggling with their mental health. Best first response?",o:["\u201CHave you tried exercise?\u201D","Thank them, listen, and ask what would help","Refer them to HR straight away"],a:1},
+   {q:"Harbourline's Employee Assistance Programme is…",o:["Only for serious crises","A confidential service you can point anyone to","Something managers must approve"],a:1},
+   {q:"True or false: you need to solve every personal problem your team brings you.",o:["True","False"],a:1}]},
+  take:"Lead with curiosity and care. Process comes later, if at all.",commit:[0,"Learn what support is available, like the EAP, and how to signpost it"]},
+ {title:"The change you didn't choose",av:"MG",ctx:"Your manager tells you a new shift pattern starts next month. You think it'll hurt morale, and you know the team will push back.",q:"How do you handle it?",
+  opts:[{t:"Tell the team it isn't your decision and you don't agree with it either.",s:0,f:"Honest, but it undermines the change and your own authority. The team needs you to lead it, not commentate on it."},
+        {t:"Announce it by email to avoid a difficult meeting.",s:1,f:"Efficient, but change lands worst in writing. People need to ask questions and feel heard."},
+        {t:"Raise your concerns with your manager privately first. Once it's decided, explain the why, listen, and agree how you'll support the team.",s:2,f:"Challenge upwards in private, then lead the change in public. You can say it's hard without disowning it."}],
+  ch:{type:"order",title:"Put the steps for leading a change in order",items:["Explain why it's happening","Say what changes and what doesn't","Listen to concerns and questions","Agree support and a follow-up date"]},
+  take:"Challenge in private, commit in public.",commit:[2,"Agree with my manager how I'll raise concerns and lead changes"]}
+];
+const PH=[{d:"Days 1 to 30",h:"Listen and learn",s:["Spend an hour shadowing each role on the team","Learn the team's key numbers and what drives them","Agree with my manager how we'll work together","Meet the teams we depend on"]},
+ {d:"Days 31 to 60",h:"Set direction",s:["Deliver one quick win the team asked for","Delegate one task I used to do myself","Set up a simple weekly team rhythm","Recognise good work in public"]},
+ {d:"Days 61 to 90",h:"Lead and grow",s:["Hold a development conversation with each person","Ask the team for feedback on my leadership","Review how the team works together","Set next quarter's priorities with my manager"]}];
+const CKEY="harbourline-fll-c1";
+let S;try{S=JSON.parse(localStorage.getItem(CKEY))||{}}catch(e){S={}}
+S.done=S.done||{};S.best=S.best||{};S.pins=S.pins||[];S.plan=S.plan||null;S.badges=S.badges||[];
+function persist(){try{localStorage.setItem(CKEY,JSON.stringify(S))}catch(e){}}
+const total=()=>Object.values(S.done).reduce((a,b)=>a+b,0)+(S.plan?50:0);
+G.earned=new Set(S.badges);
+function earn(id){if(!G.earned.has(id)){unlock(id);S.badges=[...G.earned];persist();}}
+let cur=null,modXP=0;
+const show=id=>["intro","hub","mod","plan","end"].forEach(x=>$(x).classList.toggle("hidden",x!==id));
+/* ---------- hub ---------- */
+function hub(){
+  show("hub");G.xp=total();xpPill();
+  const n=Object.keys(S.done).length;
+  $("hubProg").innerHTML=`${n} of 6 complete`;
+  $("hubUnlocks").innerHTML=flushUnlocks();
+  $("mgrid").innerHTML=MODS.map((m,i)=>{const d=S.done[i]!=null;
+    return `<button class="mtile ${d?"done":""}" data-i="${i}" style="animation-delay:${i*.05}s"><span class="mn">${d?"✓":i+1}</span><b>${m.title}</b><small>Scenario and ${m.ch.type==="lightning"?"lightning round":"order puzzle"}, 2 min</small><span class="st">${d?`Done: ${S.done[i]} XP. Replay?`:"Start"}</span></button>`;}).join("");
+  document.querySelectorAll(".mtile").forEach(b=>b.onclick=()=>startMod(+b.dataset.i));
+  const open=n===6;
+  $("plantile").className="plantile"+(open?"":" locked");
+  $("plantile").innerHTML=`<span class="ic">${open?"🗺️":"🔒"}</span><div><b>${S.plan?"Your 90-day plan":"Build your 90-day plan"}</b>${open?(S.plan?"Review, edit or print your plan.":"Turn what you've learned into commitments for days 1 to 90. Worth 50 XP."):`Complete all six modules to unlock. ${6-n} to go.`}</div>${open?`<button class="btn alt" id="toPlan">${S.plan?"Open my plan":"Build my plan"}</button>`:""}`;
+  if(open)$("toPlan").onclick=()=>S.plan?endScreen():planner();
+  focusEl($("hub"));
+}
+/* ---------- module ---------- */
+function startMod(i){cur=i;modXP=0;show("mod");scenario();}
+function head(step){setVoyage($("mrail"),step,3);}
+function scenario(){
+  const m=MODS[cur];head(0);
+  $("mbody").innerHTML=`<div class="step-label">Module ${cur+1} of 6: scenario</div><h2>${m.title}</h2>
+   <div class="scene"><span class="av">${m.av}</span><p>${m.ctx}</p></div><div class="prompt">${m.q}</div>
+   <div class="options">${m.opts.map((o,k)=>`<button class="opt" data-k="${k}"><span class="key">${"ABC"[k]}</span><span>${o.t}</span></button>`).join("")}</div><div id="mfb"></div>`;
+  document.querySelectorAll("#mbody .opt").forEach(b=>b.onclick=()=>{
+    const o=m.opts[+b.dataset.k];document.querySelectorAll("#mbody .opt").forEach(x=>x.disabled=true);b.classList.add("picked");
+    const xp=[5,20,40][o.s];modXP+=xp;addXP(xp,b);
+    if(o.s===2){S.best[cur]=true;persist();if(Object.keys(S.best).length>=4)earn("best");}
+    $("mfb").innerHTML=`<div class="feedback">${flushUnlocks()}<div class="chips"><span class="chip xp">+${xp} XP</span><span class="chip ${o.s===2?"up":o.s===0?"down":""}">${["Risky call","Partly there","Best call"][o.s]}</span></div><p>${o.f}</p><button class="btn alt" id="toCh">Take the quick challenge</button></div>`;
+    $("toCh").onclick=challenge;$("toCh").focus();
+  });
+  focusEl($("mrail"));
+}
+function challenge(){const c=MODS[cur].ch;head(1);c.type==="lightning"?lightning(c):order(c);}
+let tmr=null;
+function lightning(c){
+  let q=0,right=0,allFast=true;
+  const nextQ=()=>{
+    if(q>=c.qs.length)return chDone(`You got ${right} of ${c.qs.length}.`,right===c.qs.length?"quick":null);
+    const Q=c.qs[q],T=15;let left=T;
+    $("mbody").innerHTML=`<div class="step-label">Module ${cur+1} of 6: lightning round</div><div class="lq"><div class="lmeta"><span>Question ${q+1} of ${c.qs.length}</span><span id="secs">${T}s</span></div>
+     <div class="timer" id="timer"><i id="tbar"></i></div><h3>${Q.q}</h3><div class="lopts">${Q.o.map((o,k)=>`<button class="lopt" data-k="${k}">${o}</button>`).join("")}</div><div id="lfb"></div></div>`;
+    const t0=performance.now();clearInterval(tmr);
+    tmr=setInterval(()=>{left=Math.max(0,T-(performance.now()-t0)/1000);$("tbar").style.width=(left/T*100)+"%";$("secs").textContent=Math.ceil(left)+"s";$("timer").classList.toggle("low",left<5);if(left<=0)answer(-1);},100);
+    const answer=k=>{clearInterval(tmr);const btns=[...document.querySelectorAll(".lopt")];btns.forEach(b=>b.disabled=true);
+      btns[Q.a].classList.add("right");let msg;
+      if(k===Q.a){right++;const fast=left>8;const xp=10+(fast?5:0);if(!fast)allFast=false;modXP+=xp;addXP(xp,btns[k]);msg=fast?"Right, with a speed bonus!":"Right!";}
+      else{allFast=false;if(k>=0)btns[k].classList.add("wrong");msg=k<0?"Time's up.":"Not quite.";}
+      $("lfb").innerHTML=`<p style="margin:12px 0 0;font-weight:700">${msg}</p>`;
+      setTimeout(()=>{q++;nextQ();},RM?600:1300);};
+    document.querySelectorAll(".lopt").forEach(b=>b.onclick=()=>answer(+b.dataset.k));
+    document.querySelector(".lopt").focus({preventScroll:true});
+  };
+  nextQ();
+}
+function order(c){
+  const pool=c.items.map((t,i)=>({t,i})).sort(()=>Math.random()-.5);let placed=[];
+  const draw=()=>{
+    $("mbody").innerHTML=`<div class="step-label">Module ${cur+1} of 6: order puzzle</div><h2>${c.title}</h2><p class="muted">Tap the steps in order. Tap a filled slot to take it back.</p>
+     <div class="pool">${pool.filter(p=>!placed.includes(p)).map(p=>`<button class="pitem" data-i="${p.i}">${p.t}</button>`).join("")||'<span class="muted">All placed. Ready to check?</span>'}</div>
+     <div class="slots">${c.items.map((_,k)=>`<button class="slot ${placed[k]?"filled":""}" data-k="${k}"><span class="n">${k+1}</span><span>${placed[k]?placed[k].t:""}</span></button>`).join("")}</div>
+     <button class="btn" id="chk" ${placed.length<c.items.length?"disabled":""}>Check my order</button>`;
+    document.querySelectorAll(".pitem").forEach(b=>b.onclick=()=>{placed.push(pool.find(p=>p.i===+b.dataset.i));draw();const nb=document.querySelector(".pitem");(nb||$("chk")).focus();});
+    document.querySelectorAll(".slot").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;if(placed[k]){placed.splice(k,1);draw();}});
+    $("chk").onclick=()=>{let ok=0;document.querySelectorAll(".slot").forEach((s,k)=>{s.disabled=true;const g=placed[k].i===k;if(g)ok++;s.classList.add(g?"ok":"bad");});
+      $("chk").disabled=true;const xp=ok*10;modXP+=xp;if(xp)addXP(xp,$("chk"));
+      const fix=ok<c.items.length?`<p class="muted" style="margin-top:12px">The order: ${c.items.map((t,i)=>`${i+1}. ${t}`).join("; ")}.</p>`:"";
+      $("chk").insertAdjacentHTML("afterend",fix+`<div style="margin-top:12px"><button class="btn alt" id="cont">Continue</button></div>`);
+      $("cont").onclick=()=>chDone(`${ok} of ${c.items.length} in the right place.`,ok===c.items.length?"order":null);$("cont").focus();};
+  };
+  draw();
+}
+function chDone(summary,badge){
+  clearInterval(tmr);if(badge)earn(badge);
+  const m=MODS[cur];head(2);
+  S.done[cur]=Math.max(S.done[cur]||0,modXP);persist();
+  const n=Object.keys(S.done).length;if(n>=3)earn("half");if(n===6)earn("six");
+  G.xp=total();xpPill();
+  const pinned=S.pins.some(p=>p[1]===m.commit[1]);
+  $("mbody").innerHTML=`<div class="takeaway">${flushUnlocks()}<div class="result-kicker" style="color:var(--glass)">Module ${cur+1} complete. ${summary} You earned ${modXP} XP.</div>
+   <h2>Your takeaway</h2><div class="big">${m.takeaway||m.take}</div>
+   <button class="pin" id="pin" aria-pressed="${pinned}">📌 <span>${pinned?"Pinned to my 90-day plan":"Pin to my 90-day plan"}</span></button>
+   <p style="margin:0 0 16px;font-size:.92rem">\u201C${m.commit[1]}\u201D</p>
+   <div class="actions"><button class="btn alt" id="back">${n===6?"Back to modules: plan unlocked!":"Back to modules"}</button></div></div>`;
+  $("pin").onclick=()=>{const on=$("pin").getAttribute("aria-pressed")!=="true";
+    S.pins=S.pins.filter(p=>p[1]!==m.commit[1]);if(on)S.pins.push(m.commit);persist();
+    $("pin").setAttribute("aria-pressed",on);$("pin").querySelector("span").textContent=on?"Pinned to my 90-day plan":"Pin to my 90-day plan";};
+  $("back").onclick=hub;focusEl($("mbody"));
+}
+/* ---------- planner ---------- */
+let P;
+function planner(){
+  show("plan");
+  P=S.plan?JSON.parse(JSON.stringify(S.plan)):{intent:"",support:"",ph:[[],[],[]],custom:[[],[],[]]};
+  P.custom=P.custom||[[],[],[]];
+  if(!S.plan)S.pins.forEach(([k,t])=>{if(!P.ph[k].includes(t))P.ph[k].push(t);});
+  $("intent").value=P.intent;$("support").value=P.support;
+  drawPhases();focusEl($("plan"));
+}
+function drawPhases(){
+  $("phases").innerHTML=PH.map((p,k)=>{
+    const opts=[...new Set([...S.pins.filter(x=>x[0]===k).map(x=>x[1]),...p.s,...P.custom[k]])];
+    return `<div class="planphase"><h3><span class="d">${p.d}</span>${p.h}</h3><div class="pchips">${opts.map(t=>`<button class="pchip" data-k="${k}" aria-pressed="${P.ph[k].includes(t)}">${S.pins.some(x=>x[1]===t)?"📌 ":""}${esc(t)}</button>`).join("")}</div>
+     <div class="addrow"><input id="add${k}" placeholder="Add your own commitment" maxlength="120"><button data-k="${k}" class="addb">Add</button></div></div>`;}).join("");
+  document.querySelectorAll(".pchip").forEach(b=>b.onclick=()=>{const k=+b.dataset.k,t=b.textContent.replace(/^📌 /,"");
+    P.ph[k]=P.ph[k].includes(t)?P.ph[k].filter(x=>x!==t):[...P.ph[k],t];b.setAttribute("aria-pressed",P.ph[k].includes(t));strength();});
+  document.querySelectorAll(".addb").forEach(b=>b.onclick=()=>{const k=+b.dataset.k,v=$("add"+k).value.trim();if(!v)return;
+    P.custom[k].push(v);P.ph[k].push(v);drawPhases();$("add"+k).focus();});
+  PH.forEach((_,k)=>$("add"+k).onkeydown=e=>{if(e.key==="Enter")document.querySelector(`.addb[data-k="${k}"]`).click();});
+  strength();
+}
+function strength(){
+  P.intent=$("intent").value.trim();P.support=$("support").value.trim();
+  const c=P.ph.reduce((a,x)=>a+Math.min(x.length,4),0);
+  const v=Math.min(100,Math.round(c/12*70+(P.intent?18:0)+(P.support?12:0)));
+  $("strBar").style.width=v+"%";$("strVal").textContent=v+"%";
+  $("makePlan").disabled=!P.ph.every(x=>x.length>=2);P.str=v;
+}
+$("intent").oninput=strength;$("support").oninput=strength;
+$("makePlan").onclick=()=>{strength();const first=!S.plan;S.plan=P;persist();if(first){addXP(50,$("makePlan"));earn("planner");}endScreen();};
+function planText(){return `MY FIRST 90 DAYS\n${S.plan.intent?"Intent: "+S.plan.intent+"\n":""}\n`+PH.map((p,k)=>`${p.d.toUpperCase()}: ${p.h}\n`+S.plan.ph[k].map(t=>"[ ] "+t).join("\n")).join("\n\n")+(S.plan.support?`\n\nSupport: ${S.plan.support}`:"")+"\n\nHarbourline Leadership Academy, First Line Leaders";}
+function endScreen(){
+  show("end");G.xp=total();xpPill();
+  $("endUnlocks").innerHTML=flushUnlocks();
+  countUp($("total"),S.plan.str||0,"%",100);
+  $("planOut").innerHTML=`<div class="po-head">${LOGO}<div><b style="font-family:var(--display);color:var(--navy)">My first 90 days</b><div class="note">Harbourline Leadership Academy, First Line Leaders</div></div></div>
+   ${S.plan.intent?`<div class="po-intent">\u201C${esc(S.plan.intent)}\u201D</div>`:""}
+   <div class="po-cols">${PH.map((p,k)=>`<div class="po-col"><h4>${p.d}: ${p.h}</h4><ul>${S.plan.ph[k].map(t=>`<li><span>${esc(t)}</span></li>`).join("")}</ul></div>`).join("")}</div>
+   ${S.plan.support?`<p style="margin:14px 0 0"><strong>Who will support me:</strong> ${esc(S.plan.support)}</p>`:""}`;
+  finishGame();focusEl($("end"));
+}
+$("print").onclick=()=>window.print();
+$("copy").onclick=()=>{const t=planText();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{$("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy as text",1600);}).catch(()=>{prompt("Copy your plan:",t);});};
+$("edit").onclick=planner;$("backHub").onclick=hub;
+$("resetAll").onclick=()=>{if(!confirm("Reset all progress on this course?"))return;S={done:{},best:{},pins:[],plan:null,badges:[]};persist();G.earned=new Set();G.pending=[];hub();};
+if(Object.keys(S.done).length)$("start").textContent="Continue the course";
+$("start").onclick=hub;
+
+</script>
+</body>
+</html>
