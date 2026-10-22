@@ -1,1 +1,630 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ServiceHub: Getting Help Right</title>
+<meta name="description" content="A five-minute Watch, Try, Test software simulation for raising incidents and requests in ServiceHub, a fictional employee self-service portal. Portfolio sample by Clair Bland.">
+<style>
+:root{
+  --navy:#15233F; --teal:#0B7A75; --teal-d:#08605C; --tint:#E6F2F1; --ink:#22262E; --grey:#5B6472;
+  --line:#D9E1E7; --bg:#F3F6FA; --coral:#F26B5B; --coral-l:#FDEBE8; --sun:#F6B93B; --sun-l:#FFF4DA; --teal-b:#14A39A; --card:#FFFFFF; --good:#0B7A75; --good-bg:#E3F4F2; --bad:#C2412F; --bad-bg:#FDEBE8;
+  --wl:#15233F; --wl-2:#0B7A75; --wattle:#F6B93B; --wattle-l:#FFF4DA;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Aptos,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;font-size:16px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid #1A73E8;outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
+/* Course chrome */
+.top{background:var(--navy);color:#fff}
+.top-in{max-width:1240px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:17px;letter-spacing:.2px;margin-right:auto}
+.brand small{display:block;font-weight:400;font-size:12px;opacity:.75}
+.tbtn{background:transparent;border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:8px;padding:6px 12px;font-size:14px}
+.tbtn[aria-pressed="false"]{opacity:.65}
+.tbtn:hover{background:rgba(255,255,255,.1)}
+.steps{max-width:1240px;margin:0 auto;padding:0 16px 10px;display:flex;gap:6px;flex-wrap:wrap}
+.step{font-size:12.5px;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.75)}
+.step.on{background:var(--teal);color:#fff;font-weight:600}
+.step.done::after{content:" ✓"}
+main{max-width:1240px;margin:0 auto;padding:20px 16px 40px}
+
+/* Slides */
+.slide{background:var(--card);border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:36px clamp(20px,4vw,48px);max-width:900px;margin:0 auto}
+.kicker{color:var(--teal);font-weight:700;font-size:13px;letter-spacing:.8px;text-transform:uppercase;margin:0 0 6px}
+h1,h2,h3{color:var(--navy);line-height:1.2}
+h1{font-size:clamp(26px,4vw,36px);margin:0 0 12px}
+h2{font-size:clamp(22px,3vw,28px);margin:0 0 12px}
+h3{font-size:18px;margin:0 0 6px}
+.lead{font-size:18px;color:var(--grey);max-width:60ch}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:10px;padding:11px 22px;font-weight:600;font-size:16px}
+.btn:hover{background:var(--teal-d)}
+.btn:disabled{background:#9DB5B3;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--teal);border:2px solid var(--teal)}
+.btn.ghost:hover{background:var(--tint)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:22px}
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;align-items:center}
+.hero-art{background:linear-gradient(140deg,var(--tint),#D3E9E6);border-radius:14px;aspect-ratio:4/3;display:grid;place-items:center}
+.meta{display:flex;gap:16px;flex-wrap:wrap;color:var(--grey);font-size:14px;margin:12px 0 0}
+.meta span::before{content:"● ";color:var(--teal)}
+.conf{margin-top:22px;padding:16px;border:1px solid var(--line);border-radius:12px}
+.conf p{margin:0 0 8px;font-weight:600}
+.scale{display:flex;gap:8px;flex-wrap:wrap}
+.scale button{width:46px;height:46px;border-radius:10px;border:2px solid var(--line);background:#fff;font-weight:700}
+.scale button[aria-pressed="true"]{border-color:var(--teal);background:var(--teal);color:#fff}
+.scale-l{display:flex;justify-content:space-between;max-width:270px;font-size:12.5px;color:var(--grey);margin-top:4px}
+.objs{display:grid;gap:12px;margin:20px 0 0;padding:0;list-style:none}
+.objs li{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:12px;background:var(--tint)}
+.num{flex:none;width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-weight:700}
+.defs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+.def{border-radius:12px;padding:14px 16px;border:2px solid var(--line)}
+.def.inc{border-color:#E3A08F;background:#FDF3F0}
+.def.req{border-color:#8FC4BF;background:#F0F8F7}
+.def b{display:block;font-size:17px;color:var(--navy)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:8px 0 14px}
+.scard{text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;min-height:64px}
+.scard[aria-pressed="true"]{border-color:var(--navy);box-shadow:0 0 0 3px rgba(21,35,63,.15)}
+.scard.ok{border-color:var(--good);background:var(--good-bg);cursor:default}
+.scard .why{display:block;font-size:13px;color:var(--good);margin-top:4px}
+.bins{display:flex;gap:10px;flex-wrap:wrap}
+.fb{margin-top:14px;border-radius:10px;padding:12px 14px;font-size:15px}
+.fb:empty{display:none}
+.fb.good{background:var(--good-bg);color:#14532A;border-left:4px solid var(--good)}
+.fb.bad{background:var(--bad-bg);color:#7A2414;border-left:4px solid var(--bad)}
+.fb.info{background:var(--wattle-l);color:#5B4300;border-left:4px solid var(--wattle)}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+.mode{position:relative;text-align:left;background:#fff;border:2px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.mode:hover{border-color:var(--teal)}
+.mode .ic{width:44px;height:44px;border-radius:10px;background:var(--tint);display:grid;place-items:center;margin-bottom:4px}
+.mode .tag{font-size:12.5px;color:var(--grey)}
+.mode .tick{position:absolute;top:12px;right:12px;background:var(--good);color:#fff;border-radius:999px;font-size:12px;padding:2px 9px;font-weight:600}
+.mode.rec{border-color:var(--teal);background:#F6FBFA}
+
+/* Simulation layout */
+.sim{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+.coach{background:var(--card);border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:20px;position:sticky;top:12px}
+.coach .badge{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--tint);color:var(--teal);margin-bottom:8px}
+.coach h2{font-size:21px;margin-bottom:8px}
+.coach .task{margin:0 0 10px}
+.cap{font-size:14.5px;color:var(--grey);border-left:3px solid var(--line);padding-left:10px;margin:10px 0}
+.cap::before{content:"Narration";display:block;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#8A93A0}
+body.nocap .cap{display:none}
+.hintbox{margin-top:10px}
+.hintbox summary{cursor:pointer;color:var(--teal);font-weight:600}
+.coach .row{margin-top:16px}
+
+/* Mock browser and portal */
+.frame{position:relative;background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(15,30,50,.12);overflow:hidden;border:1px solid #CBD3D9}
+.chrome{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#E6EAEE;border-bottom:1px solid #CBD3D9}
+.dots{display:flex;gap:6px}.dots i{width:11px;height:11px;border-radius:50%;background:#C3CAD1;display:block}
+.url{flex:1;background:#fff;border-radius:999px;padding:3px 12px;font-size:12.5px;color:#4A5563;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ph{background:var(--wl);color:#fff;display:flex;align-items:center;gap:14px;padding:10px 18px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700}
+.logo .mark{width:26px;height:26px;border-radius:7px;background:var(--wattle);display:grid;place-items:center;color:var(--wl);font-weight:800;font-size:14px}
+.logo small{font-weight:400;opacity:.8;font-size:12px;margin-left:4px}
+.pnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;opacity:.9}
+.av{width:28px;height:28px;border-radius:50%;background:var(--wl-2);display:grid;place-items:center;font-size:12px;font-weight:700;border:2px solid rgba(255,255,255,.4)}
+.pv{min-height:440px;padding:22px;background:#F5F8FB}
+.phero{background:linear-gradient(120deg,var(--wl),var(--wl-2));color:#fff;border-radius:12px;padding:22px}
+.phero h3{color:#fff;font-size:21px;margin:0 0 12px}
+.sbar{display:flex;gap:8px;background:#fff;border-radius:10px;padding:5px}
+.sbar input{flex:1;border:0;padding:9px 10px;font-size:15.5px;min-width:0;background:transparent}
+.sbar input:focus{outline:none}
+.sbar:focus-within{box-shadow:0 0 0 3px var(--wattle)}
+.sbar button{background:var(--wattle);border:0;border-radius:8px;padding:8px 16px;font-weight:700;color:var(--wl)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.tile{background:#fff;border:1px solid #DDE5EA;border-radius:12px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:4px}
+.tile:hover{border-color:var(--wl-2)}
+.tile b{color:var(--wl);font-size:15.5px}
+.tile span{font-size:13px;color:var(--grey)}
+.tile .ti{width:34px;height:34px;border-radius:9px;background:#E3F1F0;display:grid;place-items:center;margin-bottom:4px}
+.pop{margin-top:16px;font-size:13.5px;color:var(--grey)}
+.pop b{color:var(--ink)}
+.crumbs{font-size:13px;color:var(--grey);margin-bottom:10px}
+.crumbs a{color:var(--wl-2)}
+.res{display:grid;gap:10px}
+.ritem{text-align:left;background:#fff;border:1px solid #DDE5EA;border-radius:10px;padding:12px 14px;display:block;width:100%}
+.ritem:hover{border-color:var(--wl-2)}
+.ritem b{color:var(--wl);display:block}
+.ritem span{font-size:13.5px;color:var(--grey)}
+.pill{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:999px;margin-bottom:4px}
+.pill.kb{background:#E3ECF8;color:#234C85}.pill.rq{background:#E5F2EA;color:#22603D}.pill.in{background:#FBE9E3;color:#8A3218}
+.art{background:#fff;border:1px solid #DDE5EA;border-radius:12px;padding:18px 20px}
+.art h3{color:var(--wl)}
+.art ol{padding-left:20px;margin:10px 0}
+.art li{margin:6px 0}
+.banner{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--wattle-l);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.linkbtn{background:none;border:0;color:var(--wl-2);font-weight:700;text-decoration:underline;padding:2px 4px}
+.form{background:#fff;border:1px solid #DDE5EA;border-radius:12px;padding:18px 20px;display:grid;gap:14px}
+.form h3{color:var(--wl);margin:0}
+.fld{display:grid;gap:5px}
+.fld>label,.fld>.lbl{font-weight:600;font-size:14px}
+.fld .help{font-size:12.5px;color:var(--grey)}
+.fld input[type=text],.fld select,.fld textarea{border:1px solid #BCC5CC;border-radius:8px;padding:8px 10px;background:#fff;width:100%;font-size:15px}
+.fld textarea{min-height:64px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opt{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border:1px solid #DDE5EA;border-radius:8px;font-size:14.5px;background:#fff}
+.opt input{margin-top:4px}
+.opts{display:grid;gap:6px}
+.fmark{font-size:13px;font-weight:600}
+.fmark.g{color:var(--good)}.fmark.b{color:var(--bad)}
+.submit{justify-self:start;background:var(--wl);color:#fff;border:0;border-radius:8px;padding:10px 20px;font-weight:700}
+.submit:hover{background:var(--wl-2)}
+.conf-p{background:#fff;border:1px solid #DDE5EA;border-radius:12px;padding:22px;text-align:center}
+.conf-p .big{width:56px;height:56px;border-radius:50%;background:var(--good-bg);color:var(--good);display:grid;place-items:center;margin:0 auto 10px;font-size:28px}
+.ref{font-family:Consolas,Menlo,monospace;font-weight:700;color:var(--wl);font-size:18px}
+table.tk{width:100%;border-collapse:collapse;background:#fff;border:1px solid #DDE5EA;border-radius:12px;overflow:hidden;font-size:14px}
+.tk th{background:#E3F1F0;text-align:left;padding:9px 12px;color:var(--wl);font-size:13px}
+.tk td{padding:10px 12px;border-top:1px solid #E6ECF0}
+.tk tr.clk{cursor:pointer}.tk tr.clk:hover td{background:#EEF7F6}
+.st{font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;background:#E3ECF8;color:#234C85;white-space:nowrap}
+.st.ap{background:var(--wattle-l);color:#6B4F00}
+.detail{margin-top:12px;background:#fff;border:1px solid #DDE5EA;border-radius:12px;padding:16px}
+.track{display:flex;gap:0;margin-top:10px;flex-wrap:wrap}
+.track span{flex:1;min-width:90px;text-align:center;font-size:12.5px;padding:8px 4px;border-top:4px solid #DDE5EA;color:var(--grey)}
+.track span.on{border-color:var(--wl-2);color:var(--wl);font-weight:700}
+.back{background:none;border:0;color:var(--wl-2);font-weight:600;padding:0;margin-bottom:10px}
+
+/* Highlight and cursor */
+.hl{outline:3px solid var(--wattle)!important;outline-offset:3px;border-radius:10px;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(246,185,59,.55)}50%{box-shadow:0 0 0 9px rgba(246,185,59,0)}}
+.cursor{display:none;position:absolute;left:0;top:0;width:24px;height:24px;pointer-events:none;z-index:5;transition:transform .7s cubic-bezier(.4,.1,.2,1);transform:translate(60%,60%)}
+.frame.w .cursor{display:block}
+.cursor.click::after{content:"";position:absolute;left:-10px;top:-10px;width:22px;height:22px;border-radius:50%;border:3px solid var(--wattle);animation:ping .5s ease-out}
+@keyframes ping{from{transform:scale(.3);opacity:1}to{transform:scale(1.6);opacity:0}}
+.toast{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;max-width:90%;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:6}
+
+/* Results */
+.score{display:flex;align-items:center;gap:18px;margin:14px 0 6px;flex-wrap:wrap}
+.ring{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;font-size:26px;font-weight:800;color:var(--navy)}
+.items{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}
+.items li{display:flex;gap:12px;padding:12px 14px;border-radius:10px;background:#F6F8F9}
+.items .m{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px}
+.items .m.g{background:var(--good)}.items .m.b{background:var(--bad)}
+.items small{display:block;color:var(--grey);font-size:13.5px}
+.qr{border:2px solid var(--wl);border-radius:14px;overflow:hidden;margin-top:16px}
+.qr-h{background:var(--wl);color:#fff;padding:12px 18px;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.qr-h b{font-size:17px}
+.qr ol{margin:0;padding:16px 18px 16px 40px;display:grid;gap:10px}
+.qr li b{color:var(--wl)}
+.qr .tip{background:var(--wattle-l);padding:10px 18px;font-size:14px}
+.bars{display:grid;gap:8px;margin:14px 0}
+.bar{display:grid;grid-template-columns:70px 1fr 30px;gap:10px;align-items:center;font-size:14px}
+.bar .t{height:14px;border-radius:999px;background:#E1E7EA;overflow:hidden}
+.bar .t i{display:block;height:100%;background:var(--teal);border-radius:999px}
+.foot{max-width:1240px;margin:0 auto;padding:0 16px 24px;font-size:12.5px;color:var(--grey);text-align:center}
+
+/* ---- Colourful modern layer ---- */
+body{background:radial-gradient(900px 500px at 100% -10%,rgba(20,163,154,.10),transparent 60%),radial-gradient(800px 500px at -10% 110%,rgba(242,107,91,.08),transparent 60%),var(--bg);background-attachment:fixed}
+.top{background:linear-gradient(100deg,#15233F 0%,#1B2E52 55%,#0B5F5C 100%);position:relative}
+.top::after{content:"";display:block;height:5px;background:linear-gradient(90deg,var(--teal-b) 0 33%,var(--coral) 33% 66%,var(--sun) 66% 100%)}
+.step.on{background:var(--sun);color:var(--navy)}
+.slide{border-radius:22px;box-shadow:0 10px 30px rgba(21,35,63,.08);position:relative;overflow:hidden}
+.slide::before{content:"";position:absolute;inset:0 0 auto 0;height:6px;background:linear-gradient(90deg,var(--navy),var(--teal),var(--coral),var(--sun))}
+.kicker{color:var(--coral)}
+h1{font-weight:800;letter-spacing:-.5px}
+h2{font-weight:800;letter-spacing:-.3px}
+.btn{border-radius:999px;padding:12px 26px;box-shadow:0 4px 12px rgba(11,122,117,.25)}
+.btn.ghost{box-shadow:none}
+.hero-art{background:linear-gradient(140deg,#DDF3F1 0%,#FFF1D6 60%,#FDE3DF 100%);border-radius:20px}
+.meta span::before{color:var(--coral)}
+.meta span:nth-child(2)::before{color:var(--teal)}
+.meta span:nth-child(3)::before{color:var(--sun)}
+.objs li{background:#fff;border:1px solid var(--line);border-left:6px solid var(--teal)}
+.objs li:nth-child(2){border-left-color:var(--coral)}.objs li:nth-child(2) .num{background:var(--coral)}
+.objs li:nth-child(3){border-left-color:var(--sun)}.objs li:nth-child(3) .num{background:var(--sun);color:var(--navy)}
+.def.inc{border-color:var(--coral);background:var(--coral-l)}
+.def.req{border-color:var(--teal-b);background:#E3F4F2}
+.def.inc b{color:#B23A2A}.def.req b{color:var(--teal)}
+#bInc{border-color:var(--coral);color:#B23A2A}#bInc:hover{background:var(--coral-l)}
+.scard{border-radius:14px}
+.mode{border:0;border-radius:18px;padding:0;overflow:hidden;box-shadow:0 6px 18px rgba(21,35,63,.08);transition:transform .15s}
+.mode:hover{transform:translateY(-3px)}
+.mode>*:not(.tick){margin-left:18px;margin-right:18px}
+.mode .ic{margin:18px 18px 4px;background:#fff}
+.mode::before{content:"";position:absolute;inset:0 0 auto 0;height:80px;z-index:0}
+.mode>*{position:relative;z-index:1}
+#mW::before{background:linear-gradient(135deg,var(--teal),var(--teal-b))}
+#mT::before{background:linear-gradient(135deg,#E2513F,var(--coral))}
+#mX::before{background:linear-gradient(135deg,#EFA51F,var(--sun))}
+.mode h3{margin-top:26px}
+.mode .tag{margin-bottom:18px}
+.mode.rec{box-shadow:0 0 0 3px var(--navy),0 6px 18px rgba(21,35,63,.12);background:#fff}
+.mode .tick{background:var(--navy);z-index:2}
+.coach{border-radius:18px;box-shadow:0 10px 30px rgba(21,35,63,.08);border-top:6px solid var(--teal)}
+.coach .badge{background:var(--navy);color:#fff}
+.coach.m-try{border-top-color:var(--coral)}.coach.m-try .badge{background:var(--coral)}
+.coach.m-test{border-top-color:var(--sun)}.coach.m-test .badge{background:var(--sun);color:var(--navy)}
+.cap{border-left-color:var(--sun)}
+.frame{border-radius:16px;box-shadow:0 14px 34px rgba(21,35,63,.14)}
+.ph{background:var(--navy)}
+.phero{background:linear-gradient(115deg,var(--navy) 0%,#123A5A 45%,var(--teal) 100%);border-radius:16px;position:relative;overflow:hidden}
+.phero::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(246,185,59,.25)}
+.phero>*{position:relative;z-index:1}
+.sbar button{background:var(--sun);color:var(--navy)}
+.tile{border-radius:14px;border-top:4px solid var(--teal)}
+#tReport{border-top-color:var(--coral)}#tReport .ti{background:var(--coral-l)}
+#tRequest .ti{background:#E3F4F2}
+#tTickets{border-top-color:var(--sun)}#tTickets .ti{background:var(--sun-l)}
+.pill.in{background:var(--coral-l);color:#B23A2A}.pill.rq{background:#E3F4F2;color:var(--teal)}.pill.kb{background:#E6ECF7;color:#1F3A6B}
+.ritem{border-radius:12px;border-left:5px solid var(--line)}
+.ritem:has(.pill.kb){border-left-color:#5A79B8}.ritem:has(.pill.rq){border-left-color:var(--teal-b)}.ritem:has(.pill.in){border-left-color:var(--coral)}
+.submit{background:var(--teal);border-radius:999px;padding:10px 24px}
+.submit:hover{background:var(--teal-d)}
+.conf-p .big{background:linear-gradient(135deg,var(--teal),var(--teal-b));color:#fff}
+.ref{color:var(--navy)}
+.tk th{background:var(--navy);color:#fff}
+.st{background:#E3F4F2;color:var(--teal)}
+.track span.on{border-color:var(--teal)}
+.fb.bad{border-left-color:var(--coral)}
+.fb.info{border-left-color:var(--sun)}
+.scale button[aria-pressed="true"]{border-color:var(--coral);background:var(--coral)}
+.bar .t i{background:linear-gradient(90deg,var(--teal),var(--teal-b))}
+.bar:first-child .t i{background:linear-gradient(90deg,var(--coral),var(--sun))}
+.qr{border-color:var(--navy);border-radius:18px}
+.qr-h{background:linear-gradient(100deg,var(--navy),var(--teal))}
+.qr li::marker{color:var(--coral);font-weight:800}
+.qr li b{color:var(--navy)}
+.qr .tip{background:var(--sun-l)}
+.items .m.b{background:var(--coral)}
+.num{background:var(--teal)}
+
+@media (max-width:920px){.sim{grid-template-columns:1fr}.coach{position:static;order:-1}}
+@media (max-width:640px){.hero,.defs,.modes,.two{grid-template-columns:1fr}.tiles{grid-template-columns:1fr}.hero-art{display:none}.pnav{display:none}.pv{padding:14px}.slide{padding:24px 18px}}
+@media (prefers-reduced-motion:reduce){.hl{animation:none}.cursor{transition:none}}
+@media print{
+  body{background:#fff}
+  .top,.foot,.noprint,.row{display:none!important}
+  main{padding:0}.slide{box-shadow:none;padding:0}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">ServiceHub: Getting help the right way<small>Wattlebrook Life · Software simulation</small></div>
+    <button class="tbtn" id="sndBtn" aria-pressed="true" title="Turn narration on or off">🔊 Narration</button>
+    <button class="tbtn" id="capBtn" aria-pressed="true" title="Show or hide captions">CC Captions</button>
+    <button class="tbtn" id="menuBtn">Menu</button>
+  </div>
+  <nav class="steps" id="steps" aria-label="Course progress"></nav>
+</header>
+<main id="main" tabindex="-1"></main>
+<p class="foot">Portfolio sample by Clair Bland · Wattlebrook Life and ServiceHub are fictional · Narration uses your browser's built-in voice</p>
+<div id="live" class="sr" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- State ---------- */
+var KEY="servicehub-sim-v1";
+var S={screen:"0.1",done:{watch:false,tryit:false,test:false,course:false},conf0:null,conf1:null,sound:true,cap:true};
+try{var saved=JSON.parse(localStorage.getItem(KEY)||"null");if(saved){S.done=saved.done||S.done;S.conf0=saved.conf0||null;S.sound=saved.sound!==false;S.cap=saved.cap!==false;}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({done:S.done,conf0:S.conf0,conf1:S.conf1,sound:S.sound,cap:S.cap}))}catch(e){}}
+
+var T={}; // try-mode state
+var X={}; // test-mode state
+var run=0; // animation token
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var main=$("#main");
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+function announce(t){var l=$("#live");l.textContent="";setTimeout(function(){l.textContent=t},30)}
+
+/* ---------- Narration ---------- */
+var voice=null;
+function pickVoice(){if(!("speechSynthesis" in window))return;var v=speechSynthesis.getVoices();voice=v.find(function(x){return /en-AU/i.test(x.lang)})||v.find(function(x){return /en-GB/i.test(x.lang)})||v.find(function(x){return /^en/i.test(x.lang)})||null;}
+if("speechSynthesis" in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+function say(t){if(!("speechSynthesis" in window))return;speechSynthesis.cancel();if(!S.sound||!t)return;var u=new SpeechSynthesisUtterance(t);if(voice)u.voice=voice;u.rate=1;speechSynthesis.speak(u);}
+function hush(){if("speechSynthesis" in window)speechSynthesis.cancel();}
+
+function setBtns(){
+  var s=$("#sndBtn");s.setAttribute("aria-pressed",S.sound);s.textContent=(S.sound?"🔊":"🔇")+" Narration";
+  $("#capBtn").setAttribute("aria-pressed",S.cap);document.body.classList.toggle("nocap",!S.cap);
+}
+$("#sndBtn").onclick=function(){S.sound=!S.sound;save();setBtns();if(!S.sound)hush();else{var c=$(".cap");if(c)say(c.textContent)}};
+$("#capBtn").onclick=function(){S.cap=!S.cap;save();setBtns()};
+$("#menuBtn").onclick=function(){go("0.4")};
+setBtns();
+
+/* ---------- Icons ---------- */
+var I={
+ search:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#15233F" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>',
+ warn:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#15233F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></svg>',
+ bag:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#15233F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>',
+ list:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#15233F" stroke-width="2.2" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>',
+ eye:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0B7A75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+ hand:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0B7A75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5a1.5 1.5 0 0 1 3 0v5M12 10V4a1.5 1.5 0 0 1 3 0v6M15 10V6a1.5 1.5 0 0 1 3 0v7a7 7 0 0 1-7 7h-1a6 6 0 0 1-5-3l-2.5-4.5a1.5 1.5 0 0 1 2.6-1.5L9 13"/></svg>',
+ check:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0B7A75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="m8 12 3 3 5-6"/></svg>',
+ cursor:'<svg class="cursor" id="cur" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2l15 9-6.5 1.5L16 20l-3 1.5-3.5-7.5L4 18z" fill="#15233F" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>'
+};
+var heroArt='<svg viewBox="0 0 240 180" width="85%" role="img" aria-label="Illustration of a consultant at a desk wearing a headset"><rect x="20" y="128" width="200" height="10" rx="4" fill="#15233F"/><rect x="118" y="62" width="88" height="60" rx="6" fill="#fff" stroke="#15233F" stroke-width="4"/><rect x="128" y="74" width="40" height="7" rx="3" fill="#F26B5B"/><rect x="128" y="88" width="66" height="5" rx="2.5" fill="#B9D9D5"/><rect x="128" y="99" width="54" height="5" rx="2.5" fill="#B9D9D5"/><rect x="156" y="122" width="12" height="8" fill="#15233F"/><circle cx="74" cy="68" r="22" fill="#F2C9A6"/><path d="M52 66a22 22 0 0 1 44 0" fill="none" stroke="#15233F" stroke-width="5"/><rect x="47" y="62" width="9" height="15" rx="4" fill="#15233F"/><path d="M52 77q4 14 18 12" fill="none" stroke="#15233F" stroke-width="3"/><circle cx="71" cy="89" r="3" fill="#15233F"/><circle cx="38" cy="40" r="10" fill="#F26B5B" opacity=".85"/><circle cx="222" cy="100" r="6" fill="#14A39A"/><path d="M40 128c0-26 14-38 34-38s34 12 34 38z" fill="#0B7A75"/><circle cx="196" cy="40" r="14" fill="#F6B93B"/><path d="M196 33v8M196 45h.01" stroke="#15233F" stroke-width="3" stroke-linecap="round"/></svg>';
+
+/* ---------- Progress bar ---------- */
+var GROUPS=[["Intro",["0.1","0.2","0.3","0.4"]],["Watch",["W1","W2","W3","W4","W5","W6"]],["Try",["T1","T2","T3","T4","T5","T6"]],["Test",["X1","X2","X3","X4","X5"]],["Results",["R1","R2","R3"]]];
+function drawSteps(){
+  var doneMap={Watch:S.done.watch,Try:S.done.tryit,Test:S.done.test,Results:S.done.course};
+  $("#steps").innerHTML=GROUPS.map(function(g){var on=g[1].indexOf(S.screen)>-1;var pos=on?" "+(g[1].indexOf(S.screen)+1)+"/"+g[1].length:"";
+    return '<span class="step'+(on?" on":"")+(doneMap[g[0]]?" done":"")+'"'+(on?' aria-current="step"':"")+'>'+g[0]+pos+'</span>'}).join("");
+}
+
+/* ---------- Portal pieces ---------- */
+function frame(url,inner){return '<div class="frame" id="frame"><div class="chrome" aria-hidden="true"><div class="dots"><i></i><i></i><i></i></div><div class="url">https://servicehub.wattlebrook.example'+url+'</div></div><div class="ph"><div class="logo"><span class="mark">W</span>ServiceHub<small>Wattlebrook Life</small></div><div class="pnav" aria-hidden="true"><span>Home</span><span>Knowledge</span><span>My tickets</span></div><div class="av" aria-hidden="true">SK</div></div><div class="pv" id="pv">'+inner+'</div>'+I.cursor+'</div>'}
+function pHome(name){return '<div class="phero"><h3>How can we help, '+(name||"Sam")+'?</h3><form class="sbar" id="sform" role="search" onsubmit="return false"><label class="sr" for="q">Search ServiceHub</label><input id="q" type="text" placeholder="Search for answers, e.g. reset password" autocomplete="off"><button id="qbtn" type="submit">Search</button></form></div>'+
+ '<div class="tiles"><button class="tile" id="tReport" type="button"><span class="ti">'+I.warn+'</span><b>Report an issue</b><span>Something is broken or not working</span></button><button class="tile" id="tRequest" type="button"><span class="ti">'+I.bag+'</span><b>Request something</b><span>Access, equipment or software</span></button><button class="tile" id="tTickets" type="button"><span class="ti">'+I.list+'</span><b>My tickets</b><span>Check the status of your tickets</span></button></div>'+
+ '<p class="pop"><b>Popular:</b> Reset your password · Set up multi-factor authentication · Connect to VPN from home</p>'}
+var HS_RESULTS=[["rHead","kb","Fix headset audio in 3 steps","Knowledge article · No sound or muffled sound in your headset"],["rOrder","rq","Order new equipment","Request item · Headsets, monitors, keyboards and mice"],["rTeams","kb","Teams meeting settings","Knowledge article · Change your camera, background and meeting options"]];
+function pResults(q,list){return '<p class="crumbs"><a>Home</a> › Search</p><h3 style="color:var(--wl)">Results for “'+esc(q)+'”</h3><div class="res">'+list.map(function(r){return '<button class="ritem" type="button" id="'+r[0]+'"><span class="pill '+r[1]+'">'+({kb:"Article",rq:"Request",in:"Report an issue"})[r[1]]+'</span><b>'+r[2]+'</b><span>'+r[3]+'</span></button>'}).join("")+'</div>'}
+function pArticle(){return '<p class="crumbs"><a>Home</a> › Knowledge › Hardware</p><div class="art"><span class="pill kb">Article KB0010442</span><h3>Fix headset audio in 3 steps</h3><p style="margin:0;color:var(--grey);font-size:14px">Use this if you have no sound, or muffled sound, in your headset.</p><ol><li>Check the headset is plugged firmly into the USB port.</li><li>Select the headset as your audio device (Settings › Sound).</li><li>Close and restart Teams.</li></ol><p style="font-size:13.5px;color:var(--grey);margin:0">Was this helpful? 👍 👎</p></div><div class="banner" id="banner"><span>Still need help?</span><button class="linkbtn" type="button" id="reportLink">Report an issue</button></div>'}
+var ITEMS={Hardware:["Headset","Laptop","Monitor","Keyboard or mouse"],Software:["Salesforce","Outlook","Teams","Other software"],Network:["Wi-Fi","VPN","Internet"],Access:["Password","Shared drive","Shared mailbox"]};
+function opts(arr,ph){return '<option value="">'+(ph||"Select…")+'</option>'+arr.map(function(a){return '<option>'+a+'</option>'}).join("")}
+function urgencyField(){return '<div class="fld" id="fUrg"><label for="urg">Urgency</label><select id="urg">'+opts(["Low","Medium","High"])+'</select><span class="help">High: you can’t do your main work. Medium: you can work, but it’s slower. Low: it’s an inconvenience.</span><span class="fmark" id="mUrg"></span></div>'}
+function pIncident(kind){
+  var head='<p class="crumbs"><a>Home</a> › Report an issue</p><div class="form" id="incForm"><h3>Report an issue</h3><div class="two"><div class="fld" id="fCat"><label for="cat">Category</label><select id="cat">'+opts(Object.keys(ITEMS))+'</select><span class="fmark" id="mCat"></span></div><div class="fld" id="fItem"><label for="item">Item</label><select id="item">'+opts([],"Choose a category first")+'</select><span class="fmark" id="mItem"></span></div></div>';
+  var desc,det;
+  if(kind==="watch"){desc='<div class="fld" id="fDesc"><label for="sd">Short description</label><input id="sd" type="text"></div>';det='<div class="fld" id="fDet"><label for="det">Details</label><textarea id="det"></textarea></div>';}
+  else{desc='<fieldset class="fld" id="fDesc" style="border:0;padding:0;margin:0"><legend class="lbl" style="font-weight:600;font-size:14px;margin-bottom:5px">Short description: choose the best one</legend><div class="opts">'+[["Help!","d1"],["No sound in headset","d2"],["IT problem","d3"]].map(function(o){return '<label class="opt"><input type="radio" name="sd" value="'+o[1]+'"> '+o[0]+'</label>'}).join("")+'</div><span class="fmark" id="mDesc"></span></fieldset>';
+    det='<fieldset class="fld" id="fDet" style="border:0;padding:0;margin:0"><legend class="lbl" style="font-weight:600;font-size:14px;margin-bottom:5px">Details: tick what to include</legend><div class="opts">'+[["What you’ve already tried","k1"],["How it’s affecting your work","k2"],["Your password, so IT can log in","k3"],["When it started","k4"]].map(function(o){return '<label class="opt"><input type="checkbox" value="'+o[1]+'"> '+o[0]+'</label>'}).join("")+'</div><span class="fmark" id="mDet"></span></fieldset>';}
+  return head+desc+det+(kind==="watch"?urgencyField():"")+'</div>';
+}
+function pIncidentUrg(){return '<p class="crumbs"><a>Home</a> › Report an issue</p><div class="form"><h3>Report an issue</h3><div class="two"><div class="fld"><span class="lbl">Category</span><span>Hardware</span></div><div class="fld"><span class="lbl">Item</span><span>Headset</span></div></div><div class="fld"><span class="lbl">Short description</span><span>No sound in headset</span></div><div class="fld"><span class="lbl">Details</span><span>Tried the 3 steps in the knowledge article. Still no sound. Unable to take calls. Started at 10:15 am.</span></div>'+urgencyField()+'</div>'}
+function pSubmitView(){return '<p class="crumbs"><a>Home</a> › Report an issue › Review</p><div class="form"><h3>Check and submit</h3><table class="tk"><tbody><tr><td><b>Category</b></td><td>Hardware › Headset</td></tr><tr><td><b>Short description</b></td><td>No sound in headset</td></tr><tr><td><b>Details</b></td><td>Tried the 3 steps in the knowledge article. Still no sound. Unable to take calls.</td></tr><tr><td><b>Urgency</b></td><td>High</td></tr></tbody></table><button class="submit" id="submit" type="button">Submit</button></div>'}
+function pConfirm(ref,msg){return '<div class="conf-p" id="confp"><div class="big">✓</div><h3>Submitted</h3><p style="margin:4px 0">Your reference number is</p><p class="ref">'+ref+'</p><p style="color:var(--grey);margin:6px 0 0">'+msg+'</p></div>'}
+function pTickets(rows,clickable){return '<p class="crumbs"><a>Home</a> › My tickets</p><h3 style="color:var(--wl)">My tickets</h3><table class="tk"><thead><tr><th>Number</th><th>Description</th><th>Status</th></tr></thead><tbody>'+rows.map(function(r){return '<tr id="'+r[0]+'"'+(clickable?' class="clk" tabindex="0" role="button"':"")+'><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td><span class="st'+(r[3]?" ap":"")+'">'+r[2]+'</span></td></tr>'}).join("")+'</tbody></table><div id="tdet"></div>'}
+
+/* ---------- Coach panel ---------- */
+function coach(o){return '<aside class="coach '+(o.cls||"")+'" aria-label="Instructions"><span class="badge">'+o.badge+'</span><h2 id="h" tabindex="-1">'+o.title+'</h2>'+(o.task?'<p class="task">'+o.task+'</p>':"")+(o.narr?'<p class="cap">'+o.narr+'</p>':"")+(o.hint?'<details class="hintbox" id="hint"><summary>Need a hint?</summary><p style="margin:6px 0 0">'+o.hint+'</p></details>':"")+'<div class="fb" id="fb" role="status"></div><div class="row">'+(o.buttons||"")+'</div></aside>'}
+function feedback(cls,html){var f=$("#fb");f.className="fb "+cls;f.innerHTML=html;announce(f.textContent)}
+function toast(t){var fr=$("#frame");if(!fr)return;var o=$(".toast",fr);if(o)o.remove();var d=document.createElement("div");d.className="toast";d.textContent=t;fr.appendChild(d);setTimeout(function(){d.remove()},2600)}
+
+/* ---------- Watch helpers ---------- */
+function cur(){return $("#cur")}
+async function moveTo(el,tok){if(!el||tok!==run)return;var fr=$("#frame");var a=fr.getBoundingClientRect(),b=el.getBoundingClientRect();var x=b.left-a.left+Math.min(b.width*.5,60),y=b.top-a.top+b.height*.55;cur().style.transform="translate("+x+"px,"+y+"px)";await sleep(800)}
+async function clickFx(tok){if(tok!==run)return;var c=cur();c.classList.remove("click");void c.offsetWidth;c.classList.add("click");await sleep(400)}
+async function typeIn(el,text,tok){for(var i=0;i<text.length;i++){if(tok!==run)return;el.value+=text[i];await sleep(55)}}
+function hl(el,on){$$(".hl").forEach(function(e){e.classList.remove("hl")});if(el&&on!==false)el.classList.add("hl")}
+async function pickSel(sel,val,tok){await moveTo(sel,tok);await clickFx(tok);if(tok!==run)return;sel.value=val;sel.dispatchEvent(new Event("change"));await sleep(350)}
+
+/* ---------- Screens ---------- */
+var SCREENS={};
+function go(id){hush();run++;S.screen=id;save();drawSteps();var sc=SCREENS[id];sc();var h=$("#h");if(h)h.focus({preventScroll:true});window.scrollTo({top:0});}
+
+/* Intro */
+SCREENS["0.1"]=function(){
+  var n="Welcome. When something isn’t working, or you need something new, ServiceHub is where you get help. In the next five minutes you’ll learn to find answers, report an issue and make a request, the right way first time.";
+  main.innerHTML='<section class="slide"><div class="hero"><div><p class="kicker">Wattlebrook Life · Self-service</p><h1 id="h" tabindex="-1">ServiceHub: Getting help the right way</h1><p class="lead">Learn to find answers, report issues and request what you need in ServiceHub, so you get help faster.</p><div class="meta"><span>About 5 minutes</span><span>Watch, Try, Test</span><span>Narrated with captions</span></div></div><div class="hero-art">'+heroArt+'</div></div>'+
+  '<div class="conf"><p id="cq">Before you start: how confident are you raising a ticket in ServiceHub?</p><div class="scale" role="group" aria-labelledby="cq">'+[1,2,3,4,5].map(function(i){return '<button type="button" aria-pressed="'+(S.conf0===i)+'" data-v="'+i+'">'+i+'</button>'}).join("")+'</div><div class="scale-l"><span>Not confident</span><span>Very confident</span></div></div>'+
+  '<p class="cap">'+n+'</p><div class="row"><button class="btn" id="start">Start</button></div></section>';
+  $$(".scale button").forEach(function(b){b.onclick=function(){S.conf0=+b.dataset.v;save();$$(".scale button").forEach(function(x){x.setAttribute("aria-pressed",x===b)})}});
+  $("#start").onclick=function(){go("0.2")};
+};
+SCREENS["0.2"]=function(){
+  var n="By the end, you’ll be able to do three things. One: search the knowledge base before raising a ticket. Two: tell an incident from a request. Three: raise an incident or request with the right details and urgency.";
+  main.innerHTML='<section class="slide"><p class="kicker">What you’ll be able to do</p><h2 id="h" tabindex="-1">By the end, you’ll be able to:</h2><ol class="objs"><li><span class="num">1</span><div><h3>Search first</h3>Search the ServiceHub knowledge base for a fix before raising a ticket.</div></li><li><span class="num">2</span><div><h3>Know the difference</h3>Tell an incident (something is broken) from a request (you need something new).</div></li><li><span class="num">3</span><div><h3>Raise it well</h3>Raise an incident or request with the right details and urgency, then track it.</div></li></ol><p class="cap">'+n+'</p><div class="row"><button class="btn" id="nx">Continue</button></div></section>';
+  say(n);$("#nx").onclick=function(){go("0.3")};
+};
+var SORT=[["s1","My headset has no sound","inc","Something is broken."],["s2","I need access to the Claims shared mailbox","req","You need something new: access."],["s3","Salesforce won’t load","inc","Something isn’t working as it should."],["s4","I need a second monitor","req","You need new equipment."]];
+SCREENS["0.3"]=function(){
+  var n="An incident means something is broken. A request means you need something new. Sort these four examples. Select a card, then choose Incident or Request.";
+  var done={},sel=null;
+  main.innerHTML='<section class="slide"><p class="kicker">Incident or request?</p><h2 id="h" tabindex="-1">Is something broken, or do you need something new?</h2><div class="defs"><div class="def inc"><b>Incident</b>Something is broken or not working as it should.</div><div class="def req"><b>Request</b>You need something new, such as access, equipment or software.</div></div><p style="margin:0 0 6px;font-weight:600">Select a card, then choose Incident or Request.</p><div class="cards">'+SORT.map(function(c){return '<button type="button" class="scard" id="'+c[0]+'" aria-pressed="false">'+c[1]+'</button>'}).join("")+'</div><div class="bins"><button class="btn ghost" id="bInc" disabled>Incident</button><button class="btn ghost" id="bReq" disabled>Request</button></div><div class="fb" id="fb" role="status"></div><p class="cap">'+n+'</p><div class="row"><button class="btn" id="nx" disabled>Continue</button></div></section>';
+  say(n);
+  SORT.forEach(function(c){var b=$("#"+c[0]);b.onclick=function(){if(done[c[0]])return;sel=c;$$(".scard").forEach(function(x){x.setAttribute("aria-pressed",x===b)});$("#bInc").disabled=$("#bReq").disabled=false;$("#fb").className="fb";$("#fb").textContent=""}});
+  function answer(k){if(!sel)return;var b=$("#"+sel[0]);if(sel[2]===k){done[sel[0]]=1;b.classList.add("ok");b.setAttribute("aria-pressed","false");b.setAttribute("aria-disabled","true");b.innerHTML="✓ "+sel[1]+'<span class="why">'+(k==="inc"?"Incident":"Request")+": "+sel[3]+"</span>";feedback("good","<b>Correct.</b> "+sel[3]);sel=null;$("#bInc").disabled=$("#bReq").disabled=true;
+      if(Object.keys(done).length===4){$("#nx").disabled=false;feedback("good","<b>All sorted.</b> Broken means incident. New means request.");}}
+    else feedback("bad","<b>Not quite.</b> Is something broken, or do you need something new?");}
+  $("#bInc").onclick=function(){answer("inc")};$("#bReq").onclick=function(){answer("req")};
+  $("#nx").onclick=function(){go("0.4")};
+};
+SCREENS["0.4"]=function(){
+  var n="You can watch first, try it with help, then test yourself. Most people do all three.";
+  var t=function(k){return S.done[k]?'<span class="tick">Done</span>':""};
+  var next=!S.done.watch?"watch":!S.done.tryit?"tryit":!S.done.test?"test":"";
+  main.innerHTML='<section class="slide" style="max-width:980px"><p class="kicker">Choose how to learn</p><h2 id="h" tabindex="-1">Watch, try, then test yourself</h2><p class="lead">Recommended path: Watch, then Try, then Test.</p><div class="modes">'+
+  '<button class="mode'+(next==="watch"?" rec":"")+'" id="mW">'+t("watch")+'<span class="ic">'+I.eye+'</span><h3>Watch</h3><span>See it done step by step.</span><span class="tag">About 1.5 minutes</span></button>'+
+  '<button class="mode'+(next==="tryit"?" rec":"")+'" id="mT">'+t("tryit")+'<span class="ic">'+I.hand+'</span><h3>Try</h3><span>Do it yourself, with hints.</span><span class="tag">About 2 minutes</span></button>'+
+  '<button class="mode'+(next==="test"?" rec":"")+'" id="mX">'+t("test")+'<span class="ic">'+I.check+'</span><h3>Test</h3><span>Do a new task on your own. Scored.</span><span class="tag">About 1.5 minutes</span></button></div>'+
+  (S.done.test?'<div class="fb info" style="display:block">You’ve completed the test. <button class="linkbtn" id="toQR">View the quick reference guide</button></div>':"")+
+  '<p class="cap">'+n+'</p></section>';
+  say(n);
+  $("#mW").onclick=function(){go("W1")};$("#mT").onclick=function(){T={};go("T1")};$("#mX").onclick=function(){X={score:{}};go("X1")};
+  var q=$("#toQR");if(q)q.onclick=function(){go("R2")};
+};
+
+/* Watch */
+function watchScreen(id,o){
+  SCREENS[id]=function(){
+    main.innerHTML='<div class="sim">'+frame(o.url,o.view())+coach({badge:"Watch · "+o.n+" of 6",title:o.title,narr:o.narr,buttons:'<button class="btn ghost" id="rp">Replay</button><button class="btn" id="nx">'+(o.last?"Finish Watch":"Next")+'</button>'})+'</div>';
+    $("#frame").classList.add("w");$("#nx").onclick=o.next;$("#rp").onclick=function(){go(id)};
+    say(o.narr);var tok=++run;setTimeout(function(){o.anim(tok)},300);
+  };
+}
+var SCEN='<div class="fb info" style="display:block;margin:0 0 14px"><b>Scenario:</b> Sam, a contact centre consultant, has no sound in their headset partway through a shift. Customers are waiting.</div>';
+watchScreen("W1",{n:1,url:"/home",title:"Start with search",view:function(){return SCEN+pHome()},
+ narr:"Sam’s headset has stopped working, and there are customers waiting. Watch how Sam gets help. Start with search. The fix might already be there.",
+ anim:async function(tok){var s=$("#sform");await moveTo(s,tok);hl(s)},next:function(){go("W2")}});
+watchScreen("W2",{n:2,url:"/search",title:"Search the knowledge base",view:function(){return pHome()},
+ narr:"Searching first can save you a ticket. Sam searches for headset no sound, and finds an article that matches the problem.",
+ anim:async function(tok){var q=$("#q");await moveTo(q,tok);await clickFx(tok);hl($("#sform"));await typeIn(q,"headset no sound",tok);await moveTo($("#qbtn"),tok);await clickFx(tok);if(tok!==run)return;
+   $("#pv").innerHTML=pResults("headset no sound",HS_RESULTS);await sleep(300);var r=$("#rHead");await moveTo(r,tok);hl(r)},next:function(){go("W3")}});
+watchScreen("W3",{n:3,url:"/kb/KB0010442",title:"Try the fix",view:function(){return pArticle()},
+ narr:"Sam tries the three steps in the article, but there’s still no sound. Now it’s time to report an incident.",
+ anim:async function(tok){var a=$(".art ol");await moveTo(a,tok);hl(a);await sleep(2600);var l=$("#reportLink");await moveTo(l,tok);hl($("#banner"))},next:function(){go("W4")}});
+watchScreen("W4",{n:4,url:"/report",title:"Report an issue",view:function(){return pIncident("watch")},
+ narr:"Sam chooses the category and item, then writes a short, specific description, including what’s already been tried. That saves the support team asking again.",
+ anim:async function(tok){var c=$("#cat"),it=$("#item");c.onchange=function(){it.innerHTML=opts(ITEMS[c.value]||[])};
+   hl($("#fCat"));await pickSel(c,"Hardware",tok);hl($("#fItem"));await pickSel(it,"Headset",tok);
+   hl($("#fDesc"));var sd=$("#sd");await moveTo(sd,tok);await clickFx(tok);await typeIn(sd,"No sound in headset",tok);
+   hl($("#fDet"));var d=$("#det");await moveTo(d,tok);await clickFx(tok);await typeIn(d,"Tried the 3 steps in the knowledge article. Still no sound. Unable to take calls.",tok);if(tok===run)hl(null)},next:function(){go("W5")}});
+watchScreen("W5",{n:5,url:"/report",title:"Set the urgency",view:function(){return pIncidentUrg()},
+ narr:"Sam can’t take calls, so this is High urgency. Choose High only when you genuinely can’t do your main work.",
+ anim:async function(tok){var f=$("#fUrg");hl(f);await sleep(1500);await pickSel($("#urg"),"High",tok)},next:function(){go("W6")}});
+watchScreen("W6",{n:6,url:"/report/review",title:"Submit and track",last:true,view:function(){return pSubmitView()},
+ narr:"Sam submits the incident and gets a reference number. You can track it any time in My tickets.",
+ anim:async function(tok){var b=$("#submit");await moveTo(b,tok);hl(b);await clickFx(tok);await sleep(300);if(tok!==run)return;
+   $("#pv").innerHTML=pConfirm("INC0045821","A technician will contact you within 2 hours.");await sleep(2600);if(tok!==run)return;
+   $("#pv").innerHTML=pTickets([["INC0045821","No sound in headset","New"]]);var r=$("#INC0045821");await moveTo(r,tok);hl(r)},
+ next:function(){S.done.watch=true;save();go("0.4");setTimeout(function(){toast("Now try it yourself.")},50)}});
+
+/* Try */
+function tryScreen(id,o){
+  SCREENS[id]=function(){
+    T.miss=0;
+    main.innerHTML='<div class="sim">'+frame(o.url,o.view())+coach({cls:"m-try",badge:"Try · "+o.n+" of 6",title:o.title,task:o.task,narr:o.narr,hint:o.hint,buttons:o.buttons||""})+'</div>';
+    if(o.narr)say(o.narr);
+    var fr=$("#frame");
+    fr.addEventListener("click",function(e){var t=e.target.closest("button,.ritem,tr.clk");if(!t||!fr.contains(t))return;if(o.allow&&o.allow(t,e)===true)return;if(t.dataset.ok)return;e.preventDefault();miss(o)});
+    o.bind&&o.bind();
+  };
+}
+function miss(o){T.miss++;if(T.miss===1){feedback("bad","<b>Not quite.</b> "+o.wrong1)}else{feedback("info","<b>Hint:</b> "+o.wrong2);var h=$("#hint");if(h)h.open=true;var el=o.target();if(el)hl(el)}}
+function ok(msg,next){feedback("good",msg);setTimeout(function(){go(next)},1100)}
+
+tryScreen("T1",{n:1,url:"/home",title:"Your turn: the headset",task:"Sam’s headset has no sound. Get help the right way.",
+ narr:"Now it’s your turn. Sam’s headset has no sound. Get help the right way.",hint:"Start with search. Type a word that describes the problem.",
+ view:function(){return SCEN+pHome()},target:function(){return $("#sform")},
+ wrong1:"Try searching first. The fix might already be there.",wrong2:"Type <b>headset</b> in the search bar, then select Search.",
+ allow:function(t){return t.id==="qbtn"},
+ bind:function(){var o=this;$("#sform").onsubmit=function(e){e.preventDefault();var v=$("#q").value.trim().toLowerCase();
+   if(/headset|audio|sound|speaker|hear/.test(v)){ok("<b>Good start.</b> Searching first can save you a ticket.","T2")}
+   else if(!v){feedback("info","Type a word that describes the problem, such as <b>headset</b>.")}
+   else{T.miss++;feedback("bad","<b>Nothing useful there.</b> Try a word that describes the problem, such as <b>headset</b> or <b>sound</b>.")}
+   return false}}});
+tryScreen("T2",{n:2,url:"/search",title:"Choose the right article",task:"Which result will help Sam fix the problem?",
+ view:function(){return pResults("headset",HS_RESULTS)},target:function(){return $("#rHead")},
+ wrong1:"That won’t fix a sound problem. Look for one about headset audio.",wrong2:"The article <b>Fix headset audio in 3 steps</b> is highlighted.",
+ allow:function(t){if(t.id==="rHead"){ok("<b>That’s the one.</b> It matches Sam’s problem exactly.","T3");return true}}});
+tryScreen("T3",{n:3,url:"/kb/KB0010442",title:"Still not working",task:"Sam has tried all three steps. There’s still no sound. What next?",
+ narr:"You’ve tried the steps. There’s still no sound.",
+ view:function(){return pArticle()},target:function(){return $("#banner")},
+ wrong1:"The article didn’t fix it. Look for a way to get more help.",wrong2:"Select <b>Report an issue</b> under “Still need help?”.",
+ allow:function(t){if(t.id==="reportLink"){ok("<b>Right.</b> Something is broken, so it’s an incident.","T4");return true}}});
+tryScreen("T4",{n:4,url:"/report",title:"Complete the form",task:"Fill in the form for Sam’s headset, then select <b>Check</b>.",hint:"Pick the description a technician could act on straight away. In Details, include anything that helps IT fix it, but never your password.",
+ view:function(){return pIncident("try")},target:function(){return null},buttons:'<button class="btn" id="chk">Check</button>',
+ wrong1:"",wrong2:"",allow:function(){return true},
+ bind:function(){var c=$("#cat"),it=$("#item");c.onchange=function(){it.innerHTML=opts(ITEMS[c.value]||[])};
+  $("#chk").onclick=function(){var good=0,msg=[];
+   function mark(id,g,txt){var m=$(id);m.className="fmark "+(g?"g":"b");m.textContent=(g?"✓ ":"✗ ")+txt;if(g)good++}
+   mark("#mCat",c.value==="Hardware",c.value==="Hardware"?"Correct. A headset is hardware.":"A headset is a piece of equipment. Which category fits?");
+   mark("#mItem",it.value==="Headset",it.value==="Headset"?"Correct.":"Choose the item that isn’t working.");
+   var d=($('input[name=sd]:checked')||{}).value;
+   mark("#mDesc",d==="d2",d==="d2"?"Clear and specific. The team knows the problem straight away.":d?"Too vague. The team would have to contact Sam to find out what’s wrong.":"Choose a description.");
+   var k=$$("#fDet input:checked").map(function(x){return x.value});var kOk=k.indexOf("k1")>-1&&k.indexOf("k2")>-1&&k.indexOf("k3")<0;
+   mark("#mDet",kOk,k.indexOf("k3")>-1?"Never share your password, not even with IT.":kOk?"Good. What you’ve tried and the impact help IT fix it faster.":"Include what you’ve already tried and how it’s affecting your work.");
+   if(good===4){feedback("good","<b>Well done.</b> That’s a ticket the support team can act on straight away.");$("#chk").outerHTML='<button class="btn" id="nx">Next</button>';$("#nx").onclick=function(){go("T5")};$("#nx").focus()}
+   else feedback("bad","<b>"+good+" of 4 fields are right.</b> Check the notes under each field and try again.")}}});
+tryScreen("T5",{n:5,url:"/report",title:"Set the urgency",task:"Choose the right urgency for Sam’s headset, then select <b>Check</b>.",
+ view:function(){return pIncidentUrg()},target:function(){return $("#fUrg")},buttons:'<button class="btn" id="chk">Check</button>',
+ wrong1:"",wrong2:"",allow:function(){return true},
+ bind:function(){$("#chk").onclick=function(){var v=$("#urg").value;if(v==="High")ok("<b>Right.</b> Sam can’t take calls, so it’s High.","T6");else if(!v)feedback("info","Choose an urgency first.");else{T.miss++;feedback("bad","<b>Not quite.</b> Can Sam do their main work without a headset? Try again.");if(T.miss>1)hl($("#fUrg"))}}}});
+tryScreen("T6",{n:6,url:"/report/review",title:"Submit",task:"Check the details, then submit Sam’s incident.",
+ view:function(){return pSubmitView()},target:function(){return $("#submit")},
+ wrong1:"Select Submit to send the incident.",wrong2:"The Submit button is highlighted.",
+ allow:function(t){if(t.id==="submit"){$("#pv").innerHTML=pConfirm("INC0045822","A technician will contact you within 2 hours.");var n="Well done. You’ve raised an incident the right way.";say(n);feedback("good","<b>Well done.</b> You’ve raised an incident the right way.");
+   $(".coach .row").innerHTML='<button class="btn" id="fin">Finish Try</button>';$("#fin").onclick=function(){S.done.tryit=true;save();go("0.4");setTimeout(function(){toast("Ready to test yourself on a new task?")},50)};$("#fin").focus();return true}}});
+
+/* Test */
+var MB_SCEN='<div class="fb info" style="display:block;margin:0 0 14px"><b>Your task:</b> You’ve moved into the Claims team and need access to the Claims shared mailbox so you can reply to customers.</div>';
+function testScreen(id,o){
+  SCREENS[id]=function(){
+    main.innerHTML='<div class="sim">'+frame(o.url,o.view())+coach({cls:"m-test",badge:"Test · "+o.n+" of 5",title:o.title,task:o.task,narr:o.narr,buttons:o.buttons||""})+'</div>';
+    if(o.narr)say(o.narr);o.bind&&o.bind();
+  };
+}
+function xChoices(kind,q){
+  var list=[["xReq","rq","Request access to a shared mailbox","Request item · Get read or send access to a team mailbox"],["xInc","in","Report an issue with email","Something is broken in Outlook or email"],["xKb","kb","Shared mailbox not showing in Outlook","Knowledge article · For people who already have access"]];
+  if(kind==="cat"){return '<p class="crumbs"><a>Home</a> › Request something</p><h3 style="color:var(--wl)">Request something</h3><div class="res">'+[list[0],["xMon","rq","Order new equipment","Request item · Headsets, monitors, keyboards and mice"],["xSw","rq","Request software","Request item · Install approved software"]].map(function(r){return '<button class="ritem" type="button" id="'+r[0]+'"><span class="pill '+r[1]+'">Request</span><b>'+r[2]+'</b><span>'+r[3]+'</span></button>'}).join("")+'</div><p class="pop">Something broken? <button class="linkbtn" id="xInc">Report an issue</button></p>'}
+  return pResults(q,list);
+}
+testScreen("X1",{n:1,url:"/home",title:"New task: shared mailbox",task:"No hints this time. Get access to the Claims shared mailbox the right way.",
+ narr:"New task, no hints. You need access to the Claims shared mailbox. Get it the right way.",
+ view:function(){return MB_SCEN+pHome("there")},
+ bind:function(){X.score={};X.first=null;
+  function first(v){if(X.first===null){X.first=v;X.score.s1=v}}
+  $("#sform").onsubmit=function(e){e.preventDefault();var v=$("#q").value.trim();if(!v)return false;first(true);X.q=v;X.view="search";go("X2");return false};
+  $("#tRequest").onclick=function(){first(true);X.view="cat";go("X2")};
+  $("#tReport").onclick=function(){first(false);X.view="search";X.q="email";go("X2")};
+  $("#tTickets").onclick=function(){first(false);$("#pv").innerHTML='<button class="back" id="bk">‹ Back to home</button>'+pTickets([["INC0045821","No sound in headset","In progress"]]);$("#bk").onclick=function(){go("X1")}};
+ }});
+testScreen("X2",{n:2,url:"/search",title:"Choose where to go",task:"Choose the option that gets you access to the Claims shared mailbox.",
+ view:function(){return xChoices(X.view,X.q||"")},
+ bind:function(){
+  function to3(v){if(X.score.s2===undefined)X.score.s2=v;go("X3")}
+  var r=$("#xReq");if(r)r.onclick=function(){to3(true)};
+  $("#xInc").onclick=function(){to3(false)};
+  ["xMon","xSw"].forEach(function(i){var b=$("#"+i);if(b)b.onclick=function(){toast("That item won’t give you mailbox access.")}});
+  var k=$("#xKb");if(k)k.onclick=function(){$("#pv").innerHTML='<div class="art"><span class="pill kb">Article KB0011087</span><h3>Shared mailbox not showing in Outlook</h3><p>If you already have access, restart Outlook and wait up to 60 minutes for the mailbox to appear.</p><p><b>Don’t have access yet?</b> You need to request it.</p></div><div class="banner"><button class="linkbtn" id="xReq2">Request access to a shared mailbox</button></div>';$("#xReq2").onclick=function(){to3(true)}};
+ }});
+testScreen("X3",{n:3,url:"/request/shared-mailbox",title:"Complete the request",task:"Fill in the request, then select <b>Review</b>.",
+ view:function(){return '<p class="crumbs"><a>Home</a> › Request something › Shared mailbox access</p><div class="form"><h3>Request access to a shared mailbox</h3>'+
+  '<div class="fld"><label for="mb">Mailbox</label><select id="mb">'+opts(["Claims Team calendar","Claims shared mailbox","Complaints shared mailbox"],"Search or select a mailbox…")+'</select></div>'+
+  '<fieldset class="fld" style="border:0;padding:0;margin:0"><legend class="lbl" style="font-weight:600;font-size:14px;margin-bottom:5px">Access level</legend><div class="opts"><label class="opt"><input type="radio" name="al" value="ro"> Read only: view emails</label><label class="opt"><input type="radio" name="al" value="rs"> Read and send: view and reply as the mailbox</label></div></fieldset>'+
+  '<fieldset class="fld" style="border:0;padding:0;margin:0"><legend class="lbl" style="font-weight:600;font-size:14px;margin-bottom:5px">Business reason</legend><div class="opts">'+[["b1","Need it for work"],["b2","Joined the Claims team on 20 October. I need to reply to customer emails sent to the Claims mailbox."],["b3","My manager said to ask for it"]].map(function(o){return '<label class="opt"><input type="radio" name="br" value="'+o[0]+'"> '+o[1]+'</label>'}).join("")+'</div></fieldset>'+
+  '<div class="fld"><span class="lbl">Approver</span><span>Priya Nair (your manager)</span><span class="help">Your manager will be asked to approve this request.</span></div></div>'},
+ buttons:'<button class="btn" id="rv">Review</button>',
+ bind:function(){$("#rv").onclick=function(){var mb=$("#mb").value,al=($('input[name=al]:checked')||{}).value,br=($('input[name=br]:checked')||{}).value;
+  if(!mb||!al||!br){feedback("info","Complete all three fields before you review.");return}
+  X.mb=mb;X.al=al;X.br=br;X.score.s3=mb==="Claims shared mailbox";X.score.s4=al==="rs";X.score.s5=br==="b2";go("X4")}}});
+var BR={b1:"Need it for work",b2:"Joined the Claims team on 20 October. I need to reply to customer emails sent to the Claims mailbox.",b3:"My manager said to ask for it"};
+testScreen("X4",{n:4,url:"/request/review",title:"Submit",task:"Check your request, then submit it.",
+ view:function(){return '<p class="crumbs"><a>Home</a> › Request something › Review</p><div class="form"><h3>Check and submit</h3><table class="tk"><tbody><tr><td><b>Mailbox</b></td><td>'+X.mb+'</td></tr><tr><td><b>Access level</b></td><td>'+(X.al==="rs"?"Read and send":"Read only")+'</td></tr><tr><td><b>Business reason</b></td><td>'+BR[X.br]+'</td></tr><tr><td><b>Approver</b></td><td>Priya Nair</td></tr></tbody></table><div class="row" style="margin-top:4px"><button class="submit" id="submit">Submit</button><button class="linkbtn" id="edit">Edit</button></div></div>'},
+ bind:function(){$("#edit").onclick=function(){go("X3")};$("#submit").onclick=function(){$("#pv").innerHTML=pConfirm("RITM0018834","Your manager will be asked to approve it.");$(".coach .row").innerHTML='<button class="btn" id="nx">Next</button>';$("#nx").onclick=function(){go("X5")};$("#nx").focus()}}});
+testScreen("X5",{n:5,url:"/my-tickets",title:"Track it",task:"Open your new request to check its status.",
+ narr:"Your request is with your manager for approval.",
+ view:function(){return pTickets([["RITM0018834","Access to "+X.mb,"Awaiting approval",true],["INC0045821","No sound in headset","In progress"]],true)},
+ bind:function(){function open(){$("#tdet").innerHTML='<div class="detail"><b>RITM0018834</b> · Access to '+X.mb+'<div class="track"><span class="on">Submitted</span><span class="on">Awaiting approval</span><span>Approved</span><span>Completed</span></div><p style="font-size:13.5px;color:var(--grey);margin:10px 0 0">Waiting for Priya Nair to approve. You’ll get an email when it’s done.</p></div>';
+   $(".coach .row").innerHTML='<button class="btn" id="res">See my result</button>';$("#res").onclick=function(){S.done.test=true;save();go("R1")};$("#res").focus()}
+  var r=$("#RITM0018834");r.onclick=open;r.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}};
+  $("#INC0045821").onclick=function(){toast("That’s Sam’s headset incident. Open your new request.")}}});
+
+/* Results */
+SCREENS["R1"]=function(){
+  var sc=X.score||{};var items=[
+   ["s1","Searched or went to Request something first","Start with search or Request something, not Report an issue. Nothing is broken here."],
+   ["s2","Chose a request, not an incident","You need something new (access), so it’s a request."],
+   ["s3","Selected the Claims shared mailbox","The calendar and Complaints mailbox won’t help you reply to claims customers."],
+   ["s4","Chose Read and send access","You need to reply to customers, so read-only access isn’t enough."],
+   ["s5","Gave a clear, specific business reason","A specific reason helps your manager approve it quickly."]];
+  var n=items.filter(function(i){return sc[i[0]]}).length,pass=n>=4;
+  var narr=pass?"Great work. You’re ready to use ServiceHub on your own.":"Nearly there. Have another go, or review Try mode first.";
+  var deg=n/5*360;
+  main.innerHTML='<section class="slide"><p class="kicker">Your result</p><h2 id="h" tabindex="-1">'+(pass?"You passed":"Nearly there")+'</h2><div class="score"><div class="ring" style="background:conic-gradient(var(--teal) '+deg+'deg,#E1E7EA 0);"><div style="background:#fff;width:74px;height:74px;border-radius:50%;display:grid;place-items:center">'+n+'/5</div></div><p class="lead" style="margin:0">Pass mark is 4 out of 5.<br>'+narr+'</p></div><ul class="items">'+items.map(function(i){var g=!!sc[i[0]];return '<li><span class="m '+(g?"g":"b")+'" aria-hidden="true">'+(g?"✓":"✗")+'</span><div><b>'+i[1]+'</b><span class="sr">'+(g?" Correct.":" Incorrect.")+'</span><small>'+i[2]+'</small></div></li>'}).join("")+'</ul><p class="cap">'+narr+'</p><div class="row">'+(pass?'<button class="btn" id="c">Continue</button><button class="btn ghost" id="rt">Retry Test</button>':'<button class="btn" id="rt">Retry Test</button><button class="btn ghost" id="rv">Review Try</button>')+'</div></section>';
+  say(narr);
+  $("#rt").onclick=function(){X={score:{}};go("X1")};var c=$("#c");if(c)c.onclick=function(){go("R2")};var r=$("#rv");if(r)r.onclick=function(){T={};go("T1")};
+};
+SCREENS["R2"]=function(){
+  var n="Keep this quick reference handy for next time.";
+  main.innerHTML='<section class="slide"><p class="kicker noprint">Quick reference guide</p><h2 id="h" tabindex="-1" class="noprint">Keep this handy</h2><div class="qr"><div class="qr-h"><b>ServiceHub: Getting help the right way</b><span>Wattlebrook Life</span></div><ol>'+
+  '<li><b>Search first.</b> The fix might already be in a knowledge article.</li>'+
+  '<li><b>Incident or request?</b> Broken means Report an issue. Something new means Request something.</li>'+
+  '<li><b>Write a clear description.</b> Say what’s wrong, what you’ve tried and how it affects your work. Never include your password.</li>'+
+  '<li><b>Set urgency honestly.</b> High only when you can’t do your main work.</li>'+
+  '<li><b>Track it in My tickets.</b> Use your reference number if you need to follow up.</li></ol><div class="tip">Tip: requests for access usually need your manager’s approval, so give a specific business reason.</div></div>'+
+  '<p class="cap noprint">'+n+'</p><div class="row"><button class="btn" id="pr">Print or save as PDF</button><button class="btn ghost" id="nx">Continue</button></div></section>';
+  say(n);$("#pr").onclick=function(){window.print()};$("#nx").onclick=function(){go("R3")};
+};
+SCREENS["R3"]=function(){
+  var n="That’s it. You can now find answers, report issues and make requests the right way.";
+  main.innerHTML='<section class="slide"><p class="kicker">Finish</p><h2 id="h" tabindex="-1">That’s it</h2><ol class="objs"><li><span class="num">✓</span><div>Search the knowledge base before raising a ticket.</div></li><li><span class="num">✓</span><div>Tell an incident from a request.</div></li><li><span class="num">✓</span><div>Raise an incident or request with the right details and urgency, then track it.</div></li></ol>'+
+  '<div class="conf"><p id="cq">How confident are you now raising a ticket in ServiceHub?</p><div class="scale" role="group" aria-labelledby="cq">'+[1,2,3,4,5].map(function(i){return '<button type="button" aria-pressed="false" data-v="'+i+'">'+i+'</button>'}).join("")+'</div><div class="scale-l"><span>Not confident</span><span>Very confident</span></div><div id="cmp"></div></div>'+
+  '<p class="cap">'+n+'</p><div class="row"><button class="btn" id="fin" disabled>Finish</button></div></section>';
+  say(n);
+  $$(".scale button").forEach(function(b){b.onclick=function(){S.conf1=+b.dataset.v;$$(".scale button").forEach(function(x){x.setAttribute("aria-pressed",x===b)});$("#fin").disabled=false;
+    var bar=function(l,v){return '<div class="bar"><span>'+l+'</span><span class="t"><i style="width:'+(v?v*20:0)+'%"></i></span><b>'+(v||"–")+'</b></div>'};
+    $("#cmp").innerHTML='<div class="bars">'+bar("Before",S.conf0)+bar("Now",S.conf1)+'</div>'}});
+  $("#fin").onclick=function(){S.done.course=true;save();drawSteps();
+    $(".slide").innerHTML='<p class="kicker">Complete</p><h2 id="h" tabindex="-1">Course complete</h2><p class="lead">Thanks for completing ServiceHub: Getting help the right way. Next time something isn’t working, start with search.</p><div class="row"><button class="btn" id="m">Back to menu</button><button class="btn ghost" id="q">Quick reference</button></div>';
+    $("#h").focus();$("#m").onclick=function(){go("0.4")};$("#q").onclick=function(){go("R2")};announce("Course complete")};
+};
+
+go(S.screen==="0.1"||!SCREENS[S.screen]||/^[WTXR]/.test(S.screen)?"0.1":S.screen);
+})();
+</script>
+</body>
+</html>
