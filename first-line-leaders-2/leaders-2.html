@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Course 2: The Job You Got | Harbourline Leadership Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Onest:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6FB; --surface:#FFFFFF; --navy:#0E1F3D; --ink:#16233F; --muted:#5B6782; --line:#DCE2EE;
+  --blue:#2F6BFF; --blue-soft:#E4ECFF; --buoy:#FFC93C; --buoy-soft:#FFF4D6;
+  --glass:#7FD6C2; --glass-soft:#E1F6F0; --red:#E2574C; --red-soft:#FDE6E3;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Onest","Segoe UI",system-ui,sans-serif;
+  --r-lg:22px; --r-md:14px; --r-sm:10px;
+  --lift:0 14px 34px -16px rgba(14,31,61,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.shell{max-width:820px;margin:0 auto;padding:18px 20px 28px}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.12;margin:0 0 14px;letter-spacing:-.02em;color:var(--navy)}
+h1{font-size:clamp(1.9rem,5.4vw,2.7rem)}
+h2{font-size:clamp(1.25rem,3.4vw,1.6rem)}
+h3{font-size:1rem}
+p{margin:0 0 14px;max-width:60ch}
+.lede{font-size:1.08rem}
+.muted{color:var(--muted)}
+.hidden{display:none!important}
+button{font:inherit}
+
+/* top bar */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;margin-bottom:26px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;color:var(--navy)}
+.brand svg{width:34px;height:34px;flex:none}
+.brand b{font-family:var(--display);font-weight:600;font-size:1rem;letter-spacing:-.01em;display:block;line-height:1.1}
+.brand small{color:var(--muted);font-size:.8rem}
+.prog{font-size:.82rem;font-weight:600;color:var(--navy);background:var(--buoy);padding:5px 12px;border-radius:999px;white-space:nowrap}
+
+/* tags */
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.tag{font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:999px;background:var(--surface);color:var(--muted);border:1px solid var(--line)}
+.tag.lead{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+.hero-visual{position:relative}
+@media (max-width:680px){.hero{grid-template-columns:1fr}.hero-visual{order:-1}}
+
+/* buttons */
+.btn{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:#fff;font-weight:700;padding:14px 24px;border-radius:999px;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--lift)}
+.btn:focus-visible{outline:3px solid var(--buoy);outline-offset:3px}
+.btn.alt{background:var(--buoy);color:var(--navy)}
+.btn.ghost{background:transparent;color:var(--navy);box-shadow:inset 0 0 0 2px var(--navy)}
+.btn[disabled]{opacity:.4;cursor:default;transform:none;box-shadow:none}
+.kbd{font-size:.75rem;opacity:.75;font-weight:600}
+
+/* step heading */
+.step-label{font-size:.85rem;font-weight:700;color:var(--blue);margin-bottom:6px}
+
+/* options */
+.options{display:grid;gap:12px;margin-top:18px}
+.opt{all:unset;box-sizing:border-box;display:grid;grid-template-columns:36px 1fr;gap:14px;align-items:start;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-md);padding:14px 16px;cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s}
+.opt:hover:not([disabled]){transform:translateY(-2px);border-color:var(--blue);box-shadow:var(--lift)}
+.opt:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+.opt .key{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);font-family:var(--display);font-weight:600;font-size:.9rem}
+.opt[disabled]{cursor:default;opacity:.4}
+.opt.picked{opacity:1;background:var(--blue);border-color:var(--blue);color:#fff}
+.opt.picked .key{background:rgba(255,255,255,.18);color:#fff}
+
+/* feedback panel */
+.feedback{margin-top:18px;background:var(--navy);color:#E9EEF8;border-radius:var(--r-lg);padding:20px 22px;animation:rise .35s ease}
+.feedback p{color:#E9EEF8}
+.feedback h3{color:#fff;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{font-size:.82rem;font-weight:700;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.1)}
+.chip.up{background:var(--glass);color:var(--navy)}
+.chip.down{background:var(--red);color:#fff}
+
+/* live HUD */
+.hud{display:grid;grid-template-columns:repeat(var(--n,3),1fr);gap:14px;background:var(--surface);border-radius:var(--r-md);padding:14px 16px;margin-bottom:22px;border:1px solid var(--line)}
+.mini label{display:flex;justify-content:space-between;font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:6px}
+.mini .val{color:var(--navy);font-variant-numeric:tabular-nums}
+.track{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.track i{display:block;height:100%;width:50%;border-radius:99px;background:var(--blue);transition:width .7s cubic-bezier(.2,.8,.2,1),background .3s}
+.mini.pulse .track i{background:var(--buoy)}
+@media (max-width:520px){.hud{gap:10px;padding:12px}.mini label{font-size:.72rem}}
+
+/* steps rail */
+.rail{display:flex;gap:6px;margin-bottom:18px}
+.rail span{flex:1;height:6px;border-radius:3px;background:var(--line);transition:background .3s}
+.rail span.on{background:var(--blue)}
+
+/* results */
+.result-head{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;margin-bottom:18px}
+.badge{width:96px;height:96px;border-radius:28px;background:var(--navy);display:grid;place-items:center;animation:pop .6s cubic-bezier(.2,1.4,.4,1) both}
+.badge svg{width:56px;height:56px}
+.badge-big{font-family:var(--display);font-weight:600;color:var(--buoy);font-size:1.6rem}
+.result-kicker{font-weight:700;color:var(--blue);font-size:.9rem;margin-bottom:4px}
+.meters{display:grid;gap:16px;margin:8px 0 22px;background:var(--surface);border-radius:var(--r-lg);padding:20px 22px}
+.meter label{display:flex;justify-content:space-between;gap:12px;font-weight:600;font-size:.95rem;margin-bottom:6px}
+.meter .track{height:12px}
+.meter .track i{width:0}
+.panel{background:var(--surface);border-radius:var(--r-lg);padding:20px 22px;margin:0 0 20px}
+.panel ol{margin:6px 0 0;padding-left:22px}
+.panel li{margin-bottom:8px}
+.panel li::marker{font-family:var(--display);color:var(--blue);font-weight:600}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+
+/* footer */
+.foot{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);font-size:.8rem;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.6) rotate(-8deg)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ===== course intro + briefing ===== */
+.topright{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.subtitle{font-size:1.08rem;color:var(--muted);font-weight:600;margin:-4px 0 16px}
+.briefing{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:30px}
+.briefing .panel{margin:0}
+.howto ol{list-style:none;padding:0;margin:10px 0 12px}
+.howto li{display:grid;grid-template-columns:30px 1fr;gap:10px;margin-bottom:10px;counter-increment:s}
+.howto ol{counter-reset:s}
+.howto li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--blue-soft);color:var(--blue);font-family:var(--display);font-weight:600;font-size:.78rem;display:grid;place-items:center}
+.tip{background:var(--buoy-soft);border-radius:var(--r-sm);padding:10px 14px;font-size:.92rem;margin:0}
+.ranks{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.ranks span{font-size:.76rem;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--blue-soft);color:var(--blue)}
+.startrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px}
+@media (max-width:680px){.briefing{grid-template-columns:1fr}}
+
+/* ===== gamification ===== */
+.xp-pill{display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:#fff;font-weight:700;font-size:.82rem;padding:5px 12px;border-radius:999px;font-variant-numeric:tabular-nums;transition:transform .2s}
+.xp-pill.bump{transform:scale(1.15)}
+.xpfloat{position:absolute;z-index:50;font-weight:800;font-size:.9rem;color:var(--blue);background:#fff;border-radius:999px;padding:3px 12px;box-shadow:var(--lift);pointer-events:none;animation:floatup 1.2s ease forwards;white-space:nowrap}
+@keyframes floatup{0%{opacity:0;transform:translateY(0)}15%{opacity:1}100%{opacity:0;transform:translateY(-54px)}}
+.chip.xp{background:var(--buoy);color:var(--navy)}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin:12px 0 4px}
+.bdg{display:flex;gap:10px;align-items:center;background:var(--bg);border-radius:var(--r-md);padding:10px}
+.bdg .ic{width:42px;height:42px;border-radius:12px;background:var(--buoy);display:grid;place-items:center;font-size:1.3rem;flex:none}
+.bdg b{display:block;font-size:.88rem;color:var(--navy);line-height:1.2}
+.bdg small{display:block;font-size:.76rem;color:var(--muted);line-height:1.3}
+.bdg.locked .ic{background:var(--line);filter:grayscale(1);opacity:.55}
+.bdg.locked b{color:var(--muted)}
+.bdg.new{background:var(--buoy-soft);box-shadow:inset 0 0 0 2px var(--buoy)}
+.unlock{display:flex;gap:12px;align-items:center;background:var(--buoy);color:var(--navy);border-radius:16px;padding:8px 16px 8px 8px;margin:0 0 12px;width:fit-content;max-width:100%;animation:pop .55s cubic-bezier(.2,1.4,.4,1) both}
+.unlock .ic{width:40px;height:40px;border-radius:12px;background:#fff;display:grid;place-items:center;font-size:1.25rem;flex:none}
+.unlock small{display:block;font-size:.75rem;font-weight:700;opacity:.75}
+.unlock b{font-size:.95rem}
+.game{background:var(--surface);border-radius:var(--r-lg);padding:20px 22px;margin:0 0 20px}
+.game h3{margin-top:18px}
+.game-top{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.xpbig{font-family:var(--display);font-weight:600;font-size:2.6rem;color:var(--blue);line-height:1}
+.rankname{font-family:var(--display);font-weight:600;color:var(--navy);font-size:1.25rem;margin-bottom:8px}
+.game-top .track{height:10px}
+.game-top .track i{width:0;background:var(--buoy)}
+.game-top small{display:block;margin-top:6px;color:var(--muted);font-size:.85rem}
+.passport{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 8px}
+.stamp{border:2px dashed var(--line);border-radius:var(--r-md);padding:10px;font-size:.8rem;color:var(--muted);line-height:1.3}
+.stamp b{display:block;font-family:var(--display);font-weight:600;font-size:.8rem;margin-bottom:3px}
+.stamp.done{border-style:solid;border-color:var(--glass);background:var(--glass-soft);color:var(--navy)}
+.stamp.here{border-style:solid;border-color:var(--blue);background:var(--blue-soft);color:var(--navy)}
+.note{font-size:.8rem;color:var(--muted)}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:70}
+@media (max-width:520px){.passport{grid-template-columns:repeat(2,1fr)}.game-top{grid-template-columns:1fr;gap:12px}}
+
+/* ===== v3: modern, immersive layer ===== */
+.hero-band{position:relative;overflow:hidden;background:var(--navy);color:#D5DDEC;border-radius:28px;padding:34px 32px 84px;isolation:isolate}
+.hero-band h1{color:#fff;font-size:clamp(2.1rem,6.2vw,3.4rem);letter-spacing:-.03em}
+.hero-band .subtitle{color:var(--glass)}
+.hero-band .lede{color:#D5DDEC}
+.hero-band .lede strong{color:var(--buoy)}
+.hero-band .tag{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);color:#D5DDEC}
+.hero-band .tag.lead{background:var(--buoy);border-color:var(--buoy);color:var(--navy)}
+.glow{position:absolute;z-index:-1;border-radius:50%;filter:blur(70px);pointer-events:none}
+.glow.a{width:260px;height:260px;background:var(--buoy);opacity:.16;top:-90px;right:-60px}
+.glow.b{width:300px;height:300px;background:var(--blue);opacity:.28;bottom:-160px;left:-80px}
+.waves{position:absolute;left:0;bottom:-2px;width:115%;height:78px;z-index:-1;pointer-events:none}
+.waves path{animation:drift 10s ease-in-out infinite alternate}
+.waves path:nth-child(2){animation-duration:13s;animation-direction:alternate-reverse}
+@keyframes drift{to{transform:translateX(-7%)}}
+@media (max-width:680px){.hero-band{padding:24px 20px 76px;border-radius:22px}}
+.startrow .btn{padding:16px 30px;font-size:1.05rem;position:relative}
+.startrow .btn::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 0 rgba(47,107,255,.5);animation:ping 2.2s ease-out 1s 3}
+@keyframes ping{to{box-shadow:0 0 0 16px rgba(47,107,255,0)}}
+.briefing .panel{box-shadow:0 1px 0 var(--line)}
+.briefing h3{display:flex;align-items:center;gap:10px}
+.briefing h3 .hi{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-size:1rem;background:var(--blue-soft)}
+
+/* screen transitions */
+#stage:not(.hidden),#play:not(.hidden),#end:not(.hidden){animation:screenIn .55s cubic-bezier(.2,.8,.2,1)}
+@keyframes screenIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+
+/* sticky glass scoreboard */
+.hud{position:sticky;top:8px;z-index:20;background:rgba(14,31,61,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:0;box-shadow:var(--lift);border-radius:18px}
+.hud .mini label{color:#AFC0DA}
+.hud .mini .val{color:#fff}
+.hud .track{background:rgba(255,255,255,.14)}
+
+/* voyage route */
+.voyage{position:relative;display:flex;justify-content:space-between;align-items:center;height:40px;margin:4px 4px 20px}
+.voyage::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:2px dashed #C3CCDD}
+.voyage .fill{position:absolute;left:0;top:50%;height:4px;margin-top:-2px;background:var(--blue);border-radius:2px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.voyage .wp{position:relative;z-index:1;width:14px;height:14px;border-radius:50%;background:var(--bg);border:3px solid #C3CCDD;transition:all .3s}
+.voyage .wp.done{background:var(--blue);border-color:var(--blue)}
+.voyage .wp.now{width:38px;height:38px;border:0;background:var(--buoy);display:grid;place-items:center;box-shadow:0 0 0 7px rgba(255,201,60,.25);animation:bob 2.4s ease-in-out infinite}
+.voyage .wp.now svg{width:20px;height:20px}
+.voyage .wp.port{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:.85rem;background:var(--surface)}
+@keyframes bob{50%{transform:translateY(-4px) rotate(-4deg)}}
+
+/* livelier options */
+.opt{border-radius:18px;padding:16px 18px;box-shadow:0 2px 0 var(--line)}
+.options .opt{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+.options .opt:nth-child(2){animation-delay:.07s}.options .opt:nth-child(3){animation-delay:.14s}
+.opt.picked{box-shadow:0 12px 28px -12px rgba(47,107,255,.7)}
+.feedback{border-radius:24px;box-shadow:var(--lift)}
+
+/* results: score ring on a dark band */
+.result-head{background:var(--navy);border-radius:var(--r-lg);padding:24px;position:relative;overflow:hidden;isolation:isolate}
+.result-head h2{color:#fff}
+.result-head p{color:#D5DDEC}
+.result-head .result-kicker{color:var(--buoy)}
+.result-head::after{content:"";position:absolute;z-index:-1;width:260px;height:260px;border-radius:50%;background:var(--blue);opacity:.3;filter:blur(70px);right:-80px;top:-120px}
+.badge{width:118px;height:118px;border-radius:50%;position:relative;background:conic-gradient(var(--buoy) calc(var(--p,0) * 1%),rgba(255,255,255,.13) 0)}
+.badge::before{content:"";position:absolute;inset:11px;border-radius:50%;background:var(--navy)}
+.badge-big{position:relative;z-index:1;color:#fff;font-size:1.9rem}
+@media (max-width:520px){.result-head{grid-template-columns:1fr;text-align:left}.badge{width:96px;height:96px}}
+.rankname .emb{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--buoy);margin-right:10px;font-size:1.2rem;vertical-align:middle}
+.xp-pill{background:linear-gradient(135deg,var(--navy),#23407A)}
+.xp-pill.bump{box-shadow:0 0 0 5px rgba(255,201,60,.45)}
+
+.prog .short{display:none}
+.brand small{white-space:nowrap}
+@media (max-width:560px){.prog .long{display:none}.prog .short{display:inline}.topright{flex-wrap:nowrap}.brand small{display:none}}
+.badge-big{font-size:1.55rem;letter-spacing:-.03em}
+
+
+.duo{position:relative;max-width:340px;margin:0 auto;padding:10px 0}
+.duo .live{position:absolute;top:0;right:6px;background:var(--red);color:#fff;font-weight:800;font-size:.72rem;padding:4px 10px;border-radius:999px;display:flex;gap:6px;align-items:center;z-index:2}
+.duo .live i{width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.2s infinite}
+.duo .bub{background:#fff;border-radius:18px 18px 18px 4px;padding:12px 16px;color:var(--ink);box-shadow:var(--lift);margin:16px 40px 10px 0;animation:rise .6s ease .1s both}
+.duo .bub.me{background:var(--blue);color:#fff;border-radius:18px 18px 4px 18px;margin:0 0 0 50px;animation-delay:.35s}
+.duo .who{display:flex;justify-content:space-between;margin-top:12px}
+.duo .who span{display:flex;align-items:center;gap:8px;font-weight:700;color:#fff;font-size:.88rem}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:600;font-size:.72rem;flex:none}
+.av.j{background:var(--glass);color:var(--navy)}.av.y{background:var(--blue);color:#fff}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.modechip{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:999px;background:var(--buoy);color:var(--navy);margin-bottom:12px}
+.thread{display:flex;flex-direction:column;gap:12px;margin:0 0 16px}
+.row{display:flex;gap:10px;align-items:flex-end;animation:rise .3s ease}
+.row.you{flex-direction:row-reverse}
+.msg{max-width:78%;padding:12px 16px;border-radius:18px;white-space:pre-wrap}
+.them .msg{background:var(--surface);border-bottom-left-radius:5px}
+.you .msg{background:var(--blue);color:#fff;border-bottom-right-radius:5px}
+.tipline{align-self:flex-start;margin-left:46px;font-size:.84rem;background:var(--buoy-soft);color:var(--navy);border-radius:12px;padding:6px 12px;max-width:78%;animation:rise .3s ease}
+.scene{align-self:center;font-size:.85rem;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:999px;padding:4px 14px;text-align:center}
+.typing{display:inline-flex;gap:4px;padding:16px 18px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+.composer{position:sticky;bottom:10px;z-index:6;background:var(--surface);border-radius:22px;box-shadow:var(--lift);padding:10px;display:grid;gap:8px}
+.composer textarea{font:inherit;resize:none;border:0;outline:none;padding:8px 10px;min-height:52px;background:transparent;color:var(--ink)}
+.crow{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
+.tool{all:unset;cursor:pointer;font-size:.85rem;font-weight:700;padding:8px 12px;border-radius:999px;background:var(--bg);color:var(--navy)}
+.tool:hover{background:var(--blue-soft)}
+.tool:focus-visible{outline:3px solid var(--buoy)}
+.tool[disabled]{opacity:.4;cursor:default}
+.send{padding:10px 20px}
+.crit{display:grid;gap:14px}
+.crit .meter label small{display:block;font-weight:400;color:var(--muted);font-size:.85rem}
+.dots{display:flex;gap:5px}.dots i{width:22px;height:10px;border-radius:5px;background:var(--line)}.dots i.on{background:var(--blue)}
+.say{background:var(--navy);color:#fff;border-radius:18px;padding:16px 18px;font-size:1.02rem}
+.say small{display:block;color:var(--buoy);font-weight:700;margin-bottom:4px}
+@media (max-width:520px){.msg,.tipline{max-width:88%}}
+
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+  <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#0E1F3D"/><circle cx="16" cy="11" r="4" fill="#FFC93C"/><path d="M5 20c3.7 0 3.7-3 7.3-3s3.7 3 7.4 3 3.6-3 7.3-3" stroke="#7FD6C2" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M5 25.5c3.7 0 3.7-3 7.3-3s3.7 3 7.4 3 3.6-3 7.3-3" stroke="#2F6BFF" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><div><b>Harbourline</b><small>Leadership Academy</small></div></div>
+  <div class="topright"><span class="prog"><span class="long">First Line Leaders: course 2 of 4</span><span class="short">Course 2/4</span></span><span class="xp-pill hidden" id="xpPill" aria-live="polite">⚓ <span>0</span> XP</span></div>
+</header>
+<section id="intro">
+  <div class="hero-band"><span class="glow a"></span><span class="glow b"></span><svg class="waves" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 C150 10 300 70 450 40 S750 10 900 40 S1100 70 1200 40 V80 H0Z" fill="#2F6BFF" opacity=".35"/><path d="M0 55 C200 30 350 80 550 55 S850 30 1000 55 S1150 75 1200 55 V80 H0Z" fill="#7FD6C2" opacity=".35"/></svg>
+  <div class="hero">
+    <div>
+      <div class="tags"><span class="tag lead">First Line Leaders</span><span class="tag">Course 2</span><span class="tag">Live role play</span><span class="tag">10 minutes</span></div>
+      <h1>The Job You Got</h1>
+      <p class="subtitle">Leading a colleague who wanted your job</p>
+      <p class="lede"><strong>Scenario: the conversation you've been putting off.</strong> You and Jordan both applied for Team Leader. You got it. Jordan, who trained you, has been cool with you ever since. You've booked a one-to-one. Practise it here before you do it for real.</p>
+    </div>
+    <div class="hero-visual"><div class="duo" aria-hidden="true"><span class="live"><i></i>Live practice</span>
+<div class="bub">Hi. So… you wanted a chat?</div>
+<div class="bub me">I did. I wanted to clear the air about the role.</div>
+<div class="who"><span><span class="av j">JR</span>Jordan</span><span>You<span class="av y">You</span></span></div></div></div>
+  </div>
+  </div>
+  <div class="briefing">
+    <div class="panel howto"><h3><span class="hi">🗺️</span>How this works</h3><ol><li><span>Choose live practice to type your own words, or guided practice to pick from responses.</span></li><li><span>In live practice, AI plays Jordan and reacts to what you actually say. Watch Jordan's openness change.</span></li><li><span>After three exchanges you can end the conversation and get feedback. It ends automatically after eight.</span></li><li><span>Your coach scores you on four behaviours and gives you a line to try next time.</span></li></ol><p class="tip"><strong>Tip.</strong> Say it the way you would in real life, not the way you'd write it. If you're stuck, a hint costs 5 XP. If live AI isn't available on this site, you'll move to guided practice automatically.</p></div>
+    <div class="panel"><h3><span class="hi">🏆</span>What you can earn</h3><p class="muted" style="font-size:.92rem;margin-bottom:0">Earn XP for every exchange and for how well the conversation lands. Climb four ranks and unlock 5 badges.</p>
+      <div class="ranks"><span>🪢 Deckhand</span><span>🧭 Navigator</span><span>🔭 First mate</span><span>⚓ Captain</span></div>
+      <div class="badges"><div class="bdg locked"><span class="ic">🤝</span><div><b>Cleared the air</b><small>Scored 4+ on acknowledging the situation</small></div></div><div class="bdg locked"><span class="ic">🎖️</span><div><b>Respect earned</b><small>Scored 4+ on respecting Jordan's experience</small></div></div><div class="bdg locked"><span class="ic">🧭</span><div><b>Clear lines</b><small>Scored 4+ on clarity</small></div></div><div class="bdg locked"><span class="ic">🚪</span><div><b>Door open</b><small>Scored 4+ on keeping the door open</small></div></div><div class="bdg locked"><span class="ic">🎙️</span><div><b>Live performer</b><small>Finished a live conversation</small></div></div></div></div>
+  </div>
+  <div class="startrow"><button class="btn" id="start">Start live practice</button><span class="muted">About 10 minutes. Works on phone or laptop.</span></div>
+</section>
+
+<section id="stage" class="hidden">
+  <div class="hud" style="--n:2">
+    <div class="mini" id="openMini"><label><span>Jordan's openness</span><span class="val" id="openVal">30</span></label><div class="track"><i id="openBar" style="width:30%;background:var(--glass)"></i></div></div>
+    <div class="mini"><label><span>Conversation</span><span class="val" id="turnVal"></span></label><div class="track"><i id="turnBar" style="width:0"></i></div></div>
+  </div>
+  <span class="modechip" id="modechip"></span>
+  <div class="thread" id="thread" aria-live="polite"></div>
+  <div id="guided"></div>
+  <div class="composer hidden" id="composer">
+    <label for="msg" class="note" style="padding:0 10px">Type what you'd say to Jordan. Press Enter to send.</label>
+    <textarea id="msg" rows="2" maxlength="600" placeholder="Say it in your own words…"></textarea>
+    <div class="crow"><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="tool" id="hint">💡 Hint (costs 5 XP)</button><button class="tool" id="endBtn" disabled>End and get feedback</button></div><button class="btn send" id="send">Send</button></div>
+  </div>
+</section>
+
+<section id="end" class="hidden">
+  <div class="result-head">
+    <div class="badge"><span class="badge-big" id="total"></span></div>
+    <div><div class="result-kicker">Course 2 complete. Your coach's verdict:</div><h2 id="headline" style="margin-bottom:6px"></h2><p id="sum" style="margin:0"></p></div>
+  </div>
+  <div class="meters crit" id="crit"></div>
+  <div class="panel"><h3>What worked</h3><p id="strength"></p><h3>Try next time</h3><p id="improve"></p><div class="say"><small>A line you could use</small><span id="tryline"></span></div></div>
+  <div class="game">
+  <div class="game-top">
+    <div><div class="result-kicker">XP earned</div><div class="xpbig" id="gXP">0</div></div>
+    <div><div class="result-kicker">Your rank</div><div class="rankname" id="gRank"></div><div class="track"><i id="gRankBar"></i></div><small id="gNext"></small></div>
+  </div>
+  <h3>Badges <span class="note" id="gCount" style="font-family:var(--body);font-weight:600"></span></h3>
+  <div class="badges" id="gBadges"></div>
+  <h3>Your First Line Leaders passport</h3>
+  <div class="passport" id="gPass"></div>
+  <div class="note">Progress is saved in this browser on this device.</div>
+</div>
+  <div class="actions"><button class="btn" id="againLive">Practise live again</button><button class="btn ghost" id="againGuided">Try guided mode</button></div>
+</section>
+
+<footer class="foot"><span>Harbourline Leadership Academy, First Line Leaders programme</span><span>Practice scenario. People and events are fictional.</span></footer>
+</div>
+<script>
+const CFG={"module": 2, "maxXP": 260, "badges": [{"id": "ack", "icon": "🤝", "name": "Cleared the air", "desc": "Scored 4+ on acknowledging the situation"}, {"id": "resp", "icon": "🎖️", "name": "Respect earned", "desc": "Scored 4+ on respecting Jordan's experience"}, {"id": "clear", "icon": "🧭", "name": "Clear lines", "desc": "Scored 4+ on clarity"}, {"id": "door", "icon": "🚪", "name": "Door open", "desc": "Scored 4+ on keeping the door open"}, {"id": "live", "icon": "🎙️", "name": "Live performer", "desc": "Finished a live conversation"}], "modules": [{"n": 1, "name": "The First 90 Days"}, {"n": 2, "name": "The Job You Got"}, {"n": 3, "name": "Feedback That Lands"}, {"n": 4, "name": "From Doing to Leading"}], "store": "harbourline-fll-v1", "unit": "Course"};
+const $=id=>document.getElementById(id);
+const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function countUp(el,to,suffix="",max){const ring=max?el.parentElement:null;
+  if(RM){el.textContent=to+suffix;if(ring)ring.style.setProperty("--p",to/max*100);return;}
+  const t0=performance.now(),d=1100;(function f(t){const p=Math.min(1,(t-t0)/d),e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(to*e)+suffix;if(ring)ring.style.setProperty("--p",to/max*100*e);if(p<1)requestAnimationFrame(f);})(t0);}
+const BOAT='<svg viewBox="0 0 24 24" fill="none" stroke="#0E1F3D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16h18l-2.5 4.5h-13z"/><path d="M12 3v12"/><path d="M12 4l6.5 9.5H12"/></svg>';
+function setVoyage(el,i,total){el.className="voyage";el.setAttribute("aria-label",`Step ${i+1} of ${total}`);
+  let h=`<span class="fill" style="width:${i/total*100}%"></span>`;
+  for(let n=0;n<total;n++)h+=`<span class="wp ${n<i?"done":n===i?"now":""}">${n===i?BOAT:""}</span>`;
+  el.innerHTML=h+'<span class="wp port" aria-hidden="true">⚓</span>';}
+function focusEl(el){el.setAttribute("tabindex","-1");el.focus({preventScroll:true});el.scrollIntoView({behavior:RM?"auto":"smooth",block:"start"});}
+/* ===== gamification ===== */
+const G={xp:0,earned:new Set(),pending:[]};
+const STORE=(typeof CFG!=="undefined"&&CFG.store)||"harbourline-ai-ready-v1";
+const RANK_ICONS=["🪢","🧭","🔭","⚓"];
+const RANKS=[["Deckhand",0],["Navigator",.4],["First mate",.7],["Captain",.9]];
+function loadP(){try{return JSON.parse(localStorage.getItem(STORE))||{}}catch(e){return{}}}
+function saveP(d){try{localStorage.setItem(STORE,JSON.stringify(d))}catch(e){}}
+function xpPill(){const p=$("xpPill");p.classList.remove("hidden");p.querySelector("span").textContent=G.xp;p.classList.add("bump");setTimeout(()=>p.classList.remove("bump"),220);}
+function addXP(n,anchor){
+  G.xp=Math.max(0,G.xp+n);xpPill();
+  if(anchor&&!RM){const r=anchor.getBoundingClientRect(),f=document.createElement("span");
+    f.className="xpfloat";f.textContent=(n>=0?"+":"")+n+" XP";if(n<0)f.style.color="var(--red)";
+    f.style.left=(r.left+scrollX+r.width/2-34)+"px";f.style.top=(r.top+scrollY-8)+"px";
+    document.body.appendChild(f);setTimeout(()=>f.remove(),1300);}
+}
+function unlock(id){if(G.earned.has(id))return;G.earned.add(id);G.pending.push(id);}
+function flushUnlocks(){const h=G.pending.map(id=>{const b=CFG.badges.find(x=>x.id===id);
+  return `<div class="unlock" role="status"><span class="ic">${b.icon}</span><div><small>Badge unlocked</small><b>${b.name}</b></div></div>`;}).join("");G.pending=[];return h;}
+function rankOf(xp){const p=xp/CFG.maxXP;let r=0;RANKS.forEach((x,k)=>{if(p>=x[1]-1e-9)r=k;});return r;}
+function finishGame(){
+  G.pending=[];
+  const d=loadP(),prev=d[CFG.module]||{xp:0,badges:[]};
+  const before=new Set(prev.badges);
+  d[CFG.module]={xp:Math.max(prev.xp,G.xp),badges:[...new Set([...prev.badges,...G.earned])]};saveP(d);
+  countUp($("gXP"),G.xp);
+  const r=rankOf(G.xp);$("gRank").innerHTML=`<span class="emb">${RANK_ICONS[r]}</span>${RANKS[r][0]}`;
+  setTimeout(()=>$("gRankBar").style.width=Math.min(100,Math.round(G.xp/CFG.maxXP*100))+"%",250);
+  $("gNext").textContent=r<3?`${Math.ceil(RANKS[r+1][1]*CFG.maxXP)-G.xp} XP to ${RANKS[r+1][0]}. Replay to climb the ranks.`:`Top rank. Best possible score is ${CFG.maxXP} XP.`;
+  $("gBadges").innerHTML=CFG.badges.map(b=>{const st=G.earned.has(b.id)?"new":before.has(b.id)?"":"locked";
+    return `<div class="bdg ${st}"><span class="ic">${b.icon}</span><div><b>${b.name}</b><small>${b.desc}</small></div></div>`;}).join("");
+  $("gCount").textContent=`${d[CFG.module].badges.length} of ${CFG.badges.length} collected`;
+  $("gPass").innerHTML=CFG.modules.map(m=>{const done=!!d[m.n];
+    return `<div class="stamp ${done?"done":""} ${m.n===CFG.module?"here":""}"><b>${done?"✓ ":""}${CFG.unit||"Module"} ${m.n}</b>${m.name}</div>`;}).join("");
+  confetti();
+}
+function resetGame(){G.xp=0;G.earned=new Set();G.pending=[];xpPill();}
+function confetti(){
+  if(RM)return;const c=document.createElement("canvas");c.id="confetti";document.body.appendChild(c);
+  const x=c.getContext("2d"),W=c.width=innerWidth,H=c.height=innerHeight,cols=["#2F6BFF","#FFC93C","#7FD6C2","#0E1F3D","#E2574C"];
+  const ps=Array.from({length:150},()=>({x:W/2+(Math.random()-.5)*W*.3,y:H*.25,vx:(Math.random()-.5)*12,vy:-Math.random()*11-3,s:Math.random()*7+4,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[Math.random()*cols.length|0]}));
+  const t0=performance.now();
+  (function f(t){x.clearRect(0,0,W,H);ps.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.r+=p.vr;
+    x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore();});
+    if(t-t0<2800)requestAnimationFrame(f);else c.remove();})(t0);
+}
+
+
+const OPEN="Hi. So… you wanted a chat?";
+const CRIT=[["acknowledge","Acknowledged the situation","Named it honestly, without over-apologising"],["respect","Respected Jordan's experience","Recognised what Jordan brings, specifically"],["clarity","Clear about working together","Said what changes and asked what Jordan wants"],["future","Kept the door open","Agreed a next step and invited honesty"]];
+const HINTS=["Name it directly: you both went for the role. Ask how Jordan is doing with it.","Recognise what Jordan brings, and be specific about it.","Be clear about what changes and what doesn't. Ask what Jordan would want.","Agree a next step and a check-in date, and invite Jordan to be honest with you."];
+const SYS=`You are role-playing Jordan Reid in a leadership practice exercise. Jordan is a claims handler at Harbourline, a UK financial services firm, with six years' experience. Jordan and the learner were peers. Both applied for Team Leader three weeks ago and the learner got the job. Jordan trained the learner when they joined. Jordan is disappointed and a little hurt, has been cooler since, but is professional and cares about the team and customers. The learner has booked a one-to-one.
+Behave like a real person. Start guarded and brief. Warm up gradually when the learner acknowledges the situation honestly, shows specific respect for Jordan's experience, is clear about how you'll work together, asks what Jordan wants, or offers meaningful responsibility. Become more guarded if they are defensive, dismissive, pull rank, over-apologise for getting the job, make promises they can't keep, or stay vague. Never be melodramatic or hostile, never swear. Replies are 1 to 3 spoken sentences, under 60 words, British English. Stay in character in "reply".
+Respond ONLY with a JSON object and nothing else:
+{"reply":"what Jordan says","openness":0-100 (Jordan's openness now; it started at 30),"coach":"one short coaching tip on the learner's last message, max 20 words, addressed to the learner as 'you'","end":true or false (true only when the conversation has reached a natural close)}`;
+const DSYS=`You are an expert leadership coach. Assess a practice conversation in which a newly promoted team leader talks to Jordan, a colleague who also applied for the role. Score the learner (not Jordan) from 1 to 5 on: acknowledge (named the situation honestly, without over-apologising), respect (showed specific respect for Jordan's experience), clarity (clear about how they'll work together, asked what Jordan wants), future (agreed a next step, invited honesty). Be fair and encouraging but honest; short conversations that don't cover a criterion score low on it. British English.
+Respond ONLY with JSON: {"scores":{"acknowledge":n,"respect":n,"clarity":n,"future":n},"headline":"3 to 6 word verdict","strength":"one sentence on what worked","improve":"one sentence on the most useful thing to do differently","try":"one line the learner could say next time, under 30 words"}`;
+const GUIDE=[
+ {j:OPEN,o:[{t:"I wanted to clear the air. We both went for this role, and I imagine the last few weeks haven't been easy. How are you doing with it?",s:5,d:20,r:"Honestly? Not great. I'm glad you said it, though. It's been the elephant in the room."},
+   {t:"It's just got a bit awkward, and I'd like us to move on.",s:2,d:-5,r:"Right. Move on. Sure."},
+   {t:"I'm really sorry. I honestly don't know why they picked me over you.",s:1,d:-10,r:"Don't do that. You got it. Saying you don't deserve it doesn't help either of us."}]},
+ {j:"Six years I've been here. I trained half this team. Including you.",o:[{t:"You did, and it shows. Your experience is a big part of why this team works, and I'd be daft not to lean on it.",s:5,d:20,r:"…Thanks. I didn't expect you to say that."},
+   {t:"I know, but the decision's been made. I need you on board.",s:1,d:-15,r:"On board. Okay. Message received."},
+   {t:"I could ask whether another senior role might come up for you.",s:2,d:-5,r:"Could you? Or is that just something to say? I'd rather you didn't promise what you can't deliver."}]},
+ {j:"So what does this look like now? Am I just meant to take instructions from you?",o:[{t:"No. I'd like us to agree how we work together. I'd love you to lead training for new starters, if that interests you. What would you want from this?",s:5,d:20,r:"Actually, I'd like that. And I'd want you to back me up when I push back on things."},
+   {t:"Well, I am the team leader now, so some things will have to change.",s:1,d:-15,r:"Wow. Okay. Three weeks in."},
+   {t:"Nothing needs to change. Just carry on as you are.",s:2,d:-5,r:"That's not really an answer, is it? Things have changed."}]},
+ {j:"And if I'm finding it hard? Some days I probably will.",o:[{t:"Then tell me, even if it's about me. Let's check in properly in two weeks and see how it's going.",s:5,d:15,r:"Deal. Two weeks. And… congratulations. I mean it this time."},
+   {t:"I'm sure we'll be fine. Let's not overthink it.",s:2,d:-5,r:"Maybe. We'll see."},
+   {t:"If it starts affecting your work, we'll need to handle it formally.",s:1,d:-20,r:"Right. Good to know where I stand."}]}
+];
+const MAXT=8;let mode="live",hist=[],turns=0,openness=30,busy=false,gScores=[],hintsUsed=0;
+const lastBest=(k)=>GUIDE[k].o[0].t;
+function row(who,t){const r=document.createElement("div");r.className="row "+who;
+  r.innerHTML=`<span class="av ${who==="you"?"y":"j"}">${who==="you"?"You":"JR"}</span><div class="msg"></div>`;r.querySelector(".msg").textContent=t;$("thread").appendChild(r);return r;}
+function note(t,cls="scene"){const n=document.createElement("div");n.className=cls;n.textContent=t;$("thread").appendChild(n);return n;}
+function typing(){const r=document.createElement("div");r.className="row them";r.innerHTML='<span class="av j">JR</span><div class="msg typing"><i></i><i></i><i></i></div>';$("thread").appendChild(r);r.scrollIntoView({block:"nearest",behavior:RM?"auto":"smooth"});return r;}
+function setOpen(v){const old=openness;openness=Math.max(0,Math.min(100,Math.round(v)));$("openVal").textContent=openness;$("openBar").style.width=openness+"%";
+  if(openness!==old){$("openMini").classList.add("pulse");setTimeout(()=>$("openMini").classList.remove("pulse"),900);}}
+function setTurn(max){$("turnVal").textContent=`Turn ${Math.min(turns+1,max)} of ${max}`;$("turnBar").style.width=(turns/max*100)+"%";}
+function parseJSON(t){const a=t.indexOf("{"),b=t.lastIndexOf("}");return JSON.parse(t.slice(a,b+1));}
+async function callClaude(system,messages){
+  const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,system,messages})});
+  if(!res.ok)throw new Error("HTTP "+res.status);
+  const data=await res.json();return parseJSON(data.content.map(c=>c.text||"").join(""));
+}
+function begin(m){
+  mode=m;hist=[];turns=0;gScores=[];hintsUsed=0;$("thread").innerHTML="";$("guided").innerHTML="";setOpen(30);resetGame();
+  ["intro","end"].forEach(x=>$(x).classList.add("hidden"));$("stage").classList.remove("hidden");
+  $("modechip").textContent=m==="live"?"🎙️ Live practice: type your own words":"🧭 Guided practice: choose your response";
+  note("Meeting room 2. Jordan sits down, arms folded.");
+  if(m==="live"){$("composer").classList.remove("hidden");row("them",OPEN);setTurn(MAXT);$("endBtn").disabled=true;$("msg").value="";$("msg").focus();}
+  else{$("composer").classList.add("hidden");setTurn(GUIDE.length);guidedTurn();}
+  focusEl($("stage"));
+}
+/* ----- live ----- */
+async function send(){
+  const t=$("msg").value.trim();if(!t||busy)return;busy=true;$("send").disabled=true;
+  row("you",t);$("msg").value="";
+  const content=hist.length?t:`(Scene: the one-to-one has just started. Jordan opened with: "${OPEN}")\n\nThe learner says: ${t}`;
+  hist.push({role:"user",content});turns++;setTurn(MAXT);
+  if(turns<=6)addXP(10,$("send"));
+  const ty=typing();
+  try{
+    const j=await callClaude(SYS,hist);ty.remove();
+    hist.push({role:"assistant",content:JSON.stringify(j)});
+    row("them",j.reply);setOpen(j.openness);
+    if(j.coach)note("Coach: "+j.coach,"tipline");
+    if(turns>=3)$("endBtn").disabled=false;
+    if(j.end||turns>=MAXT){note(turns>=MAXT?"Time's up on this one-to-one.":"The conversation has reached a natural close.");setTimeout(debrief,RM?0:900);}
+  }catch(e){
+    ty.remove();
+    note("Live AI isn't available on this site, so you've switched to guided practice. Your scenario is the same.");
+    setTimeout(()=>begin("guided"),RM?0:1800);
+  }finally{busy=false;$("send").disabled=false;$("msg").focus();}
+}
+$("send").onclick=send;
+$("msg").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}};
+$("hint").onclick=()=>{const k=Math.min(Math.floor(turns/2),3);note("💡 "+HINTS[k],"tipline");addXP(-5,$("hint"));hintsUsed++;};
+$("endBtn").onclick=()=>debrief();
+async function debrief(){
+  $("composer").classList.add("hidden");const ty=note("Your coach is reviewing the conversation…");
+  const transcript=[`Jordan: ${OPEN}`].concat($("thread").querySelectorAll(".row").length?[...$("thread").querySelectorAll(".row")].slice(1).map(r=>(r.classList.contains("you")?"Learner: ":"Jordan: ")+r.querySelector(".msg").textContent):[]).join("\n");
+  let d;
+  try{d=await callClaude(DSYS,[{role:"user",content:"Transcript:\n"+transcript}]);}
+  catch(e){const s=Math.max(1,Math.min(5,Math.round(openness/20)));d={scores:{acknowledge:s,respect:s,clarity:s,future:s},headline:"Feedback unavailable",strength:"You stayed in the conversation, which is the hardest part.",improve:"Try again in guided mode to compare your approach with expert responses.",try:lastBest(0)};}
+  ty.remove();results(d,true);
+}
+/* ----- guided ----- */
+function guidedTurn(){
+  const k=gScores.length;if(k>=GUIDE.length)return guidedEnd();
+  const g=GUIDE[k];if(k>0)row("them",g.j);else row("them",g.j);
+  setTurn(GUIDE.length);
+  const ord=[0,1,2].sort(()=>Math.random()-.5);
+  $("guided").innerHTML=`<div class="step-label">What do you say?</div><div class="options">${ord.map((n,i)=>`<button class="opt" data-n="${n}"><span class="key">${"ABC"[i]}</span><span>${g.o[n].t}</span></button>`).join("")}</div>`;
+  document.querySelectorAll("#guided .opt").forEach(b=>b.onclick=()=>{
+    const o=g.o[+b.dataset.n];$("guided").innerHTML="";row("you",o.t);gScores.push(o.s);turns++;addXP(10,$("thread").lastChild);
+    const ty=typing();setTimeout(()=>{ty.remove();row("them",o.r);setOpen(openness+o.d);
+      note(o.s===5?"Coach: That landed well. Notice how Jordan opened up.":o.s===2?"Coach: Not wrong, but it left something unsaid.":"Coach: That made Jordan more guarded.","tipline");
+      setTimeout(guidedTurn,RM?0:900);},RM?0:1000);
+  });
+}
+document.addEventListener("keydown",e=>{const n="abc".indexOf(e.key.toLowerCase());if(n<0||mode!=="guided"||document.activeElement===$("msg"))return;const b=document.querySelectorAll("#guided .opt")[n];if(b)b.click();});
+function guidedEnd(){
+  const sc={};CRIT.forEach(([k],i)=>sc[k]=gScores[i]);
+  const order=CRIT.map(([k,l],i)=>[gScores[i],i]).sort((a,b)=>a[0]-b[0]);
+  const lo=order[0][1],hi=order[3][1];const all=gScores.every(s=>s===5);
+  results({scores:sc,headline:all?"A conversation that rebuilt trust":gScores.reduce((a,b)=>a+b)>=14?"Good, with one gap":"Room to grow",
+    strength:`Your strongest moment: ${CRIT[hi][1].toLowerCase()}.`,
+    improve:all?"Now try it live, in your own words.":`Focus next on this: ${CRIT[lo][2].toLowerCase()}.`,try:lastBest(lo)},false);
+}
+/* ----- results ----- */
+function results(d,live){
+  $("stage").classList.add("hidden");$("end").classList.remove("hidden");
+  const S=d.scores||{};let sum=0;
+  $("crit").innerHTML=CRIT.map(([k,l,h])=>{const v=Math.max(1,Math.min(5,+S[k]||1));sum+=v;
+    return `<div class="meter"><label><span>${l}<small>${h}</small></span><span class="dots">${[1,2,3,4,5].map(n=>`<i class="${n<=v?"on":""}"></i>`).join("")}</span></label></div>`;}).join("");
+  CRIT.forEach(([k])=>{if((+S[k]||0)>=4)unlock({acknowledge:"ack",respect:"resp",clarity:"clear",future:"door"}[k]);});
+  if(live&&turns>=4)unlock("live");
+  addXP(sum*10);G.pending=[];
+  $("headline").textContent=d.headline||"Conversation complete";
+  $("sum").textContent=`You scored ${sum} out of 20 across four leadership behaviours${live?" in live practice":" in guided practice"}.${hintsUsed?` You used ${hintsUsed} hint${hintsUsed>1?"s":""}.`:""}`;
+  $("strength").textContent=d.strength||"";$("improve").textContent=d.improve||"";$("tryline").textContent=`\u201C${d.try||""}\u201D`;
+  countUp($("total"),Math.round(sum/20*100),"%",100);
+  finishGame();focusEl($("end"));
+}
+$("start").textContent="Start live practice";
+$("start").insertAdjacentHTML("afterend",'<button class="btn ghost" id="startGuided">Guided practice</button>');
+$("start").onclick=()=>begin("live");$("startGuided").onclick=()=>begin("guided");
+$("againLive").onclick=()=>{$("gRankBar").style.width=0;begin("live");};$("againGuided").onclick=()=>{$("gRankBar").style.width=0;begin("guided");};
+
+</script>
+</body>
+</html>
